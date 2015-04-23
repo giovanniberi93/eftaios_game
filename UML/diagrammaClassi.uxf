@@ -329,14 +329,14 @@ Responsibilities
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>168</x>
+      <x>189</x>
       <y>141</y>
-      <w>210</w>
+      <w>189</w>
       <h>39</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;.
 group=1</panel_attributes>
-    <additional_attributes>680.0;10.0;680.0;60.0;80.0;60.0;10.0;110.0</additional_attributes>
+    <additional_attributes>610.0;10.0;610.0;60.0;10.0;60.0;10.0;110.0</additional_attributes>
   </element>
   <element>
     <id>UMLClass</id>
@@ -364,7 +364,7 @@ Responsibilities
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>144</x>
+      <x>165</x>
       <y>174</y>
       <w>63</w>
       <h>57</h>
@@ -605,14 +605,14 @@ Responsibilities
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>174</x>
+      <x>195</x>
       <y>228</y>
-      <w>30</w>
+      <w>12</w>
       <h>39</h>
     </coordinates>
     <panel_attributes>lt=&lt;-
 m1=25</panel_attributes>
-    <additional_attributes>80.0;110.0;10.0;10.0</additional_attributes>
+    <additional_attributes>10.0;110.0;10.0;10.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
