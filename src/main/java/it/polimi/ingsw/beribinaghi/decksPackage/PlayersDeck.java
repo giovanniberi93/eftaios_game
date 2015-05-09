@@ -15,7 +15,6 @@ public class PlayersDeck extends Deck {
 	 */
 	public PlayersDeck(int playerNumber){
 		
-		
 		super.validCards.add(new PlayerCard(CharacterName.FIRSTALIEN));
 		super.validCards.add(new PlayerCard(CharacterName.CAPTAIN));
 		super.validCards.add(new PlayerCard(CharacterName.SECONDALIEN));
@@ -25,8 +24,8 @@ public class PlayersDeck extends Deck {
 		super.validCards.add(new PlayerCard(CharacterName.FOURTHALIEN));
 		super.validCards.add(new PlayerCard(CharacterName.SOLDIER));
 		
-		for(int i = MAXPLAYERS-1; i >= playerNumber; i--)
+	/*	for(int i = MAXPLAYERS-1; i >= playerNumber; i--)
 			//TODO declare MAXPLAYERS in MatchPackage
-			super.validCards.remove(i);
+			super.validCards.remove(i);*/
 		}
 }
