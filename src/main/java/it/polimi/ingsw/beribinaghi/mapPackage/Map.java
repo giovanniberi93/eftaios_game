@@ -18,7 +18,7 @@ public class Map {
 	 * 	Generate a new Map with name mapName and with graphics grMap.
 	 *  The grMap must be of the right dimension.
 	 */
-	public Map(String mapName,TypeSector [][]grMap) throws SizeErrorException{
+	public Map(String mapName, TypeSector [][]grMap) throws SizeErrorException{
 		this.mapName = mapName;
 		this.sectors = new Sector[WIDTH][HEIGHT];
 		if ((grMap.length!=WIDTH) || (grMap[0].length!=HEIGHT))
