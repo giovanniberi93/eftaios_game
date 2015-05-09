@@ -1,5 +1,13 @@
 package it.polimi.ingsw.beribinaghi.mapPackage;
 
-public class SafeSector {
+/**
+ * @author damianobinaghi
+ * Class rapresenting a safe sector
+ */
+public class SafeSector extends Sector{
+
+	public SafeSector(Coordinates coordinates) {
+		super(coordinates);
+	}
 
 }

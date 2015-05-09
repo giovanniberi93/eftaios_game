@@ -10,6 +10,8 @@ package it.polimi.ingsw.beribinaghi.mapPackage;
  */
 public final class Coordinates {
 	private char letter;
+	private int number;
+	
 	public char getLetter() {
 		return letter;
 	}
@@ -25,8 +27,6 @@ public final class Coordinates {
 	public void setNumber(int number) {
 		this.number = number;
 	}
-
-	private int number;
 	
 	/**
 	 * @param letter
@@ -38,4 +38,11 @@ public final class Coordinates {
 		this.number = number;
 	}
 
+	public static char getLetter(int num){
+		return (char) ('a' + num);
+	}
+	
+	public static int getNumber(char letter){
+		return (int) (letter - 'a');
+	}
 }

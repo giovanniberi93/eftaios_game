@@ -1,5 +1,13 @@
 package it.polimi.ingsw.beribinaghi.mapPackage;
 
-public class ShallopSector {
+/**
+ * @author damianobinaghi
+ * Class rapresentig a shallop sector
+ */
+public class ShallopSector extends Sector{
+
+	public ShallopSector(Coordinates coordinates) {
+		super(coordinates);
+	}
 
 }

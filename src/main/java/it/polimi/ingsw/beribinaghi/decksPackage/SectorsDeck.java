@@ -1,7 +1,7 @@
 package it.polimi.ingsw.beribinaghi.decksPackage;
 
 /**
- * @author La Cugina Trans
+ * class rapresenting the sectors deck
  *
  */
 public class SectorsDeck extends Deck {

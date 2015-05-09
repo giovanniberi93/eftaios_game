@@ -5,18 +5,22 @@ package it.polimi.ingsw.beribinaghi.mapPackage;
 
 /**
  * @author damianobinaghi
- *
+ * Class rapresenting a cordinate. It is identificate by a letter and a number
  */
 public abstract class Sector {
-	private Coordinates cordinate;
+	private Coordinates coordinates;
 	
-	public Sector(Coordinates cordinate)
+	public Sector(Coordinates coordinates)
 	{
-		this.cordinate = cordinate;
+		this.coordinates = coordinates;
+	}
+	
+	public void setCoordinates(Coordinates coordinates) {
+		this.coordinates = coordinates;
 	}
 
-	public Coordinates getCordinate() {
-		return cordinate;
+	public Coordinates getCoordinates() {
+		return coordinates;
 	}
 	
 }
