@@ -19,19 +19,23 @@ public class RoomSocketServer extends RoomServer {
 	{
 		server = new ServerSocket(port);
 		active = true;
-		this.start();
 	}
 	
 	/**
 	 * start to accept connection manage the comunication;
 	 * @throws IOException 
 	 */
-	public void start() throws IOException
+	public void run()
 	{
 		while (active)
 		{
-			Socket socket = server.accept();
-			(new SetupSession(socket,RoomServer.getControllerMatch())).start();
+				Socket socket;
+				try {
+					socket = server.accept();
+					(new SetupSession(socket,RoomServer.getControllerMatch())).start();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 		}
 	}
 }

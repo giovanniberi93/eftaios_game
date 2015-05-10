@@ -37,7 +37,9 @@ public class SetupSession extends Thread {
 
 	private void printMatchName() {
 		ArrayList<String> nameList = controllerMatch.getMatchesName();
-		
+		for (String nameMatch : nameList)
+			out.println(nameMatch);
+		out.flush();
 	}
 
 	private void login() {
