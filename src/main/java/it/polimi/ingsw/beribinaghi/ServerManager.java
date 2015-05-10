@@ -18,6 +18,7 @@ public class ServerManager {
 	 * This procedure create, if not existing, the server at port indicate and start receiving command from CLI
 	 */
 	public ServerManager(int port){
+		Boolean error = false;
 		if (socketServer==null)
 		{
 			try {
@@ -26,11 +27,13 @@ public class ServerManager {
 				startServer();
 			} catch (IOException e) {
 				System.out.println("Error occurred, impossible to create the server");
+				error = true;
 			}
 		}
 		else
 			System.out.println("Server just existing");
-		controllerInterface();
+		if (!error)
+			controllerInterface();
 	}
 	
 	private void startServer(){
@@ -39,20 +42,30 @@ public class ServerManager {
 			System.out.println("Server successfully started");
 		}
 		else 
-			System.out.println("Server alredy started");
+			System.out.println("Server already started");
 	}
 	
 	private void stopServer() {
-		if (socketServer.isAlive()){
-			try {
-				socketServer.wait();
-				System.out.println("Server successfully stoped");
-			} catch (InterruptedException e) {
-				System.out.println("Error occurred, impossible to stop the server");
-			}
+		if (socketServer.isActive()){
+			socketServer.setInactive();
+			System.out.println("Server will stop");
 		}
 		else 
 			System.out.println("Server alredy stoped");
+	}
+	
+	private void notifyServer() {
+		if (!socketServer.isActive())
+		{
+			socketServer.setActive();
+			System.out.println("Server successfully awake");
+		}
+		else
+			System.out.println("Server alredy awake");
+	}
+	
+	private void exitServer() {
+		socketServer.exit();
 	}
 
 	private void controllerInterface() {
@@ -65,9 +78,14 @@ public class ServerManager {
 				startServer();
 			else if (command.equals("stop"))
 				stopServer();
-		}while (command.equals("exit"));
+			else if (command.equals("wake"))
+				notifyServer();
+			else if (!command.equals("exit"))
+				System.out.println("command not recognized");
+		}while (!command.equals("exit"));
+		exitServer();
+		System.out.println("Server closed");
 	}
-
 
 	private static String correct(String string) {
 		return string.trim().toLowerCase();
