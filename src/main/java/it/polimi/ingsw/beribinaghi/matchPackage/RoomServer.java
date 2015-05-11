@@ -8,7 +8,7 @@ package it.polimi.ingsw.beribinaghi.matchPackage;
  * This class manages all starting connection and all new match
  */
 public abstract class RoomServer extends Thread {
-	private static ControllerMatch controllerMatch;
+	private static MatchController controllerMatch;
 	private Boolean active;
 	protected Boolean end;	
 	
@@ -33,14 +33,14 @@ public abstract class RoomServer extends Thread {
 		this.active = true;
 	}
 	
-	public static ControllerMatch getControllerMatch() {
+	public static MatchController getControllerMatch() {
 		return controllerMatch;
 	}
 
 	public RoomServer()
 	{
 		if (controllerMatch==null)
-			controllerMatch = new ControllerMatch();
+			controllerMatch = new MatchController();
 	}
 	
 	public abstract void run();

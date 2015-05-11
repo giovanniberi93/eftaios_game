@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 /**
- * Class that manage a session with a new clien
+ * Class that manage a session with a new client
  *
  */
 public class SetupSocketSession extends Thread {
@@ -21,10 +21,11 @@ public class SetupSocketSession extends Thread {
 	private Scanner in;
 	private PrintWriter out;
 	private Player player;
-	private ControllerMatch controllerMatch;
+	private MatchController matchController;
+	private String matchName;
 	
-	public SetupSocketSession(Socket socket,ControllerMatch controllerMatch) throws IOException{
-		this.controllerMatch = controllerMatch;
+	public SetupSocketSession(Socket socket,MatchController matchController) throws IOException{
+		this.matchController = matchController;
 		this.socket = socket;
 		in = new Scanner(socket.getInputStream());
 	    out = new PrintWriter(socket.getOutputStream());
@@ -40,19 +41,53 @@ public class SetupSocketSession extends Thread {
 	private void choose() {
 		do{
 			String choose = in.nextLine();
-			if (choose.equals("ciao"));
+			out.println("choose option");
+			out.flush();
+			if (choose.equals("update"))
+				printMatchName();
+			else if (choose.equals("new"))
+				createNewMatch();
 		}while (true);//Da cambiare
 	}
 
 
+	private void createNewMatch() {
+		out.println("insert game name");
+		out.flush();
+		matchName = in.nextLine();
+		try {
+			matchController.createNewMatch(matchName,player);
+			playerInRoom();
+		} catch (AlreadyExistingNameException e) {
+			out.println("name already existed");
+		}
+	}
+
+
+	private void playerInRoom() {
+		out.println("match create, you are in room");
+		String command = in.nextLine();
+		if (command.equals("exit"))
+			try {
+				matchController.exitPlayer(matchName,player);
+			} catch (NotExistingNameException e) {
+				
+			}
+	}
+
+
 	private void printMatchName() {
-		ArrayList<String> nameList = controllerMatch.getMatchesName();
+		out.println("print match name");
+		out.flush();
+		ArrayList<String> nameList = matchController.getMatchesName();
 		for (String nameMatch : nameList)
 			out.println(nameMatch);
 		out.flush();
 	}
 
 	private void login() {
+		out.println("login");
+		out.flush();
 		String user = in.nextLine();
 		player = new Player(user);
 	}
