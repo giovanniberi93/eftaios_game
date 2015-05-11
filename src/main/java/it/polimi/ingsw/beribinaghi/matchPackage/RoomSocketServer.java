@@ -33,9 +33,14 @@ public class RoomSocketServer extends RoomServer {
 	/**
 	 * end server
 	 */
-	public void exit(){
+	public synchronized void exit(){
 		end = true;
-		this.setInactive();
+		if (this.isActive())
+			this.setInactive();
+		else{
+			this.setActive();
+			this.notify();
+		}
 		unlock();
 	}
 	
@@ -67,7 +72,7 @@ public class RoomSocketServer extends RoomServer {
 			{
 				try {
 					socket = server.accept();
-					(new SetupSession(socket,RoomServer.getControllerMatch())).start();
+					(new SetupSocketSession(socket,RoomServer.getControllerMatch())).start();
 				} catch (IOException e) {
 					
 				}
@@ -81,6 +86,8 @@ public class RoomSocketServer extends RoomServer {
 		try {
 			while (!this.isActive())
 				this.wait();
+			if (end)
+				this.setInactive();
 		} catch (InterruptedException e) {
 			
 		}
