@@ -71,7 +71,7 @@ public class ServerManager {
 	private void controllerInterface() {
 		inCommand = new Scanner(System.in);
 		String command;
-		System.out.println("Start reciving command");
+		System.out.println("Start receiving command");
 		do{
 			command = correct(inCommand.nextLine());
 			if (command.equals("start"))

@@ -1,4 +1,4 @@
-package it.polimi.ingsw.beribinaghi.nameGame;
+package it.polimi.ingsw.beribinaghi.gameNames;
 
 
 public enum CharacterName {

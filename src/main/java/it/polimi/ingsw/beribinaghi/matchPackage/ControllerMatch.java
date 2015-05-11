@@ -28,11 +28,11 @@ public class ControllerMatch {
 	 */
 	public ArrayList<String> getMatchesName()
 	{
-		ArrayList<String> listName = new ArrayList<String>();
+		ArrayList<String> nameList = new ArrayList<String>();
 		for (PreMatch pre : matches)
 			if (!pre.isActive())
-				listName.add(pre.getMatchName());
-		return listName;
+				nameList.add(pre.getMatchName());
+		return nameList;
 	}
 
 }

@@ -1,5 +1,5 @@
 package it.polimi.ingsw.beribinaghi.decksPackage;
-import it.polimi.ingsw.beribinaghi.nameGame.*;
+import it.polimi.ingsw.beribinaghi.gameNames.*;
 
 /**
  * class representing a player card

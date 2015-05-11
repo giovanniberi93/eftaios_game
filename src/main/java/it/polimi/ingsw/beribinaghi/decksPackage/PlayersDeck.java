@@ -1,6 +1,6 @@
 package it.polimi.ingsw.beribinaghi.decksPackage;
 
-import it.polimi.ingsw.beribinaghi.nameGame.CharacterName;
+import it.polimi.ingsw.beribinaghi.gameNames.CharacterName;
 
 /**
  * class representing the players deck

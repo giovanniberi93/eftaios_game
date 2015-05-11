@@ -12,13 +12,12 @@ public class Map {
 	final int WIDTH = 23;
 	private String mapName;
 	private Sector[][] sectors;
-
 	/**
 	 * @param mapName
 	 * 	Generate a new Map with name mapName and with graphics grMap.
 	 *  The grMap must be of the right dimension.
 	 */
-	public Map(String mapName, TypeSector [][]grMap) throws SizeErrorException{
+	public Map(String mapName, SectorType [][]grMap) throws SizeErrorException{
 		this.mapName = mapName;
 		this.sectors = new Sector[WIDTH][HEIGHT];
 		if ((grMap.length!=WIDTH) || (grMap[0].length!=HEIGHT))
@@ -26,7 +25,7 @@ public class Map {
 		generate(grMap);
 	}
 	
-	private void generate(TypeSector [][]grMap) {
+	private void generate(SectorType [][]grMap) {
 		for (int i=0;i<grMap.length;i++)
 			for (int j=0;j<grMap[i].length;j++)
 			{
