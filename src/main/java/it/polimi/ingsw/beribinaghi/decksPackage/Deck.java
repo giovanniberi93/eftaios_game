@@ -37,9 +37,12 @@ public abstract class Deck {
 	 * add a card to the discardPile of a deck
 	 * @param card is the card that must be added to discardPile
 	 */
-	public void addToDiscardPile(Card card){
-		discardPile.add(card);
+	public void addToDiscardPile (Card card) throws WrongCardTypeException{
+		
+		if(card.getClass() == (discardPile.get(0)).getClass() || card.getClass() == (validCards.get(0)).getClass())
+			discardPile.add(card);
+		else throw new WrongCardTypeException("Put card in right deck");
+		}
 	}
 
-	
-}
+

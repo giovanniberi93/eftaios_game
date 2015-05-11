@@ -1,5 +1,6 @@
 package it.polimi.ingsw.beribinaghi.decksPackage;
 
-public interface Card {
-	
+
+public class SectorCard implements Card {
+
 }

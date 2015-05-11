@@ -1,5 +1,5 @@
 package it.polimi.ingsw.beribinaghi.decksPackage;
 
-public interface Card {
-	
+public class Spotlight extends ObjectCard {
+
 }

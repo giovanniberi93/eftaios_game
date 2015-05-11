@@ -1,0 +1,31 @@
+package it.polimi.ingsw.beribinaghi.decksPackage;
+
+import it.polimi.ingsw.beribinaghi.gameNames.CharacterName;
+
+/**
+ * class representing the players deck
+ *
+ */
+
+public class CharactersDeck extends Deck {	
+
+	/**
+	 * initialize the PlayerDeck with the exact number and type of necessary PlayerCards
+	 * @param playerNumber is the number of players in the room
+	 */
+	public CharactersDeck(int playerNumber){
+		
+		super.validCards.add(new CharacterCard(CharacterName.FIRSTALIEN));
+		super.validCards.add(new CharacterCard(CharacterName.CAPTAIN));
+		super.validCards.add(new CharacterCard(CharacterName.SECONDALIEN));
+		super.validCards.add(new CharacterCard(CharacterName.PILOT));
+		super.validCards.add(new CharacterCard(CharacterName.THIRDALIEN));
+		super.validCards.add(new CharacterCard(CharacterName.PSYCHOLOGIST));
+		super.validCards.add(new CharacterCard(CharacterName.FOURTHALIEN));
+		super.validCards.add(new CharacterCard(CharacterName.SOLDIER));
+		
+	/*	for(int i = MAXPLAYERS-1; i >= playerNumber; i--)
+			//TODO declare MAXPLAYERS in MatchPackage
+			super.validCards.remove(i);*/
+		}
+}
