@@ -71,7 +71,7 @@ public class Match {
 	
 	private void setInitialPositions(ArrayList<Player> players){
 		
-		//TODO è troppo tardi e non c'ho sbatta
+		//TODO è troppo tardi e non c'ho sbatti
 	}
 }
 
