@@ -1,5 +1,7 @@
 package it.polimi.ingsw.beribinaghi.decksPackage;
 
+import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.Card;
+
 import java.util.ArrayList;
 
 /**

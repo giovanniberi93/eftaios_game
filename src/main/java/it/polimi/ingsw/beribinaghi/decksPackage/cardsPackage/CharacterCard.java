@@ -1,4 +1,4 @@
-package it.polimi.ingsw.beribinaghi.decksPackage;
+package it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage;
 import it.polimi.ingsw.beribinaghi.gameNames.*;
 
 /**

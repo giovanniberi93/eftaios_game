@@ -6,6 +6,7 @@ package it.polimi.ingsw.beribinaghi.matchPackage;
 import java.util.ArrayList;
 
 import it.polimi.ingsw.beribinaghi.decksPackage.*;
+import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.CharacterCard;
 import it.polimi.ingsw.beribinaghi.playerPackage.CharacterFactory;
 import it.polimi.ingsw.beribinaghi.playerPackage.Player;
 

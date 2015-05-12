@@ -13,6 +13,7 @@ public class HumanCharacter extends Character {
 	public HumanCharacter(CharacterName character) {
 		super(character);
 		super.numberOfSteps = 1;		//TODO add constant; where?
+		super.
 	}
 
 }
