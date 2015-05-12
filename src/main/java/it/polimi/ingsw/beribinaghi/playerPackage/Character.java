@@ -9,6 +9,7 @@ public abstract class Character {
 	
 	private String name;
 	private String role;
+	private SideName side;
 	private Coordinates currentPosition;
 	protected ObjectCard[] bag;
 	protected boolean isAlive;
@@ -16,14 +17,20 @@ public abstract class Character {
 	
 
 	/**
-	 * Construct a character starting from 
+	 * Construct a character starting from a characterName
 	 * @param character
 	 */
 	public Character (CharacterName character){
 		this.name = character.getPersonalName();
 		this.role = character.getRoleName();
+		this.setSide(character.getSide());
 		bag = new ObjectCard[3];		//TODO add constant; where?
 		isAlive = true;
+	}
+
+
+	public void setSide(SideName side) {
+		this.side = side;
 	}
 
 
@@ -35,6 +42,12 @@ public abstract class Character {
 	public void setCurrentPosition(Coordinates currentPosition) {
 		this.currentPosition = currentPosition;
 	}
+
+
+	public SideName getSide() {
+		return side;
+	}
+
 }
 
 	

@@ -3,12 +3,22 @@
  */
 package it.polimi.ingsw.beribinaghi.matchPackage;
 
-import java.util.ArrayList;
-
-import it.polimi.ingsw.beribinaghi.decksPackage.*;
+import it.polimi.ingsw.beribinaghi.decksPackage.CharactersDeck;
+import it.polimi.ingsw.beribinaghi.decksPackage.ObjectsDeck;
+import it.polimi.ingsw.beribinaghi.decksPackage.SectorsDeck;
+import it.polimi.ingsw.beribinaghi.decksPackage.ShallopsDeck;
+import it.polimi.ingsw.beribinaghi.decksPackage.WrongCardTypeException;
 import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.CharacterCard;
+import it.polimi.ingsw.beribinaghi.gameNames.SectorName;
+import it.polimi.ingsw.beribinaghi.gameNames.SideName;
+import it.polimi.ingsw.beribinaghi.mapPackage.AlienBase;
+import it.polimi.ingsw.beribinaghi.mapPackage.Coordinates;
+import it.polimi.ingsw.beribinaghi.mapPackage.HumanBase;
+import it.polimi.ingsw.beribinaghi.mapPackage.Map;
 import it.polimi.ingsw.beribinaghi.playerPackage.CharacterFactory;
 import it.polimi.ingsw.beribinaghi.playerPackage.Player;
+
+import java.util.ArrayList;
 
 /**
  * Manages a match
@@ -24,6 +34,8 @@ public class Match {
 	private ShallopsDeck shallopsDeck;
 	private SectorsDeck sectorsDeck;
 	private CharactersDeck playersDeck;
+	
+	private Map map;
 	
 	
 	/**
@@ -72,9 +84,20 @@ public class Match {
 	
 	private void setInitialPositions(ArrayList<Player> players){
 		
-		//TODO è troppo tardi e non c'ho sbatti
-	}
+		Coordinates alienBaseCoordinates;
+		Coordinates humanBaseCoordinates;
+		
+		alienBaseCoordinates = map.searchSectorType(SectorName.ALIENBASE);
+		humanBaseCoordinates = map.searchSectorType(SectorName.HUMANBASE);
+		for(Player player: players){
+			if(player.getCharacter().getSide() == SideName.ALIEN)
+				player.setCurrentPosition(alienBaseCoordinates);
+			else
+				player.setCurrentPosition(humanBaseCoordinates);
+			}
+		}
 }
+
 
 
 
