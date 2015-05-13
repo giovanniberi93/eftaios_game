@@ -10,9 +10,12 @@ import it.polimi.ingsw.beribinaghi.gameNames.CharacterName;
  */
 public class HumanCharacter extends Character {
 
+	boolean isEscaped = false;
+	
 	public HumanCharacter(CharacterName character) {
 		super(character);
 		super.numberOfSteps = 1;		//TODO add constant; where?
+		
 	}
 
 }
