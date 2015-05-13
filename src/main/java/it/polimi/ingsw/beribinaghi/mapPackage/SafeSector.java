@@ -2,7 +2,7 @@ package it.polimi.ingsw.beribinaghi.mapPackage;
 
 /**
  * @author damianobinaghi
- * Class rapresenting a safe sector
+ * Class representing a safe sector
  */
 public class SafeSector extends Sector{
 
