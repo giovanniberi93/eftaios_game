@@ -41,20 +41,15 @@ public class SetupSocketSession extends Thread {
 	private void choose() {
 		do{
 			String choose = in.nextLine();
-			out.println("choose option");
-			out.flush();
 			if (choose.equals("update"))
 				printMatchName();
 			else if (choose.equals("new"))
-				createNewMatch();
+				createNewMatch(in.nextLine());
 		}while (true);//Da cambiare
 	}
 
 
-	private void createNewMatch() {
-		out.println("insert game name");
-		out.flush();
-		matchName = in.nextLine();
+	private void createNewMatch(String matchName) {
 		try {
 			matchController.createNewMatch(matchName,player);
 			playerInRoom();
@@ -77,9 +72,10 @@ public class SetupSocketSession extends Thread {
 
 
 	private void printMatchName() {
-		out.println("print match name");
-		out.flush();
 		ArrayList<String> nameList = matchController.getMatchesName();
+		out.println("print match name");
+		out.println(nameList.size());
+		out.flush();
 		for (String nameMatch : nameList)
 			out.println(nameMatch);
 		out.flush();
