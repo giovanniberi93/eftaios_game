@@ -61,7 +61,7 @@ public class CLI implements GraphicInterface {
 			String commandType[] = command.split(" "); //Divide il comando in parole
 			commandType[0] = correct(commandType[0]);
 			if (commandType[0].equals("crea"))
-				setupController.create(command.substring(commandType[0].length(), command.length()));
+				setupController.create(command.substring(commandType[0].length()+1, command.length())); //Tutta la stringa tranne il comando
 		}while(true);
 	}
 
