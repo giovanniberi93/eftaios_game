@@ -31,9 +31,17 @@ public class SetupController {
 		login();
 		manageMatches();
 	}
+	
+	/**
+	 * prints name match using graphic interface
+	 */
+	public void printMatch()
+	{
+		graphicInterface.printMatchesName(setupSession.getMatchesName());
+	}
 
 	private void manageMatches() {
-		graphicInterface.printMatchesName(setupSession.getMatchesName());
+		printMatch();
 		graphicInterface.receiveCommand();
 		
 	}
@@ -42,9 +50,12 @@ public class SetupController {
 		setupSession.login(graphicInterface.getUserName());
 	}
 
-	public void create(String name) {
-		setupSession.createNewMatch(name);
-		
+	public boolean create(String name) {
+		return setupSession.createNewMatch(name);
+	}
+
+	public boolean enter(String matchName) {
+		return setupSession.enterGame(matchName);
 	}
 
 }

@@ -43,9 +43,11 @@ public class SetupSocketSession implements SetupSession {
 	@Override
 	public ArrayList<String> getMatchesName() {
 		ArrayList<String> matchesName = new ArrayList<String>();
+		out.println("update");
+		out.flush();
 		if (in.nextLine().equals("print match name"))
 		{
-			int numberMatches = in.nextInt();
+			int numberMatches = Integer.parseInt((in.nextLine()));
 			for (int i = 0;i<numberMatches;i++)
 				matchesName.add(in.nextLine());
 			return matchesName;
@@ -54,10 +56,19 @@ public class SetupSocketSession implements SetupSession {
 	}
 
 	@Override
-	public void createNewMatch(String name) {
+	public boolean createNewMatch(String matchName) {
 		out.println("new");
-		out.println(name);
+		out.println(matchName);
 		out.flush();
+		return in.nextLine().equals("player enter in room");
+	}
+
+	@Override
+	public boolean enterGame(String matchName) {
+		out.println("enter");
+		out.println(matchName);
+		out.flush();
+		return in.nextLine().equals("player enter in room");
 	}
 
 

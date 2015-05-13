@@ -3,6 +3,8 @@
  */
 package it.polimi.ingsw.beribinaghi.matchPackage;
 
+import it.polimi.ingsw.beribinaghi.App;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -86,6 +88,11 @@ public class RoomSocketServer extends RoomServer {
 		try {
 			while (!this.isActive())
 				this.wait();
+			try {
+				server = new ServerSocket(App.PORT);
+			} catch (IOException e) {
+				
+			}
 			if (end)
 				this.setInactive();
 		} catch (InterruptedException e) {

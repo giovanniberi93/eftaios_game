@@ -28,7 +28,19 @@ public interface SetupSession {
 	 */
 	public ArrayList<String> getMatchesName();
 
-	public void createNewMatch(String name);
+	/**
+	 * @param matchName
+	 * @return false if matchName already exists
+	 * creates a new match and associates the player to the match
+	 */
+	public boolean createNewMatch(String matchName);
+
+	/**
+	 * @param matchName
+	 * @return true if match exists
+	 * lets player enter in the match
+	 */
+	public boolean enterGame(String matchName);
 
 
 }

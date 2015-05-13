@@ -34,7 +34,8 @@ public class SetupSocketSession extends Thread {
 	
 	public void run(){
 		login();
-		printMatchName();
+		if (in.nextLine().equals("update"))
+			printMatchName();
 		choose();
 	}
 
@@ -45,16 +46,34 @@ public class SetupSocketSession extends Thread {
 				printMatchName();
 			else if (choose.equals("new"))
 				createNewMatch(in.nextLine());
+			else if (choose.equals("enter"))
+				enterMatch(in.nextLine());
 		}while (true);//Da cambiare
+	}
+
+
+	private void enterMatch(String matchName) {
+		try {
+			matchController.addPlayer(matchName, player);
+			out.println("player enter in room");
+			out.flush();
+			playerInRoom();
+		} catch (NotExistingNameException e) {
+			out.println("name not exists");
+			out.flush();
+		}
 	}
 
 
 	private void createNewMatch(String matchName) {
 		try {
 			matchController.createNewMatch(matchName,player);
+			out.println("player enter in room");
+			out.flush();
 			playerInRoom();
 		} catch (AlreadyExistingNameException e) {
 			out.println("name already existed");
+			out.flush();
 		}
 	}
 

@@ -55,14 +55,29 @@ public class CLI implements GraphicInterface {
 
 	@Override
 	public void receiveCommand() {
+		Boolean inRoom = false;
 		do{
 			System.out.println("Cosa vuoi fare? Entra nome partita/Crea Nome partita/Aggiorna/Esci");
-			String command = inLine.nextLine();
+			String command = inLine.nextLine().trim();
 			String commandType[] = command.split(" "); //Divide il comando in parole
 			commandType[0] = correct(commandType[0]);
 			if (commandType[0].equals("crea"))
-				setupController.create(command.substring(commandType[0].length()+1, command.length())); //Tutta la stringa tranne il comando
-		}while(true);
+			{
+				if (setupController.create(command.substring(commandType[0].length()+1, command.length()))) //Tutta la stringa tranne il comando
+					inRoom = true;
+				else 
+					System.out.println("Nome partita già esistente");
+			}
+			else if (commandType[0].equals("entra"))
+			{
+				if (setupController.enter(command.substring(commandType[0].length()+1, command.length())))
+					inRoom = true;
+				else
+					System.out.println("Nome partita non esistente");
+			}
+			else if (commandType[0].equals("aggiorna"))
+				setupController.printMatch();
+		}while(!inRoom);
 	}
 
 }
