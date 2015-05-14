@@ -1,6 +1,6 @@
 package it.polimi.ingsw.beribinaghi.playerPackage;
 
-import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.ObjectCard;
+import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.VisitableObjectCard;
 import it.polimi.ingsw.beribinaghi.mapPackage.Coordinates;
 import it.polimi.ingsw.beribinaghi.gameNames.*;
 
@@ -11,24 +11,28 @@ public abstract class Character {
 	private String role;
 	private SideName side;
 	private Coordinates currentPosition;
-	protected ObjectCard[] bag;
+	protected VisitableObjectCard[] bag;
 	protected boolean isAlive;
-	protected int numberOfSteps;
+
+	protected int percorrableDistance;
 	
 
 	/**
-	 * Construct a character starting from a characterName
+	 * Construct a character from a characterName, and assign to the character the CharacterName attributes
 	 * @param character
 	 */
 	public Character (CharacterName character){
 		this.name = character.getPersonalName();
 		this.role = character.getRoleName();
 		this.setSide(character.getSide());
-		bag = new ObjectCard[3];		//TODO add constant; where?
+		bag = new VisitableObjectCard[3];		//TODO add constant; where?
 		isAlive = true;
 	}
 
-
+	public boolean isAlive() {
+		return isAlive;
+	}
+	
 	public void setSide(SideName side) {
 		this.side = side;
 	}

@@ -1,5 +1,13 @@
 package it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage;
 
-public class Sedatives extends ObjectCard {
+import it.polimi.ingsw.beribinaghi.matchPackage.ObjectCardVisitor;
+
+public class Sedatives implements VisitableObjectCard {
+
+	@Override
+	public void accept(ObjectCardVisitor visitor) {
+		visitor.visit(this);
+		
+	}
 
 }

@@ -12,7 +12,7 @@ public class AlienCharacter extends Character {
 	
 	public AlienCharacter(CharacterName character) {
 		super(character);
-		super.numberOfSteps = 2;	//TODO add constant; where?
+		super.percorrableDistance = 2;	//TODO add constant; where?
 	}
 
 }

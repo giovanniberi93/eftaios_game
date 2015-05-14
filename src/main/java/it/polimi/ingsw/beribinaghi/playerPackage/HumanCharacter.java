@@ -10,12 +10,20 @@ import it.polimi.ingsw.beribinaghi.gameNames.CharacterName;
  */
 public class HumanCharacter extends Character {
 
-	boolean isEscaped = false;
+	private boolean isEscaped = false;
 	
 	public HumanCharacter(CharacterName character) {
 		super(character);
-		super.numberOfSteps = 1;		//TODO add constant; where?
+		super.percorrableDistance = 1;		//TODO add constant; where?
 		
+	}
+
+	public boolean isEscaped() {
+		return isEscaped;
+	}
+
+	public void setEscaped(boolean isEscaped) {
+		this.isEscaped = isEscaped;
 	}
 
 }

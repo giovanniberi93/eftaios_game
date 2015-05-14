@@ -1,5 +1,14 @@
 package it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage;
 
-public class Spotlight extends ObjectCard {
+import it.polimi.ingsw.beribinaghi.matchPackage.ObjectCardVisitor;
 
+public class Spotlight implements VisitableObjectCard {
+
+	@Override
+	public void accept(ObjectCardVisitor visitor) {
+		visitor.visit(this);
+		
+	}
+
+	
 }

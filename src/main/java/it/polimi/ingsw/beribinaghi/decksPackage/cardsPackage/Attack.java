@@ -1,5 +1,13 @@
 package it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage;
 
-public class Attack extends ObjectCard {
+import it.polimi.ingsw.beribinaghi.matchPackage.ObjectCardVisitor;
+
+public class Attack implements VisitableObjectCard {
+
+	@Override
+	public void accept(ObjectCardVisitor visitor) {
+		visitor.visit(this);
+		
+	}
 
 }

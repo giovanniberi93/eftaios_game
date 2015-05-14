@@ -4,6 +4,7 @@
 package it.polimi.ingsw.beribinaghi.matchPackage;
 
 import it.polimi.ingsw.beribinaghi.decksPackage.CharactersDeck;
+import it.polimi.ingsw.beribinaghi.gameNames.*;
 import it.polimi.ingsw.beribinaghi.decksPackage.ObjectsDeck;
 import it.polimi.ingsw.beribinaghi.decksPackage.SectorsDeck;
 import it.polimi.ingsw.beribinaghi.decksPackage.ShallopsDeck;
@@ -18,6 +19,7 @@ import it.polimi.ingsw.beribinaghi.mapPackage.Coordinates;
 import it.polimi.ingsw.beribinaghi.mapPackage.HumanBase;
 import it.polimi.ingsw.beribinaghi.mapPackage.Map;
 import it.polimi.ingsw.beribinaghi.playerPackage.CharacterFactory;
+import it.polimi.ingsw.beribinaghi.playerPackage.HumanCharacter;
 import it.polimi.ingsw.beribinaghi.playerPackage.Player;
 
 import java.util.ArrayList;
@@ -112,11 +114,14 @@ public class Match {
 	public void start(){
 		Card pickedCard;
 		SectorCardVisitor sectorBrowser = new SectorCardVisitor();		//TODO il visitor
+		ObjectCardVisitor objectCardBrowser;
 		
 		Collections.shuffle(players);
 		currentPlayer = players.get(0);
 		while(!isFinished()){
+			
 			pickedCard = moveCharacter(currentPlayer);
+			
 			
 			
 			
@@ -135,7 +140,18 @@ public class Match {
 	 * @return true if the match is finished, false if it is not
 	 */
 	public boolean isFinished(){
-		return false; //TODO evidentemente
+		int remainingHumans = 0;
+		HumanCharacter human;
+		
+		if(this.turnNumber >= 39)		//TODO add constant. Where?
+			return false;
+		for(Player player: players)
+			if(player.getCharacter().getSide() == SideName.HUMAN){
+				human = (HumanCharacter) player.getCharacter();
+				if(human.isAlive() == true && human.isEscaped() == false)
+					remainingHumans++;
+			}
+		return (remainingHumans == 0);
 	}
 
 	/**
