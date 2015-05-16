@@ -22,10 +22,33 @@ public interface GraphicInterface {
 	 */
 	public String getUserName();
 
+	/**
+	 * @param matchesName
+	 * print match name
+	 */
 	public void printMatchesName(ArrayList<String> matchesName);
 
+	/**
+	 * @return true if the command is not exit
+	 * Use functions of matchController
+	 * needs to set matchController before
+	 */
 	public Boolean receiveCommand();
 
+	/**
+	 * @param setupController
+	 * Set setupController
+	 */
 	void setSetupController(SetupController setupController);
+
+	/**
+	 * receive command when you are in romm
+	 */
+	public void receiveCommandInRoom();
+
+	/**
+	 * communicates to user that match in began
+	 */
+	public void beginMatch();
 
 }
