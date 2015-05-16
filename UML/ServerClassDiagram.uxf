@@ -60,8 +60,7 @@ Package:PlayerPack
 --
 -Username: String
 -Password: String
---
-+ConnectToMatch(match: Match)</panel_attributes>
+--</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
@@ -208,14 +207,14 @@ m2=322</panel_attributes>
     <id>Relation</id>
     <coordinates>
       <x>1372</x>
-      <y>546</y>
-      <w>154</w>
-      <h>28</h>
+      <y>441</y>
+      <w>161</w>
+      <h>126</h>
     </coordinates>
     <panel_attributes>lt=-&gt;
 m1=1
 m2=2..8</panel_attributes>
-    <additional_attributes>10.0;10.0;200.0;10.0</additional_attributes>
+    <additional_attributes>10.0;160.0;210.0;10.0</additional_attributes>
   </element>
   <element>
     <id>UMLClass</id>
@@ -972,15 +971,15 @@ Package::DecksPackage
     <id>Relation</id>
     <coordinates>
       <x>1372</x>
-      <y>560</y>
-      <w>154</w>
-      <h>35</h>
+      <y>441</y>
+      <w>189</w>
+      <h>147</h>
     </coordinates>
     <panel_attributes>lt=-&gt;
 m2=1
 m1=0..1
 currentPlayer</panel_attributes>
-    <additional_attributes>10.0;20.0;200.0;20.0</additional_attributes>
+    <additional_attributes>10.0;190.0;250.0;10.0</additional_attributes>
   </element>
   <element>
     <id>UMLClass</id>
@@ -1016,10 +1015,12 @@ Package::MapPackage</panel_attributes>
     <panel_attributes>MatchDataUpdate
 Package::MatchPackage
 --
-recentKills: String[]
-usedObjectCard: String
-
-</panel_attributes>
+recentKills: Players[]
+usedObjectCard: ObjectCard
+noiseCoordinates: Coordinates
+currentPlayer: Player
+survivedPlayers: Players[]
+escapedPlayer: boolean</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
@@ -1077,54 +1078,6 @@ Package::MatchPackage
     <additional_attributes/>
   </element>
   <element>
-    <id>UMLClass</id>
-    <coordinates>
-      <x>1596</x>
-      <y>28</y>
-      <w>147</w>
-      <h>133</h>
-    </coordinates>
-    <panel_attributes>HumanSocketSession
-Package::MatchPackage
---</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <id>UMLClass</id>
-    <coordinates>
-      <x>1407</x>
-      <y>28</y>
-      <w>147</w>
-      <h>133</h>
-    </coordinates>
-    <panel_attributes>HumanRMISession
-Package::MatchPackage
---</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>1470</x>
-      <y>154</y>
-      <w>112</w>
-      <h>84</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
-    <additional_attributes>140.0;100.0;140.0;60.0;10.0;60.0;10.0;10.0</additional_attributes>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>1561</x>
-      <y>154</y>
-      <w>98</w>
-      <h>84</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
-    <additional_attributes>10.0;100.0;10.0;60.0;120.0;60.0;120.0;10.0</additional_attributes>
-  </element>
-  <element>
     <id>Relation</id>
     <coordinates>
       <x>1456</x>
@@ -1149,60 +1102,12 @@ Package::MatchPackage
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>1008</x>
-      <y>28</y>
-      <w>147</w>
-      <h>133</h>
-    </coordinates>
-    <panel_attributes>AlienRMISession
-Package::MatchPackage
---</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <id>UMLClass</id>
-    <coordinates>
-      <x>1197</x>
-      <y>28</y>
-      <w>147</w>
-      <h>133</h>
-    </coordinates>
-    <panel_attributes>AlienSocketSession
-Package::MatchPackage
---</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>1071</x>
-      <y>154</y>
-      <w>140</w>
-      <h>84</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
-    <additional_attributes>180.0;100.0;180.0;50.0;10.0;50.0;10.0;10.0</additional_attributes>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>1190</x>
-      <y>154</y>
-      <w>70</w>
-      <h>84</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
-    <additional_attributes>10.0;100.0;10.0;50.0;80.0;50.0;80.0;10.0</additional_attributes>
-  </element>
-  <element>
-    <id>UMLClass</id>
-    <coordinates>
       <x>1113</x>
       <y>224</y>
       <w>147</w>
       <h>77</h>
     </coordinates>
-    <panel_attributes>/AlienSession/
+    <panel_attributes>/RMISession/
 Package::MatchPackage
 --</panel_attributes>
     <additional_attributes/>
@@ -1215,7 +1120,7 @@ Package::MatchPackage
       <w>147</w>
       <h>77</h>
     </coordinates>
-    <panel_attributes>/HumanSession/
+    <panel_attributes>/SocketSession/
 Package::MatchPackage
 --</panel_attributes>
     <additional_attributes/>

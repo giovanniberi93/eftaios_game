@@ -36,10 +36,9 @@ public class Match {
 	private int currentPlayerIndex;
 	private int turnNumber;
 	
-	private ThreadLocal<DangerousSectorsDeck> dangerousSectorsDeck1 = new ThreadLocal<DangerousSectorsDeck>();
 	private ObjectsDeck objectsDeck;
 	private ShallopsDeck shallopsDeck;
-	//private DangerousSectorsDeck dangerousSectorsDeck;
+	private DangerousSectorsDeck dangerousSectorsDeck;
 	private CharactersDeck playersDeck;
 	
 	private Map map;
@@ -56,7 +55,6 @@ public class Match {
 		this.matchName = matchName;
 		this.map = map;
 		this.turnNumber = 0;
-		this.currentPlayerIndex = 0;
 		setupDecks(players.size());
 		assignCharacter(players);
 		setInitialPositions(players);
@@ -69,13 +67,10 @@ public class Match {
 	 */
 	private void setupDecks(int playerNumber){
 		
-		dangerousSectorsDeck1.set(DangerousSectorsDeck.getInstance());	//se funziona sono un toro
-		dangerousSectorsDeck1.get();
-		
-		//dangerousSectorsDeck = DangerousSectorsDeck.getInstance();
+		dangerousSectorsDeck = new DangerousSectorsDeck();
 		objectsDeck = new ObjectsDeck();
-		//shallopsDeck = ShallopsDeck.getInstance()
-		//playersDeck = CharactersDeck.getInstance(playerNumber)
+		shallopsDeck = new ShallopsDeck();
+		playersDeck =  new CharactersDeck(playerNumber);
 	}
 	
 	
@@ -87,14 +82,15 @@ public class Match {
 	private void assignCharacter(ArrayList<Player> players) throws WrongCardTypeException{
 		CharacterCard characterCard = null;
 		CharacterFactory factory = new CharacterFactory();
-		
+
 		for(Player player: players){
 			characterCard = (CharacterCard) playersDeck.pickCard();
-			player.setCharacter(factory.getNewCharacter(characterCard.getCharacterName()));	//factory methos
-			}
-		playersDeck.addToDiscardPile(characterCard);
+			player.setCharacter(factory.getNewCharacter(characterCard.getCharacterName()));	//factory method
+			
 		}
-	
+		playersDeck.addToDiscardPile(characterCard);
+	}
+
 	/**
 	 * set the initial position of all the existing players; in AlienBase or HumanBase according 
 	 * to the side of the character
@@ -117,30 +113,9 @@ public class Match {
 		}
 
 	public void start(){
-		Card pickedCard;
-		//SectorCardVisitor sectorBrowser = new SectorCardVisitor();		//TODO il visitor
-		//ObjectCardVisitor objectCardBrowser;		//probabilemnte lo tolgo, forse no
-		int currentPlayerIndex = 0;
-		Collections.shuffle(players);
-		currentPlayer = players.get(0);
-		
-		while(!isFinished()){
-			
-			pickedCard = moveCharacter(currentPlayer);
-			//TODO cose del turno; 
-			/*
-			 * devo comunicare al currentPlayer che tocca a lui; aspettare che mandi:
-			 * 		carta oggetto + posizione (facolt); se usa attacco devo segnare i morti, 
-			 * 			se usa spotlight devo rispondergli, se usa teleport lo sposto
-			 * 		nuova posiz e gli mando la carta relativa (scialuppa, rumore, nessuna)
-			 * 			
-			 * 		
-			 */
-			currentPlayer = players.get(changePlayerIndex(currentPlayerIndex));
-			turnNumber++;
-			}
 		
 	}
+		
 
 	/**
 	 * determines if the current match is either finished or not
@@ -167,10 +142,9 @@ public class Match {
 	 * @return the card picked from the deck associated to the destination sector
 	 */
 	public Card moveCharacter(Player currentPlayer){
-		/*Coordinates nextCoordinates = askNextCoordinates(currentPlayer);	//deve parlare con GameSession credo
+		Coordinates nextCoordinates = askNextCoordinates(currentPlayer);	//deve parlare con GameSession credo
 		currentPlayer.setCurrentPosition(nextCoordinates);
-		return map.getSector(nextCoordinates).pickFromAssociatedDeck();*/
-		return null;
+		return map.getSector(nextCoordinates).pickFromAssociatedDeck();
 	}
 	
 	private Coordinates askNextCoordinates(Player currentPlayer2) {

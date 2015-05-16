@@ -3,15 +3,19 @@
  */
 package it.polimi.ingsw.beribinaghi.mapPackage;
 
-import it.polimi.ingsw.beribinaghi.decksPackage.Deck;
+import it.polimi.ingsw.beribinaghi.matchPackage.DeckAssigner;
 
 /**
  *	Class representing the blank sector
  */
 public class BlankSector extends Sector {
 
-	public BlankSector(Coordinates coordinates, Deck deck) {
-		super(coordinates, null);
+	public BlankSector() {
+		super();
+	}
+	
+	public void acceptDeck (DeckAssigner deckAssigner){
+		deckAssigner.visit(this);
 	}
 
 }

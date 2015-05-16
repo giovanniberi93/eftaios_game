@@ -1,6 +1,10 @@
 package it.polimi.ingsw.beribinaghi.mapPackage;
 
+import it.polimi.ingsw.beribinaghi.decksPackage.DangerousSectorsDeck;
+import it.polimi.ingsw.beribinaghi.gameNames.*;
+import it.polimi.ingsw.beribinaghi.decksPackage.ShallopsDeck;
 import it.polimi.ingsw.beribinaghi.gameNames.SectorName;
+import it.polimi.ingsw.beribinaghi.matchPackage.DeckAssigner;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -11,22 +15,26 @@ public class Map {
 	private String mapName;
 	private HashMap <Coordinates, Sector> map;
 	private HashMap <Coordinates, SectorName> mapModel;
+	private SectorName[][] graphicMap;
 	
 	/**
-	 * @param mapName
-	 * 	Generate a new Map with name mapName and graphics grMap.
+	 * @param mapName is a map model, where all sectors type are defined
+	 * 	Generate a new Map with name mapName and graphics map.
 	 */
-	public Map (String mapName, HashMap mapModel){
-		this.setMapName(mapName);
-		this.mapModel = mapModel;
+	public Map (String mapName, SectorName[][] graphicMap, DangerousSectorsDeck dangerousDeck, ShallopsDeck shallopsDeck){
 		
-		Iterator<Coordinates> keySetIterator = mapModel.keySet().iterator();
-
-		while(keySetIterator.hasNext()){
-			Coordinates actualCoordinates = keySetIterator.next();
-			map.put(actualCoordinates, ((SectorName) mapModel.get(actualCoordinates)).getSector());
+		this.setMapName(mapName);
+		DeckAssigner deckAssigner = new WatcherDeckAssigner(dangerousDeck, shallopsDeck);
+	
+		for (int i=0;i<graphicMap.length;i++)
+			for (int j=0;j<graphicMap[i].length;j++)
+			{
+				Coordinates actualCoordinates = new Coordinates (Coordinates.getLetter(i),j);
+				Sector actualSector = graphicMap[i][j].getSector();
+				actualSector.acceptDeck(deckAssigner);
+				map.put(actualCoordinates, actualSector);				
+			}
 		}
-	}
 
 		
 	/**
