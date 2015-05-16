@@ -9,7 +9,7 @@ import it.polimi.ingsw.beribinaghi.gameNames.CharacterName;
  */
 
 public class CharactersDeck extends Deck {	
-
+	
 	/**
 	 * initialize the PlayerDeck with the exact number and type of necessary PlayerCards
 	 * @param playerNumber is the number of players in the room
@@ -25,8 +25,7 @@ public class CharactersDeck extends Deck {
 		super.validCards.add(new CharacterCard(CharacterName.FOURTHALIEN));
 		super.validCards.add(new CharacterCard(CharacterName.SOLDIER));
 		
-	/*	for(int i = MAXPLAYERS-1; i >= playerNumber; i--)
-			//TODO declare MAXPLAYERS in MatchPackage
-			super.validCards.remove(i);*/
+		for(int i = 8-1; i >= playerNumber; i--)		//TODO add constant
+			super.validCards.remove(i);
 		}
 }

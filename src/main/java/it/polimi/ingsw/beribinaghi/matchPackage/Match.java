@@ -6,12 +6,12 @@ package it.polimi.ingsw.beribinaghi.matchPackage;
 import it.polimi.ingsw.beribinaghi.decksPackage.CharactersDeck;
 import it.polimi.ingsw.beribinaghi.gameNames.*;
 import it.polimi.ingsw.beribinaghi.decksPackage.ObjectsDeck;
-import it.polimi.ingsw.beribinaghi.decksPackage.SectorsDeck;
+import it.polimi.ingsw.beribinaghi.decksPackage.DangerousSectorsDeck;
 import it.polimi.ingsw.beribinaghi.decksPackage.ShallopsDeck;
 import it.polimi.ingsw.beribinaghi.decksPackage.WrongCardTypeException;
 import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.Card;
 import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.CharacterCard;
-import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.SectorCard;
+import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.DangerousSectorCard;
 import it.polimi.ingsw.beribinaghi.gameNames.SectorName;
 import it.polimi.ingsw.beribinaghi.gameNames.SideName;
 import it.polimi.ingsw.beribinaghi.mapPackage.AlienBase;
@@ -36,9 +36,10 @@ public class Match {
 	private int currentPlayerIndex;
 	private int turnNumber;
 	
+	private ThreadLocal<DangerousSectorsDeck> dangerousSectorsDeck1 = new ThreadLocal<DangerousSectorsDeck>();
 	private ObjectsDeck objectsDeck;
 	private ShallopsDeck shallopsDeck;
-	private SectorsDeck sectorsDeck;
+	//private DangerousSectorsDeck dangerousSectorsDeck;
 	private CharactersDeck playersDeck;
 	
 	private Map map;
@@ -67,10 +68,14 @@ public class Match {
 	 * @param playerNumber
 	 */
 	private void setupDecks(int playerNumber){
-		sectorsDeck = new SectorsDeck();
+		
+		dangerousSectorsDeck1.set(DangerousSectorsDeck.getInstance());	//se funziona sono un toro
+		dangerousSectorsDeck1.get();
+		
+		//dangerousSectorsDeck = DangerousSectorsDeck.getInstance();
 		objectsDeck = new ObjectsDeck();
-		shallopsDeck = new ShallopsDeck();
-		playersDeck = new CharactersDeck(playerNumber);
+		//shallopsDeck = ShallopsDeck.getInstance()
+		//playersDeck = CharactersDeck.getInstance(playerNumber)
 	}
 	
 	
@@ -113,27 +118,30 @@ public class Match {
 
 	public void start(){
 		Card pickedCard;
-		SectorCardVisitor sectorBrowser = new SectorCardVisitor();		//TODO il visitor
-		ObjectCardVisitor objectCardBrowser;
+		//SectorCardVisitor sectorBrowser = new SectorCardVisitor();		//TODO il visitor
+		//ObjectCardVisitor objectCardBrowser;		//probabilemnte lo tolgo, forse no
+		int currentPlayerIndex = 0;
 		
 		Collections.shuffle(players);
 		currentPlayer = players.get(0);
+		
 		while(!isFinished()){
 			
 			pickedCard = moveCharacter(currentPlayer);
-			
-			
-			
-			
-			
-		}
+			//TODO cose del turno; 
+			/*
+			 * devo comunicare al currentPlayer che tocca a lui; aspettare che mandi:
+			 * 		carta oggetto + posizione (facolt); se usa attacco devo segnare i morti, 
+			 * 			se usa spotlight devo rispondergli, se usa teleport lo sposto
+			 * 		nuova posiz e gli mando la carta relativa (scialuppa, rumore, nessuna)
+			 * 			
+			 * 		
+			 */
+			currentPlayer = players.get(changePlayerIndex(currentPlayerIndex));
+			turnNumber++;
+			}
+		
 	}
-
-	private Player getActualPlayer(int i) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 
 	/**
 	 * determines if the current match is either finished or not
@@ -163,6 +171,18 @@ public class Match {
 		Coordinates nextCoordinates = askNextCoordinates(currentPlayer);	//deve parlare con GameSession credo
 		currentPlayer.setCurrentPosition(nextCoordinates);
 		return map.getSector(nextCoordinates).pickFromAssociatedDeck();
+	}
+	
+	private Coordinates askNextCoordinates(Player currentPlayer2) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	private int changePlayerIndex (int currentPlayerIndex){
+		if(currentPlayerIndex == players.size())
+			return 0;
+		return currentPlayerIndex++;
 	}
 
 }

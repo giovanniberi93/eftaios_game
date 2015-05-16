@@ -7,15 +7,15 @@ import it.polimi.ingsw.beribinaghi.decksPackage.Deck;
 import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.Card;
 
 /**
- * @author damianobinaghi
  * Class rapresenting a cordinate. It is identificate by a letter and a number
  */
 public abstract class Sector {
 	private Coordinates coordinates;
 	private Deck associatedDeck;
 	
-	public Sector(Coordinates coordinates)
+	public Sector(Coordinates coordinates, Deck deck)
 	{
+		this.associatedDeck = deck;
 		this.coordinates = coordinates;
 	}
 	
