@@ -50,7 +50,20 @@ public interface SetupSession {
 	 */
 	public void close();
 
+	/**
+	 * @return the names of all player in room
+	 */
 	public ArrayList<String> getPlayer();
+
+	/**
+	 * @return if match is started
+	 */
+	public boolean isStarted();
+
+	/**
+	 * exit rooms
+	 */
+	public void exitRoom();
 
 
 }

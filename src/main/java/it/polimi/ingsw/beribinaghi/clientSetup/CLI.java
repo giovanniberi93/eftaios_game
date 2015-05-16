@@ -65,7 +65,10 @@ public class CLI implements GraphicInterface {
 			if (commandType[0].equals("crea"))
 			{
 				if (setupController.create(command.substring(commandType[0].length()+1, command.length()))) //Tutta la stringa tranne il comando
+				{
 					inRoom = true;
+					System.out.println("Partita creata, sei nella room");
+				}
 				else 
 					System.out.println("Nome partita già esistente");
 			}
@@ -73,7 +76,7 @@ public class CLI implements GraphicInterface {
 			{
 				int result = setupController.enter(command.substring(commandType[0].length()+1, command.length()));
 				if (result==0){
-					System.out.println("Entro nella partita");
+					System.out.println("Entrato nella partita, sei nella room");
 					printPlayer(setupController.getPlayersName());
 					inRoom = true;
 				}
@@ -100,6 +103,25 @@ public class CLI implements GraphicInterface {
 				System.out.println(playerName);
 		} else
 			System.out.println("Non ci sono ancora giocatori nella room");
+	}
+
+	@Override
+	public void receiveCommandInRoom() {
+		if (inLine.hasNextLine())
+		{
+			String command = correct(inLine.nextLine());
+			if (command.equals("aggiorna"))
+				setupController.getPlayersName();
+			else if (command.equals("esci"))
+				setupController.exitRoom();
+			else
+				System.out.println("Comando non riconosciuto");
+		}
+	}
+
+	@Override
+	public void beginMatch() {
+		System.out.println("Partita iniziata");
 	}
 
 }

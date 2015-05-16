@@ -17,12 +17,14 @@ import java.util.Scanner;
  */
 public class SetupSocketSession extends Thread implements SetupSession {
 
+	private static final long WAITCHECKSTART = 1000;
 	private Socket socket;
 	private Scanner in;
 	private PrintWriter out;
 	private Player player;
 	private MatchController matchController;
 	private String matchName;
+	private Boolean active;
 	
 	public SetupSocketSession(Socket socket,MatchController matchController) throws IOException{
 		this.matchController = matchController;
@@ -30,6 +32,7 @@ public class SetupSocketSession extends Thread implements SetupSession {
 		in = new Scanner(socket.getInputStream());
 	    out = new PrintWriter(socket.getOutputStream());
 	    matchController.registerSession(this);
+	    active = false;
 	}
 	
 	
@@ -82,6 +85,7 @@ public class SetupSocketSession extends Thread implements SetupSession {
 			out.println("player enter in room");
 			out.flush();
 			this.matchName = matchName;
+			printPlayerInRoom(this.matchName);
 			return true;
 		} catch (NotExistingNameException e) {
 			out.println("name not exists");
@@ -119,20 +123,28 @@ public class SetupSocketSession extends Thread implements SetupSession {
 	}
 
 
-	private void playerInRoom() {
-		String command = in.nextLine();
-		if (command.equals("player"))
+	private synchronized void playerInRoom() {
+		while (!active)
+		{
 			try {
-				printPlayerInRoom(matchName);
-			} catch (NotExistingNameException e1) {
+				this.wait(WAITCHECKSTART);
+			} catch (InterruptedException e) {
+			}
+		}
+		out.println("started match");
+		out.flush();
+		createSession();
+		while (active)
+			try {
+				this.wait();
+			} catch (InterruptedException e) {
 
 			}
-		else if (command.equals("exit"))
-			try {
-				matchController.exitPlayer(matchName,player);
-			} catch (NotExistingNameException e) {
-				
-			}
+	}
+
+
+	private void createSession() {
+		new SocketSession(socket);
 	}
 
 
@@ -156,8 +168,7 @@ public class SetupSocketSession extends Thread implements SetupSession {
 
 	@Override
 	public void startMatch() {
-		// TODO Auto-generated method stub
-		
+		active = true;
 	}
 	
 }

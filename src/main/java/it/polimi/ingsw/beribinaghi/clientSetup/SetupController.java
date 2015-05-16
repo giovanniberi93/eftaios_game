@@ -31,12 +31,18 @@ public class SetupController {
 		if (!retry)
 			return ;
 		login();
-		manageMatches();
-		inRoom();
-	}
+		while (true)
+		{
+			if (manageMatches())
+				inRoom();
+			else
+				break;
+		}
+	}	
 	
 	private void inRoom() {
-		
+		setupSession.isStarted();
+		graphicInterface.beginMatch();
 	}
 
 	/**
@@ -47,13 +53,14 @@ public class SetupController {
 		graphicInterface.printMatchesName(setupSession.getMatchesName());
 	}
 
-	private void manageMatches() {
+	private Boolean manageMatches() {
 		printMatch();
 		if (!graphicInterface.receiveCommand())
 		{
 			setupSession.close();
-			return;
+			return false;
 		}
+		return true;
 	}
 
 	private void login() {
@@ -75,6 +82,13 @@ public class SetupController {
 	public ArrayList<String> getPlayersName() {
 		return setupSession.getPlayer();
 		
+	}
+
+	/**
+	 * exits room
+	 */
+	public void exitRoom() {
+		setupSession.exitRoom();
 	}
 
 }

@@ -101,6 +101,20 @@ public class SetupSocketSession implements SetupSession {
 		return null;
 	}
 
+	@Override
+	public boolean isStarted() {
+			String inLine = in.nextLine();
+			if (inLine.equals("started match"))
+				return true;
+		return false;
+	}
+
+	@Override
+	public void exitRoom() {
+		out.println("exit");
+		out.flush();
+	}
+
 
 
 }
