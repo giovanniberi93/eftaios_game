@@ -54,10 +54,11 @@ public class CLI implements GraphicInterface {
 	}
 
 	@Override
-	public void receiveCommand() {
+	public Boolean receiveCommand() {
 		Boolean inRoom = false;
+		Boolean exitGame = false;
 		do{
-			System.out.println("Cosa vuoi fare? Entra nome partita/Crea Nome partita/Aggiorna/Esci");
+			System.out.println("Cosa vuoi fare? Entra (nome partita)/Crea (nome partita)/Aggiorna/Esci");
 			String command = inLine.nextLine().trim();
 			String commandType[] = command.split(" "); //Divide il comando in parole
 			commandType[0] = correct(commandType[0]);
@@ -70,14 +71,35 @@ public class CLI implements GraphicInterface {
 			}
 			else if (commandType[0].equals("entra"))
 			{
-				if (setupController.enter(command.substring(commandType[0].length()+1, command.length())))
+				int result = setupController.enter(command.substring(commandType[0].length()+1, command.length()));
+				if (result==0){
+					System.out.println("Entro nella partita");
+					printPlayer(setupController.getPlayersName());
 					inRoom = true;
-				else
+				}
+				else if (result==1)
 					System.out.println("Nome partita non esistente");
+				else
+					System.out.println("Ci sono troppi giocatori in questa partita");
 			}
 			else if (commandType[0].equals("aggiorna"))
 				setupController.printMatch();
-		}while(!inRoom);
+			else if (commandType[0].equals("esci"))
+				exitGame = true;
+			else
+				System.out.println("Comando non riconosciuto!");
+		}while(!inRoom && !exitGame);
+		return !exitGame;
+	}
+
+	private void printPlayer(ArrayList<String> playersName) {
+		if (playersName.size()>0)
+		{
+			System.out.println("I giocatori nella room sono:");
+			for (String playerName:playersName)
+				System.out.println(playerName);
+		} else
+			System.out.println("Non ci sono ancora giocatori nella room");
 	}
 
 }

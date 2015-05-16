@@ -3,6 +3,8 @@
  */
 package it.polimi.ingsw.beribinaghi.clientSetup;
 
+import java.util.ArrayList;
+
 /**
  * This class manages the setup of game
  *
@@ -30,8 +32,13 @@ public class SetupController {
 			return ;
 		login();
 		manageMatches();
+		inRoom();
 	}
 	
+	private void inRoom() {
+		
+	}
+
 	/**
 	 * prints name match using graphic interface
 	 */
@@ -42,8 +49,11 @@ public class SetupController {
 
 	private void manageMatches() {
 		printMatch();
-		graphicInterface.receiveCommand();
-		
+		if (!graphicInterface.receiveCommand())
+		{
+			setupSession.close();
+			return;
+		}
 	}
 
 	private void login() {
@@ -54,8 +64,17 @@ public class SetupController {
 		return setupSession.createNewMatch(name);
 	}
 
-	public boolean enter(String matchName) {
+	public int enter(String matchName) {
 		return setupSession.enterGame(matchName);
+	}
+
+	/**
+	 * request the others player name in the match
+	 * @return 
+	 */
+	public ArrayList<String> getPlayersName() {
+		return setupSession.getPlayer();
+		
 	}
 
 }

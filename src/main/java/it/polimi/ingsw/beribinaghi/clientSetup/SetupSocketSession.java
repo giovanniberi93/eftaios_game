@@ -64,11 +64,41 @@ public class SetupSocketSession implements SetupSession {
 	}
 
 	@Override
-	public boolean enterGame(String matchName) {
+	public int enterGame(String matchName) {
 		out.println("enter");
 		out.println(matchName);
 		out.flush();
-		return in.nextLine().equals("player enter in room");
+		String answer = in.nextLine();
+		if (answer.equals("player enter in room"))
+			return 0;
+		if (answer.equals("name not exists"))
+			return 1;
+		return 2;
+	}
+
+	@Override
+	public void close() {
+		out.println("exit");
+		out.flush();
+		try {
+			socket.close();
+		} catch (IOException e) {
+			
+		}
+	}
+
+	@Override
+	public ArrayList<String> getPlayer() {
+		ArrayList<String> playersName = new ArrayList<String>();
+		out.println("player");
+		out.flush();
+		if (in.nextLine().equals("print name players")){
+			int numberPlayer = Integer.parseInt((in.nextLine()));
+			for (int i = 0;i<numberPlayer;i++)
+				playersName.add(in.nextLine());
+			return playersName;
+		}
+		return null;
 	}
 
 

@@ -24,7 +24,7 @@ public interface GraphicInterface {
 
 	public void printMatchesName(ArrayList<String> matchesName);
 
-	public void receiveCommand();
+	public Boolean receiveCommand();
 
 	void setSetupController(SetupController setupController);
 

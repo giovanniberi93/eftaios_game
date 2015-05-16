@@ -83,4 +83,11 @@ public class PreMatch {
 	public void start() {
 		active = true;
 	}
+
+	public ArrayList<String> getPlayerName() {
+		ArrayList<String> playerName = new ArrayList<String>();
+		for (Player player: players)
+			playerName.add(player.getUser());
+		return playerName;
+	}
 }

@@ -37,10 +37,20 @@ public interface SetupSession {
 
 	/**
 	 * @param matchName
-	 * @return true if match exists
+	 * @return result of operation
 	 * lets player enter in the match
+	 * return 0 if the operation is successful
+	 * return 1 if name not exists
+	 * return 2 if there are too many player in room
 	 */
-	public boolean enterGame(String matchName);
+	public int enterGame(String matchName);
+
+	/**
+	 * Close the session
+	 */
+	public void close();
+
+	public ArrayList<String> getPlayer();
 
 
 }

@@ -4,7 +4,6 @@ import it.polimi.ingsw.beribinaghi.App;
 import it.polimi.ingsw.beribinaghi.playerPackage.Player;
 
 import java.util.ArrayList;
-
 import java.util.Timer;
 
 /**
@@ -13,9 +12,11 @@ import java.util.Timer;
  */
 public class MatchController {
 	private ArrayList<PreMatch> matches;
+	private ArrayList<SetupSession> sessions;
 	
 	public MatchController(){
 		matches = new ArrayList<PreMatch>();
+		sessions = new ArrayList<SetupSession>();
 	}
 	
 	/**
@@ -60,21 +61,18 @@ public class MatchController {
 	 * @param matchName
 	 * @param player
 	 * @throws NotExistingNameException
+	 * @throws TooManyPlayerException
 	 * add a player to a match
 	 */
-	public void addPlayer(String matchName, Player player)  throws NotExistingNameException {
+	public void addPlayer(String matchName, Player player)  throws NotExistingNameException,TooManyPlayerException {
 		PreMatch match = getMatch(matchName);
-		try {
-			match.addPlayer(player);
-			if (match.countPlayer()==App.MAX_PLAYER)
-				start(match);
-			else {
-				Timer timer = match.getTimer();
-				timer.purge();
-				timer.schedule(new TimerManager(this,match), App.WAIT);
-			}
-		} catch (TooManyPlayerException e) {
-			
+		match.addPlayer(player);
+		if (match.countPlayer()==App.MAX_PLAYER)
+			start(match);
+		else if (match.countPlayer()>1){
+			Timer timer = match.getTimer();
+			timer.purge();
+			timer.schedule(new TimerManager(this,match), App.WAITBEGINMATCH);
 		}
 	}
 
@@ -84,6 +82,8 @@ public class MatchController {
 	 */
 	public void start(PreMatch match) {
 		match.start();
+		for (SetupSession setupSession: sessions)
+			setupSession.startMatch();
 	}
 
 	private boolean nameExists(String name) {
@@ -99,6 +99,19 @@ public class MatchController {
 			if(pre.getMatchName().equals(name))
 				return pre;
 		throw new NotExistingNameException();
+	}
+
+	public ArrayList<String> getPlayer(String matchName) throws NotExistingNameException {
+		PreMatch match = getMatch(matchName);
+		return match.getPlayerName();		
+	}
+
+	/**
+	 * @param setupSession
+	 * register session to matchController observer
+	 */
+	public void registerSession(SetupSession setupSession) {
+		sessions.add(setupSession);
 	}
 
 }

@@ -113,7 +113,7 @@ public class Match {
 
 	public void start(){
 		Card pickedCard;
-		SectorCardVisitor sectorBrowser = new SectorCardVisitor();		//TODO il visitor
+	//	SectorCardVisitor sectorBrowser = new SectorCardVisitor();		//TODO il visitor
 		ObjectCardVisitor objectCardBrowser;
 		
 		Collections.shuffle(players);
@@ -160,9 +160,10 @@ public class Match {
 	 * @return the card picked from the deck associated to the destination sector
 	 */
 	public Card moveCharacter(Player currentPlayer){
-		Coordinates nextCoordinates = askNextCoordinates(currentPlayer);	//deve parlare con GameSession credo
+		/*Coordinates nextCoordinates = askNextCoordinates(currentPlayer);	//deve parlare con GameSession credo
 		currentPlayer.setCurrentPosition(nextCoordinates);
-		return map.getSector(nextCoordinates).pickFromAssociatedDeck();
+		return map.getSector(nextCoordinates).pickFromAssociatedDeck();*/
+		return null;
 	}
 
 }

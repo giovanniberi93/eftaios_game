@@ -15,7 +15,7 @@ import java.util.Scanner;
  * Class that manage a session with a new client
  *
  */
-public class SetupSocketSession extends Thread {
+public class SetupSocketSession extends Thread implements SetupSession {
 
 	private Socket socket;
 	private Scanner in;
@@ -29,6 +29,7 @@ public class SetupSocketSession extends Thread {
 		this.socket = socket;
 		in = new Scanner(socket.getInputStream());
 	    out = new PrintWriter(socket.getOutputStream());
+	    matchController.registerSession(this);
 	}
 	
 	
@@ -40,48 +41,93 @@ public class SetupSocketSession extends Thread {
 	}
 
 	private void choose() {
+		Object choose;
+		Boolean inRoom = false;
+		Boolean exitPre = false;
 		do{
-			String choose = in.nextLine();
+			choose = in.nextLine();
 			if (choose.equals("update"))
 				printMatchName();
 			else if (choose.equals("new"))
-				createNewMatch(in.nextLine());
+			{
+				if (createNewMatch(in.nextLine()));
+					inRoom = true;
+			}
 			else if (choose.equals("enter"))
-				enterMatch(in.nextLine());
-		}while (true);//Da cambiare
+			{
+				if (enterMatch(in.nextLine()))
+					inRoom= true;
+			}
+			else if (choose.equals("exit"))
+					exitPre = true;
+		}while (!inRoom && !exitPre);
+		if (exitPre)
+			closeSession();
+		else 
+			playerInRoom();
 	}
 
 
-	private void enterMatch(String matchName) {
+	public void closeSession() {
+		try {
+			socket.close();
+		} catch (IOException e) {
+		}
+	}
+
+
+	private boolean enterMatch(String matchName) {
 		try {
 			matchController.addPlayer(matchName, player);
 			out.println("player enter in room");
 			out.flush();
-			playerInRoom();
+			this.matchName = matchName;
+			return true;
 		} catch (NotExistingNameException e) {
 			out.println("name not exists");
 			out.flush();
+		} catch (TooManyPlayerException e) {
+			out.println("too many player");
+			out.flush();
 		}
+		return false;
 	}
 
 
-	private void createNewMatch(String matchName) {
+	private void printPlayerInRoom(String matchName) throws NotExistingNameException {
+		ArrayList<String> playerName = matchController.getPlayer(matchName);
+		out.println("print name players");
+		out.println(playerName.size());
+		for (String player: playerName)
+			out.println(player);
+		out.flush();
+	}
+
+
+	private boolean createNewMatch(String matchName) {
 		try {
 			matchController.createNewMatch(matchName,player);
 			out.println("player enter in room");
 			out.flush();
-			playerInRoom();
+			this.matchName = matchName;
+			return true;
 		} catch (AlreadyExistingNameException e) {
 			out.println("name already existed");
 			out.flush();
 		}
+		return false;
 	}
 
 
 	private void playerInRoom() {
-		out.println("match create, you are in room");
 		String command = in.nextLine();
-		if (command.equals("exit"))
+		if (command.equals("player"))
+			try {
+				printPlayerInRoom(matchName);
+			} catch (NotExistingNameException e1) {
+
+			}
+		else if (command.equals("exit"))
 			try {
 				matchController.exitPlayer(matchName,player);
 			} catch (NotExistingNameException e) {
@@ -105,6 +151,13 @@ public class SetupSocketSession extends Thread {
 		out.flush();
 		String user = in.nextLine();
 		player = new Player(user);
+	}
+
+
+	@Override
+	public void startMatch() {
+		// TODO Auto-generated method stub
+		
 	}
 	
 }
