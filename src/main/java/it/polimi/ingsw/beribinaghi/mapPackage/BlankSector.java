@@ -3,14 +3,15 @@
  */
 package it.polimi.ingsw.beribinaghi.mapPackage;
 
+import it.polimi.ingsw.beribinaghi.decksPackage.Deck;
+
 /**
- * @author damianobinaghi
- *	Class rapresenting the blank sector
+ *	Class representing the blank sector
  */
 public class BlankSector extends Sector {
 
-	public BlankSector(Coordinates coordinates) {
-		super(coordinates);
+	public BlankSector(Coordinates coordinates, Deck deck) {
+		super(coordinates, null);
 	}
 
 }
