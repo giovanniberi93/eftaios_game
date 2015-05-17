@@ -88,7 +88,7 @@ public class PreMatch {
 			match = new Match(players,matchName,null);
 		} catch (WrongCardTypeException e) {
 		}
-		match.start();
+	//	match.start();
 	}
 
 	public ArrayList<String> getPlayerName() {
