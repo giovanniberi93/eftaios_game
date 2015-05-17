@@ -1,6 +1,6 @@
 package it.polimi.ingsw.beribinaghi.playerPackage;
 
-import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.VisitableObjectCard;
+import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.ObjectCard;
 import it.polimi.ingsw.beribinaghi.mapPackage.Coordinates;
 import it.polimi.ingsw.beribinaghi.gameNames.*;
 
@@ -11,7 +11,7 @@ public abstract class Character {
 	private String role;
 	private SideName side;
 	private Coordinates currentPosition;
-	protected VisitableObjectCard[] bag;
+	protected ObjectCard[] bag;
 	protected boolean isAlive;
 
 	protected int percorrableDistance;
@@ -25,7 +25,7 @@ public abstract class Character {
 		this.name = character.getPersonalName();
 		this.role = character.getRoleName();
 		this.setSide(character.getSide());
-		bag = new VisitableObjectCard[3];		//TODO add constant; where?
+		bag = new ObjectCard[3];		//TODO add constant; where?
 		isAlive = true;
 	}
 
@@ -36,11 +36,21 @@ public abstract class Character {
 	public void setSide(SideName side) {
 		this.side = side;
 	}
-
+	
+	//public ObjectCard getBagCard (int index)
 
 	public Coordinates getCurrentPosition() {
 		return currentPosition;
 	}
+	
+	/*public ObjectCard searchCardInBag (ObjectCard searchedCard){
+		for(int i = 0; i<3; i++){	//TODO add constant		
+			if(usedCard.getClass().equals(bag[i])){
+				bag[i] = null;
+				return searchedCard;
+			}
+		}
+	}*/
 
 
 	public void setCurrentPosition(Coordinates currentPosition) {

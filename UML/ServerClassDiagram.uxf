@@ -39,7 +39,7 @@ Package::MatchPackage
 --
 -turnNumber: int
 --
-+moveCurrent(dest: Sector)
++move: Sector)
 +changeCurrent()
 +checkFinished()
 +updateMatchData()

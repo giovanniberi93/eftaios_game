@@ -13,8 +13,7 @@ public class Map {
 	final int HEIGHT = 14;		//TODO aggiungi costanti
 	final int WIDTH = 23;
 	private String mapName;
-	private HashMap <Coordinates, Sector> map;
-	private HashMap <Coordinates, SectorName> mapModel;
+	private HashMap <Coordinates, Sector> map;;
 	private SectorName[][] graphicMap;
 	
 	/**
