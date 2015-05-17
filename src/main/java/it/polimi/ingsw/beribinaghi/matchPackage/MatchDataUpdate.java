@@ -24,6 +24,8 @@ public class MatchDataUpdate extends Observable {
 	private Boolean escaped = null;
 	private Coordinates noiseCoordinates;
 	
+	private boolean isMatchFinished;
+	
 	public MatchDataUpdate (Player successiveCurrentPlayer, int turnNumber){
 		this.turnNumber = turnNumber;
 		this.currentPlayer = successiveCurrentPlayer;
@@ -32,27 +34,26 @@ public class MatchDataUpdate extends Observable {
 	public ArrayList<Player> getRecentKills() {
 		return recentKills;
 	}
-	public void setRecentKills(ArrayList<Player> recentKills) {
-		this.recentKills = recentKills;
+	public void setRecentKills(Player killedPlayer) {
+		this.recentKills.add(killedPlayer);
 	}
 	public ArrayList<ObjectCard> getUsedObjectCard() {
 		return usedObjectCard;
 	}
-	public void setUsedObjectCard(ArrayList<ObjectCard> usedObjectCard) {
-		this.usedObjectCard = usedObjectCard;
+	
+	public void setUsedObjectCard(ObjectCard ObjectCard) {
+		this.usedObjectCard.add(ObjectCard);
 	}
 	public ArrayList<Player> getSurvivedPlayers() {
 		return survivedPlayers;
 	}
-	public void setSurvivedPlayers(ArrayList<Player> survivedPlayers) {
-		this.survivedPlayers = survivedPlayers;
+	public void setSurvivedPlayers(Player player) {
+		this.survivedPlayers.add(player);
 	}
 	public Player getCurrentPlayer() {
 		return currentPlayer;
 	}
-	public void setCurrentPlayer(Player currentPlayer) {
-		this.currentPlayer = currentPlayer;
-	}
+	
 	public Boolean getEscaped() {
 		return escaped;
 	}
@@ -68,6 +69,15 @@ public class MatchDataUpdate extends Observable {
 
 	public int getTurnNumber() {
 		return turnNumber;
+	}
+	
+
+	public boolean isMatchFinished() {
+		return isMatchFinished;
+	}
+
+	public void setMatchFinished(boolean isMatchFinished) {
+		this.isMatchFinished = isMatchFinished;
 	}
 
 }

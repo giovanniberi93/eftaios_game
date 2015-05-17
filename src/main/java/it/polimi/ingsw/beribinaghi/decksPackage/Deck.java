@@ -43,7 +43,7 @@ public abstract class Deck {
 		
 		if(card.getClass() == (discardPile.get(0)).getClass() || card.getClass() == (validCards.get(0)).getClass())
 			discardPile.add(card);
-		else throw new WrongCardTypeException("Put card in right deck");
+		else throw new WrongCardTypeException("");
 		}
 	}
 

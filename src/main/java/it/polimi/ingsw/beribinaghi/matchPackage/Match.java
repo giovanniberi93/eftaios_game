@@ -8,9 +8,13 @@ import it.polimi.ingsw.beribinaghi.decksPackage.DangerousSectorsDeck;
 import it.polimi.ingsw.beribinaghi.decksPackage.ObjectsDeck;
 import it.polimi.ingsw.beribinaghi.decksPackage.ShallopsDeck;
 import it.polimi.ingsw.beribinaghi.decksPackage.WrongCardTypeException;
+import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.Adrenalin;
+import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.Attack;
 import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.Card;
 import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.CharacterCard;
 import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.ObjectCard;
+import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.Sedatives;
+import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.Teleport;
 import it.polimi.ingsw.beribinaghi.gameNames.SectorName;
 import it.polimi.ingsw.beribinaghi.gameNames.SideName;
 import it.polimi.ingsw.beribinaghi.mapPackage.Coordinates;
@@ -30,7 +34,6 @@ public class Match {
 	private String matchName;
 	private ArrayList<Player> players;
 	private int currentPlayerIndex;
-	private int turnNumber;
 	
 	private ObjectsDeck objectsDeck;
 	private ShallopsDeck shallopsDeck;
@@ -45,10 +48,9 @@ public class Match {
 	/**
 	 * initialize the match: distribute roles, set initial positions, initialize decks
 	 * @param players arrayList of connected players
-	 * @param matchName name of the starting match
-	 * @throws WrongCardTypeException 
+	 * @param matchName name of the starting match 
 	 */
-	public Match(ArrayList<Player> players, String matchName, Map map) throws WrongCardTypeException{
+	public Match(ArrayList<Player> players, String matchName, Map map){	//TODO riceve graphicMap non map
 		this.players = players;
 		this.matchName = matchName;
 		this.map = map;
@@ -80,7 +82,7 @@ public class Match {
 	 * @param players arrayList of players
 	 * @throws WrongCardTypeException 
 	 */
-	private void assignCharacter(ArrayList<Player> players) throws WrongCardTypeException{
+	private void assignCharacter(ArrayList<Player> players){
 		CharacterCard characterCard = null;
 		CharacterFactory factory = new CharacterFactory();
 
@@ -89,7 +91,11 @@ public class Match {
 			player.setCharacter(factory.getNewCharacter(characterCard.getCharacterName()));	//factory method
 			
 		}
-		playersDeck.addToDiscardPile(characterCard);
+		try {
+			playersDeck.addToDiscardPile(characterCard);
+		} catch (WrongCardTypeException e) {
+			System.out.println("Aggiunta carta Character al mazzo sbagliato!");
+		}
 	}
 
 	/**
@@ -112,6 +118,10 @@ public class Match {
 				player.setCurrentPosition(humanBaseCoordinates);
 			}
 		}
+	
+	public void start(){
+		
+	}
 
 	/**
 	 * Move currentPLayer in the sector with coordinates destinationCoordinates
@@ -120,6 +130,8 @@ public class Match {
 	 */
 	public Card move(Coordinates destinationCoordinates){
 		matchDataUpdate.getCurrentPlayer().setCurrentPosition(destinationCoordinates);
+		if(matchDataUpdate.getUsedObjectCard().contains(new Sedatives()))
+			return null;
 		return map.getSector(destinationCoordinates).pickFromAssociatedDeck();
 	}
 		
@@ -136,7 +148,7 @@ public class Match {
 		for(Player player: players)
 			if(player.getCharacter().getSide() == SideName.HUMAN){
 				human = (HumanCharacter) player.getCharacter();
-				if(human.isAlive() == true && human.isEscaped() == false)
+				if(human.isAlive() == true && human.isEscaped() == false)		//TODO rimetti isalive
 					remainingHumans++;
 			}
 		return (remainingHumans == 0);
@@ -146,11 +158,10 @@ public class Match {
 	 * Is called from currentPlayer when he finishes his turn; sets the new currentPlayer
 	 */
 	public void finishTurn(){
-		if(currentPlayerIndex == players.size())
+		if(currentPlayerIndex == players.size()-1)
 			currentPlayerIndex = 0;
 		else currentPlayerIndex++;
 		
-		turnNumber++;
 		if(!isFinished())		//TODO sennò?
 			matchDataUpdate = new MatchDataUpdate(players.get(currentPlayerIndex), (matchDataUpdate.getTurnNumber())+1);
 		}
@@ -159,21 +170,64 @@ public class Match {
 		matchDataUpdate.setNoiseCoordinates(noiseCoordinates);
 	}
 	
+	public void discard(ObjectCard discardedCard){
+		// TODO boh? devo anche aggiustare addCardToBag del character, non sto gestendo la carta in più
+	}
+	
+	public void attack(){
+		Player checkedPlayer;
+		Player currentPlayer = matchDataUpdate.getCurrentPlayer();
+		for(int i = 0; i < players.size(); i++){
+			if(i != this.currentPlayerIndex){
+				checkedPlayer = players.get(i);
+				if(checkedPlayer.getCurrentPosition().equals(currentPlayer.getCurrentPosition())){
+					matchDataUpdate.setRecentKills(checkedPlayer);
+					checkedPlayer.getCharacter().setAlive(false);
+					checkedPlayer.setCurrentPosition(null);
+				}
+			}
+		}
+		if(currentPlayer.getCharacter().getSide() == SideName.HUMAN){
+			ObjectCard usedCard = new Attack();
+			matchDataUpdate.setUsedObjectCard(usedCard);
+			currentPlayer.getCharacter().removeCardFromBag(usedCard);
+		
+		}
+	}
+	
 	public void teleport(){
 		Coordinates baseCoordinates;
+		ObjectCard usedCard = new Teleport();		//crea carta dello stesso tipo usato		
+		Player currentPlayer = players.get(currentPlayerIndex);
 		
-		if(players.get(currentPlayerIndex).getCharacter().getSide() == SideName.ALIEN)
+		matchDataUpdate.setUsedObjectCard(usedCard);		//update MatchDataUpdate con la carta usata
+		if(currentPlayer.getCharacter().getSide() == SideName.ALIEN)		//setta base giusta
 			baseCoordinates = map.searchSectorType(SectorName.ALIENBASE);
 		else
 			baseCoordinates = map.searchSectorType(SectorName.HUMANBASE);
 		move(baseCoordinates);
+		
+		currentPlayer.getCharacter().removeCardFromBag(usedCard);		//toglie la carta usata dal bag del currentPlayer
 	}
 	
-	private boolean discardObjectCard (Player player, ObjectCard usedObject)
-	{
-		for(int i = 0; i<3; i++);
-			return true;
+	public void adrenalin(){
+		ObjectCard usedCard = new Adrenalin();
+		Player currentPlayer = players.get(currentPlayerIndex);
+		
+		matchDataUpdate.setUsedObjectCard(usedCard);
+		currentPlayer.getCharacter().removeCardFromBag(usedCard);		//toglie la carta usata dal bag del currentPlayer
 	}
+	
+	public void sedatives(){
+		ObjectCard usedCard = new Sedatives();
+		Player currentPlayer = matchDataUpdate.getCurrentPlayer();
+		
+		matchDataUpdate.setUsedObjectCard(usedCard);
+		currentPlayer.getCharacter().removeCardFromBag(usedCard);		//toglie la carta usata dal bag del currentPlayer
+	}
+	
+	
+	
 }
 
 
