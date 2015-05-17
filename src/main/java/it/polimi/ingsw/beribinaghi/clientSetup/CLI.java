@@ -68,6 +68,7 @@ public class CLI implements GraphicInterface {
 				{
 					inRoom = true;
 					System.out.println("Partita creata, sei nella room");
+					System.out.println("Giocatori aggiunti:");
 				}
 				else 
 					System.out.println("Nome partita già esistente");
@@ -122,6 +123,12 @@ public class CLI implements GraphicInterface {
 	@Override
 	public void beginMatch() {
 		System.out.println("Partita iniziata");
+	}
+
+	@Override
+	public void notifyNewPlayer(String namePlayer) {
+		System.out.println(namePlayer);
+		
 	}
 
 }

@@ -7,8 +7,7 @@ import it.polimi.ingsw.beribinaghi.mapPackage.Coordinates;
 import it.polimi.ingsw.beribinaghi.gameNames.*;
 
 
-public abstract class Character {
-	
+public abstract class Character{
 	private String name;
 	private String role;
 	private SideName side;
@@ -25,10 +24,19 @@ public abstract class Character {
 	 */
 	public Character (CharacterName character){
 		this.name = character.getPersonalName();
-		this.role = character.getRoleName();
+		this.setRole(character.getRoleName());
 		this.setSide(character.getSide());
 		this.setAlive(true);
+		isAlive = true;
 	}
+
+	private void setRole(String roleName) {
+		this.role = roleName;
+	}
+
+	public String getName() {
+		return name;
+		}
 
 	
 	public void setSide(SideName side) {
@@ -73,7 +81,6 @@ public abstract class Character {
 		return side;
 	}
 
-
 	public boolean isAlive() {
 		return isAlive;
 	}
@@ -83,6 +90,12 @@ public abstract class Character {
 		this.isAlive = isAlive;
 	}
 
+	/**
+	 * @return the role
+	 */
+	public String getRole() {
+		return role;
+	}
 }
 
 	

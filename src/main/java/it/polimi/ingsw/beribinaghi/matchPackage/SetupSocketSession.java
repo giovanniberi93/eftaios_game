@@ -26,12 +26,16 @@ public class SetupSocketSession extends Thread implements SetupSession {
 	private String matchName;
 	private Boolean active;
 	
+	public String getMatchName() {
+		return matchName;
+	}
+	
 	public SetupSocketSession(Socket socket,MatchController matchController) throws IOException{
 		this.matchController = matchController;
 		this.socket = socket;
 		in = new Scanner(socket.getInputStream());
 	    out = new PrintWriter(socket.getOutputStream());
-	    matchController.registerSession(this);
+	    this.matchController.registerSession(this);
 	    active = false;
 	}
 	
@@ -144,7 +148,11 @@ public class SetupSocketSession extends Thread implements SetupSession {
 
 
 	private void createSession() {
-		new SocketSession(socket);
+		try {
+			 new Thread((new SocketSession(socket,player))).start();;
+		} catch (IOException e) {
+
+		}
 	}
 
 
@@ -169,6 +177,14 @@ public class SetupSocketSession extends Thread implements SetupSession {
 	@Override
 	public void startMatch() {
 		active = true;
+	}
+
+
+	@Override
+	public void notifyNewPlayer(String namePlayer) {
+		out.println("new player");
+		out.println(namePlayer);
+		out.flush();
 	}
 	
 }

@@ -41,7 +41,9 @@ public class SetupController {
 	}	
 	
 	private void inRoom() {
-		setupSession.isStarted();
+		while (!setupSession.isStarted(this))
+		{
+		}
 		graphicInterface.beginMatch();
 	}
 
@@ -89,6 +91,10 @@ public class SetupController {
 	 */
 	public void exitRoom() {
 		setupSession.exitRoom();
+	}
+
+	public void notifyNewPlayer(String nextLine) {
+		graphicInterface.notifyNewPlayer(nextLine);
 	}
 
 }
