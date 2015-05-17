@@ -3,16 +3,18 @@
  */
 package it.polimi.ingsw.beribinaghi.mapPackage;
 
-import it.polimi.ingsw.beribinaghi.decksPackage.DangerousSectorsDeck;
+import it.polimi.ingsw.beribinaghi.matchPackage.DeckAssigner;
 
 /**
- * @author damianobinaghi
- * Class rapresenting a dangerous sector
+ * Class representing a dangerous sector
  */
 public class DangerousSector extends Sector {
 
-	public DangerousSector(Coordinates coordinates, DangerousSectorsDeck sectorsDeck) {
-		super(coordinates, sectorsDeck);
+	public DangerousSector() {
+		super();
 	}
-
+	
+	public void acceptDeck (DeckAssigner deckAssigner){
+		deckAssigner.visit(this);
+	}
 }

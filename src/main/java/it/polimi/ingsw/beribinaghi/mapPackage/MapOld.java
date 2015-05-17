@@ -27,6 +27,7 @@ public class MapOld {
 		generate(grMap);
 	}
 	
+	
 	/**
 	 * generate a map from a a matrix of sectorNames
 	 * @param grMap a matrix of sectorNames, such as SAFESECTOR, DANGEROUSSECTOR, HUMANBASE...
@@ -36,7 +37,7 @@ public class MapOld {
 			for (int j=0;j<grMap[i].length;j++)
 			{
 				sectors[i][j] = grMap[i][j].getSector();
-				sectors[i][j].setCoordinates(new Coordinates(Coordinates.getLetter(i),j));
+			//	sectors[i][j].setCoordinates(new Coordinates(Coordinates.getLetter(i),j));
 			}
 	}
 	
@@ -52,7 +53,8 @@ public class MapOld {
 		for(Sector[] sectorArray: sectors){
 			for(Sector sector: sectorArray){
 				if(sector.getClass() == wantedSectorType.getClass())
-					return sector.getCoordinates();
+					//return sector.getCoordinates();
+					return null;
 			}
 		}
 		return null;

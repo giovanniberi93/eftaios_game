@@ -1,14 +1,17 @@
 package it.polimi.ingsw.beribinaghi.mapPackage;
 
-import it.polimi.ingsw.beribinaghi.decksPackage.ShallopsDeck;
-import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.Card;
+import it.polimi.ingsw.beribinaghi.matchPackage.DeckAssigner;
 
 /**
  * Class representing a shallop sector
  */
 public class ShallopSector extends Sector{
 	
-	public ShallopSector(Coordinates coordinates, ShallopsDeck shallopsDeck) {
-		super(coordinates, shallopsDeck);
+	public ShallopSector() {
+		super();
+	}
+	
+	public void acceptDeck (DeckAssigner deckAssigner){
+		deckAssigner.visit(this);
 	}
 }

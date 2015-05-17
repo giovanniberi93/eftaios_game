@@ -1,7 +1,5 @@
 package it.polimi.ingsw.beribinaghi.gameNames;
 
-import it.polimi.ingsw.beribinaghi.decksPackage.DangerousSectorsDeck;
-import it.polimi.ingsw.beribinaghi.decksPackage.ShallopsDeck;
 import it.polimi.ingsw.beribinaghi.mapPackage.AlienBase;
 import it.polimi.ingsw.beribinaghi.mapPackage.BlankSector;
 import it.polimi.ingsw.beribinaghi.mapPackage.DangerousSector;
@@ -9,14 +7,15 @@ import it.polimi.ingsw.beribinaghi.mapPackage.HumanBase;
 import it.polimi.ingsw.beribinaghi.mapPackage.SafeSector;
 import it.polimi.ingsw.beribinaghi.mapPackage.Sector;
 import it.polimi.ingsw.beribinaghi.mapPackage.ShallopSector;
+import it.polimi.ingsw.beribinaghi.matchPackage.DeckAssigner;
 
 public enum SectorName {
-	    BLANK(new BlankSector(null, null)),
-	    SAFE(new SafeSector(null, null)), 
-	    DANGEROUS(new DangerousSector(null, DangerousSectorsDeck.getInstance())),
-	    SHALLOP(new ShallopSector(null, null)), 
-	    HUMANBASE(new HumanBase(null, null)),
-	    ALIENBASE(new AlienBase(null, null));
+	    BLANK(new BlankSector()),
+	    SAFE(new SafeSector()), 
+	    DANGEROUS(new DangerousSector()),
+	    SHALLOP(new ShallopSector()), 
+	    HUMANBASE(new HumanBase()),
+	    ALIENBASE(new AlienBase());
 	    
 	    private Sector sector;
 	    

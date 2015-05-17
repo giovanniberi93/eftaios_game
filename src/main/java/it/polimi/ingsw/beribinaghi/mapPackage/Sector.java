@@ -5,27 +5,22 @@ package it.polimi.ingsw.beribinaghi.mapPackage;
 
 import it.polimi.ingsw.beribinaghi.decksPackage.Deck;
 import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.Card;
+import it.polimi.ingsw.beribinaghi.matchPackage.DeckAssigner;
 
 /**
- * Class rapresenting a cordinate. It is identificate by a letter and a number
+ * Class representing a coordinate. It is identified by a letter and a number
  */
 public abstract class Sector {
-	private Coordinates coordinates;
 	private Deck associatedDeck;
 	
-	public Sector(Coordinates coordinates, Deck deck)
-	{
-		this.associatedDeck = deck;
-		this.coordinates = coordinates;
-	}
 	
-	public void setCoordinates(Coordinates coordinates) {
-		this.coordinates = coordinates;
+	public void setAssociatedDeck(Deck associatedDeck) {
+		this.associatedDeck = associatedDeck;
 	}
 
-	public Coordinates getCoordinates() {
-		return coordinates;
-	}
+	
+	public void acceptDeck (DeckAssigner deckAssigner){}
+	
 	
 	/**
 	 * Pick a Card type picked from the associated Deck: ShallopCard for ShallopSector, 

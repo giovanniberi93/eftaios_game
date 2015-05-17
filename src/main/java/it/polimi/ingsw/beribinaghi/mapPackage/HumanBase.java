@@ -3,7 +3,8 @@
  */
 package it.polimi.ingsw.beribinaghi.mapPackage;
 
-import it.polimi.ingsw.beribinaghi.decksPackage.Deck;
+import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.Card;
+import it.polimi.ingsw.beribinaghi.matchPackage.DeckAssigner;
 
 /**
  * @author damianobinaghi
@@ -11,8 +12,17 @@ import it.polimi.ingsw.beribinaghi.decksPackage.Deck;
  */
 public class HumanBase extends Sector {
 
-	public HumanBase(Coordinates coordinate, Deck deck) {
-		super(coordinate, null);
+	public HumanBase() {
+		super();
+	}
+	
+	public void acceptDeck (DeckAssigner deckAssigner){
+		deckAssigner.visit(this);
+	}
+	
+	@Override
+	public Card pickFromAssociatedDeck(){
+		return null;
 	}
 
 }
