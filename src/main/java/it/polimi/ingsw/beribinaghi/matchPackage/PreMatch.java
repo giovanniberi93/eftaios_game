@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Timer;
 
 import it.polimi.ingsw.beribinaghi.App;
+import it.polimi.ingsw.beribinaghi.decksPackage.WrongCardTypeException;
 import it.polimi.ingsw.beribinaghi.playerPackage.Player;
 
 /**
@@ -17,6 +18,7 @@ public class PreMatch {
 	private Boolean active;
 	private ArrayList<Player> players;
 	private Timer timer;
+	private Match match;
 
 	/**
 	 * @return the status of the match
@@ -80,8 +82,13 @@ public class PreMatch {
 	/**
 	 *  Start the match
 	 */
-	public void start() {
+	public void start(){
 		active = true;
+		try {
+			match = new Match(players,matchName,null);
+		} catch (WrongCardTypeException e) {
+		}
+		match.start();
 	}
 
 	public ArrayList<String> getPlayerName() {

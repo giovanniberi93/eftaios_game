@@ -56,9 +56,10 @@ public interface SetupSession {
 	public ArrayList<String> getPlayer();
 
 	/**
-	 * @return if match is started
+	 * @return true if match is started
+	 * This function create also the Session of match
 	 */
-	public boolean isStarted();
+	boolean isStarted(SetupController setupController);
 
 	/**
 	 * exit rooms

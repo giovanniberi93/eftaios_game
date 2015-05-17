@@ -102,10 +102,14 @@ public class SetupSocketSession implements SetupSession {
 	}
 
 	@Override
-	public boolean isStarted() {
+	public boolean isStarted(SetupController setupController) {
 			String inLine = in.nextLine();
 			if (inLine.equals("started match"))
+			{
+				
 				return true;
+			} else if (inLine.equals("new player"))
+				setupController.notifyNewPlayer(in.nextLine());
 		return false;
 	}
 

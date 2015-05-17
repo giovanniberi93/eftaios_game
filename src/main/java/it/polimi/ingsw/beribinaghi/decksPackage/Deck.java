@@ -10,8 +10,8 @@ import java.util.ArrayList;
  */
 public abstract class Deck {
 	
-	protected ArrayList<Card> validCards;
-	private ArrayList<Card> discardPile;
+	protected ArrayList<Card> validCards = new ArrayList<Card>();
+	private ArrayList<Card> discardPile = new ArrayList<Card>();
 	
 	/**
 	 * @return a random picked card by the deck

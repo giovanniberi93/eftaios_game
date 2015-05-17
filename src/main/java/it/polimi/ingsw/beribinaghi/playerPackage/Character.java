@@ -6,7 +6,6 @@ import it.polimi.ingsw.beribinaghi.gameNames.*;
 
 
 public abstract class Character {
-	
 	private String name;
 	private String role;
 	private SideName side;
@@ -23,10 +22,18 @@ public abstract class Character {
 	 */
 	public Character (CharacterName character){
 		this.name = character.getPersonalName();
-		this.role = character.getRoleName();
+		this.setRole(character.getRoleName());
 		this.setSide(character.getSide());
 		bag = new VisitableObjectCard[3];		//TODO add constant; where?
 		isAlive = true;
+	}
+
+	private void setRole(String roleName) {
+		this.role = roleName;
+	}
+
+	public String getName() {
+		return name;
 	}
 
 	public boolean isAlive() {
@@ -51,6 +58,14 @@ public abstract class Character {
 	public SideName getSide() {
 		return side;
 	}
+
+	/**
+	 * @return the role
+	 */
+	public String getRole() {
+		return role;
+	}
+
 
 }
 

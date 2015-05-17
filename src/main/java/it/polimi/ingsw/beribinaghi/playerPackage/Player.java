@@ -4,7 +4,6 @@
 package it.polimi.ingsw.beribinaghi.playerPackage;
 
 import it.polimi.ingsw.beribinaghi.mapPackage.Coordinates;
-import it.polimi.ingsw.beribinaghi.gameNames.*;
 
 
 /**

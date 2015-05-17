@@ -74,6 +74,13 @@ public class MatchController {
 			timer.purge();
 			timer.schedule(new TimerManager(this,match), App.WAITBEGINMATCH);
 		}
+		notifyAddPlayer(match,player.getUser());
+	}
+
+	private void notifyAddPlayer(PreMatch match,String namePlayer) {
+		for (SetupSession setupSession: sessions)
+			if ((setupSession.getMatchName()!=null) && setupSession.getMatchName().equals(match.getMatchName()))
+				setupSession.notifyNewPlayer(namePlayer);
 	}
 
 	/**
@@ -83,7 +90,8 @@ public class MatchController {
 	public void start(PreMatch match) {
 		match.start();
 		for (SetupSession setupSession: sessions)
-			setupSession.startMatch();
+			if ((setupSession.getMatchName()!=null) && setupSession.getMatchName().equals(match.getMatchName()))
+				setupSession.startMatch();
 	}
 
 	private boolean nameExists(String name) {

@@ -51,4 +51,10 @@ public interface GraphicInterface {
 	 */
 	public void beginMatch();
 
+	/**
+	 * notify that a new player is in the room
+	 */
+	public void notifyNewPlayer(String namePlayer);
+
+
 }

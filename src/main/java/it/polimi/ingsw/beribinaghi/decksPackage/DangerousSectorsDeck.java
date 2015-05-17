@@ -23,7 +23,7 @@ public class DangerousSectorsDeck extends Deck {
 	
 	public DangerousSectorsDeck(){
 		boolean containsObject;		//TODO add constants
-		
+
 		for(int i = 0; i<10; i++){			
 			if(i < 4)
 				containsObject = true;		//aggiungo carte rumore nel mio settore

@@ -9,6 +9,17 @@ package it.polimi.ingsw.beribinaghi.matchPackage;
  */
 public interface SetupSession {
 
-	void startMatch();
+	/**
+	 * notify to client that match is starting
+	 */
+	public void startMatch();
+
+	/**
+	 * notify to client that there is a new player in room
+	 * @param namePlayer 
+	 */
+	public void notifyNewPlayer(String namePlayer);
+	
+	public String getMatchName();
 	
 }
