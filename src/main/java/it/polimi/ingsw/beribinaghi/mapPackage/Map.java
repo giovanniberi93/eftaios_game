@@ -11,8 +11,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 public class Map {
-	final int HEIGHT = 14;		//TODO aggiungi costanti
-	final int WIDTH = 23;
+	final static int HEIGHT = 14;		//TODO aggiungi costanti
+	final static int WIDTH = 23;
 	private String mapName;
 	private HashMap <Coordinates, Sector> map = new HashMap<Coordinates, Sector>();
 	
@@ -26,10 +26,10 @@ public class Map {
 		DeckAssigner deckAssigner = new WatcherDeckAssigner(dangerousDeck, shallopsDeck);
 	
 		for (int i=0;i<graphicMap.length;i++)
-			for (int j=0;j<graphicMap[i].length;j++)
-			{
-				Coordinates actualCoordinates = new Coordinates (Coordinates.getLetterFromNumber(j),i+1);
-				Sector actualSector = graphicMap[i][j].getSector();
+			for (int j=0;j<graphicMap[i].length;j++){
+				
+				Coordinates actualCoordinates = new Coordinates (Coordinates.getLetterFromNumber(i),j);
+				Sector actualSector = (Sector) (graphicMap[i][j].getSector()).clone();
 				actualSector.acceptDeck(deckAssigner);
 				map.put(actualCoordinates, actualSector);				
 			}
@@ -80,7 +80,8 @@ public class Map {
 		}
 	
 	/**
-	 * Returns the coordinates reachable with a passed number of steps from a passed Coordinate. Note: this method returns the coordinates reachable with a movement, not the sectors that have a determinate distance from the passed one
+	 * Returns the coordinates reachable with a passed number of steps from a passed Coordinate. 
+	 * Note: this method returns the coordinates reachable with a movement, not the sectors that have a determinate distance from the passed one
 	 * @param initialCoordinates are the coordinates of the sector in which the movement start
 	 * @param distance is the maximum reachable distance allowed in the movement. It depends from the player side, and from the object card he is using
 	 * @return the ArrayList of the reachable coordinates

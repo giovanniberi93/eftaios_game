@@ -11,7 +11,7 @@ import it.polimi.ingsw.beribinaghi.matchPackage.DeckAssigner;
 /**
  * Class representing a coordinate. It is identified by a letter and a number
  */
-public abstract class Sector {
+public abstract class Sector implements Cloneable{
 	private Deck associatedDeck;
 	
 	
@@ -22,6 +22,13 @@ public abstract class Sector {
 	
 	public void acceptDeck (DeckAssigner deckAssigner){}
 	
+	public Object clone() { 
+		try { 
+			return super.clone(); 
+		} catch (CloneNotSupportedException e) {
+			e.printStackTrace(); return null; 
+		}
+	}
 	
 	/**
 	 * Pick a Card type picked from the associated Deck: ShallopCard for ShallopSector, 
