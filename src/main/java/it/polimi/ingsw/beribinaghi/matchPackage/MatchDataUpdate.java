@@ -18,6 +18,7 @@ public class MatchDataUpdate extends Observable {
 	private ArrayList<Player> recentKills = new ArrayList<Player>();
 	private ArrayList<ObjectCard> usedObjectCard = new ArrayList<ObjectCard>();
 	private ArrayList<Player> survivedPlayers = new ArrayList<Player>();
+	private ArrayList<Player> spottedPlayers = new ArrayList<Player>();
 	
 	private int turnNumber;
 	private Player currentPlayer;
@@ -78,6 +79,14 @@ public class MatchDataUpdate extends Observable {
 
 	public void setMatchFinished(boolean isMatchFinished) {
 		this.isMatchFinished = isMatchFinished;
+	}
+
+	public ArrayList<Player> getSpottedPlayers() {
+		return spottedPlayers;
+	}
+
+	public void setSpottedPlayers(Player caughtPlayer) {
+		this.spottedPlayers.add(caughtPlayer);
 	}
 
 }

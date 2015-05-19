@@ -28,21 +28,28 @@ public final class Coordinates {
 		this.number = number;
 	}
 	
-	/**
+	/**	
+	 * Constructs a Coordinates object with letter and number
 	 * @param letter
 	 * @param number
-	 * 		It generates a Codinate whit letter and number
+	 * 
 	 */
 	public Coordinates(char letter,int number){
 		this.letter = letter;
 		this.number = number;
 	}
-
-	public static char getLetter(int num){
+	
+	public boolean isValid(){
+		int number = this.getNumber();
+		int letterNumber = getNumberFromLetter(this.getLetter());
+		return (number >= 1 && number <= 14 && letterNumber >= 0 && letterNumber <= 22);
+		
+	}
+	public static char getLetterFromNumber(int num){
 		return (char) ('a' + num);
 	}
 	
-	public static int getNumber(char letter){
+	public static int getNumberFromLetter(char letter){
 		return (int) (letter - 'a');
 	}
 }

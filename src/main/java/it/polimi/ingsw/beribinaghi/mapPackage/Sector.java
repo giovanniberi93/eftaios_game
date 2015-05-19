@@ -5,6 +5,7 @@ package it.polimi.ingsw.beribinaghi.mapPackage;
 
 import it.polimi.ingsw.beribinaghi.decksPackage.Deck;
 import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.Card;
+import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.SectorCard;
 import it.polimi.ingsw.beribinaghi.matchPackage.DeckAssigner;
 
 /**
@@ -27,8 +28,8 @@ public abstract class Sector {
 	 * SectorCard from DangerousSector, null for SafeSector
 	 * @return the picked Card
 	 */
-	public Card pickFromAssociatedDeck(){
-		return associatedDeck.pickCard();
+	public SectorCard pickFromAssociatedDeck(){
+		return (SectorCard)associatedDeck.pickCard();
 	}
 	
 }

@@ -13,7 +13,9 @@ import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.Attack;
 import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.Card;
 import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.CharacterCard;
 import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.ObjectCard;
+import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.SectorCard;
 import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.Sedatives;
+import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.ShallopCard;
 import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.Teleport;
 import it.polimi.ingsw.beribinaghi.gameNames.SectorName;
 import it.polimi.ingsw.beribinaghi.gameNames.SideName;
@@ -50,10 +52,10 @@ public class Match {
 	 * @param players arrayList of connected players
 	 * @param matchName name of the starting match 
 	 */
-	public Match(ArrayList<Player> players, String matchName, Map map){	//TODO riceve graphicMap non map
+	public Match(ArrayList<Player> players, String matchName, SectorName[][] graphicMap){	//TODO riceve graphicMap non map
 		this.players = players;
 		this.matchName = matchName;
-		this.map = map;
+		this.map = new Map ("Galilei", graphicMap, dangerousSectorsDeck, shallopsDeck);
 		Collections.shuffle(players);
 		currentPlayerIndex = 0;
 		
@@ -91,12 +93,8 @@ public class Match {
 			player.setCharacter(factory.getNewCharacter(characterCard.getCharacterName()));	//factory method
 			
 		}
-		try {
 			playersDeck.addToDiscardPile(characterCard);
-		} catch (WrongCardTypeException e) {
-			System.out.println("Aggiunta carta Character al mazzo sbagliato!");
 		}
-	}
 
 	/**
 	 * set the initial position of all the existing players; in AlienBase or HumanBase according 
@@ -128,11 +126,29 @@ public class Match {
 	 * @param destinationCoordinates are the coordinates of the destination sector
 	 * @return the card picked from the deck associated to the destination sector
 	 */
-	public Card move(Coordinates destinationCoordinates){
-		matchDataUpdate.getCurrentPlayer().setCurrentPosition(destinationCoordinates);
+	public SectorCard move(Coordinates destinationCoordinates){
+		
+		Player currentPlayer = matchDataUpdate.getCurrentPlayer();
+		
+		currentPlayer.setCurrentPosition(destinationCoordinates);
 		if(matchDataUpdate.getUsedObjectCard().contains(new Sedatives()))
 			return null;
-		return map.getSector(destinationCoordinates).pickFromAssociatedDeck();
+		
+		SectorCard pickedCard = map.getSector(destinationCoordinates).pickFromAssociatedDeck();
+		if(pickedCard.containsObject()){
+			ObjectCard objectCard = this.objectsDeck.pickCard();
+			currentPlayer.getCharacter().addCardToBag(objectCard);
+		}
+		if(pickedCard instanceof ShallopCard){
+			ShallopCard shallopCard = (ShallopCard) pickedCard;
+			if(!(shallopCard.isDamaged())){
+				//(ShallopSector)destinationCoordinates.		//TODO fallo!!!!!
+			}
+				
+		}
+		return pickedCard;
+
+		
 	}
 		
 	/**
@@ -168,6 +184,16 @@ public class Match {
 
 	public void noise(Coordinates noiseCoordinates){
 		matchDataUpdate.setNoiseCoordinates(noiseCoordinates);
+	}
+	
+	public void spotlight(Coordinates selectedCoordinates){
+		ArrayList<Player> spottedPlayers = new ArrayList<Player>();
+		ArrayList<Coordinates> lightedCoordinates = map.adiacentCoordinates(selectedCoordinates);
+		for(Coordinates analyzedCoordinates : lightedCoordinates){
+			for(Player analyzedPlayer : players)
+				if(analyzedPlayer.getCurrentPosition().equals(analyzedCoordinates))
+					spottedPlayers.add(analyzedPlayer);
+		}
 	}
 	
 	public void discard(ObjectCard discardedCard){
@@ -224,6 +250,11 @@ public class Match {
 		
 		matchDataUpdate.setUsedObjectCard(usedCard);
 		currentPlayer.getCharacter().removeCardFromBag(usedCard);		//toglie la carta usata dal bag del currentPlayer
+	}
+
+
+	public String getMatchName() {
+		return matchName;
 	}
 	
 	
