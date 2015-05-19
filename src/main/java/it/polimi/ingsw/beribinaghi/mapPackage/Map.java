@@ -28,7 +28,7 @@ public class Map {
 		for (int i=0;i<graphicMap.length;i++)
 			for (int j=0;j<graphicMap[i].length;j++)
 			{
-				Coordinates actualCoordinates = new Coordinates (Coordinates.getLetterFromNumber(i),j);
+				Coordinates actualCoordinates = new Coordinates (Coordinates.getLetterFromNumber(j),i+1);
 				Sector actualSector = graphicMap[i][j].getSector();
 				actualSector.acceptDeck(deckAssigner);
 				map.put(actualCoordinates, actualSector);				
@@ -37,21 +37,21 @@ public class Map {
 
 	public ArrayList<Coordinates> adiacentCoordinates (Coordinates centralCoordinates){
 		int otherNumber;
-		char currentLetter;								//TODO da rifare
+		char currentLetter;
 		int currentNumber;
 		Coordinates actualCoordinates;
 		ArrayList<Coordinates> adiacentCoordinates = new ArrayList<Coordinates>();
 		currentLetter = centralCoordinates.getLetter();
 		currentNumber = centralCoordinates.getNumber();
-		if(((int) currentLetter) % 2 == 0)
+		if(((int) currentLetter) % 2 != 0)		//a,c,e...
 			otherNumber = currentNumber - 1;
 		else
-			otherNumber = currentNumber + 1;
+			otherNumber = currentNumber + 1;	//b,d,f...
 		for(int i = -1; i < 2; i++){
-			actualCoordinates = new Coordinates(Coordinates.getLetterFromNumber( (int)currentLetter + i), currentNumber);
+			actualCoordinates = new Coordinates((char) ((int)currentLetter + i), currentNumber);	
 			if(actualCoordinates.isValid())
 				adiacentCoordinates.add(actualCoordinates);
-			actualCoordinates = new Coordinates(Coordinates.getLetterFromNumber( (int)currentLetter + i), otherNumber);
+			actualCoordinates = new Coordinates((char) ((int)currentLetter + i), otherNumber);
 			if(actualCoordinates.isValid())
 				adiacentCoordinates.add(actualCoordinates);
 		}
@@ -73,7 +73,7 @@ public class Map {
 
 		while(keySetIterator.hasNext()){
 			Coordinates nextCoordinates = keySetIterator.next();
-			if(map.get(nextCoordinates).getClass() == wantedSectorType.getClass())
+			if(map.get(nextCoordinates).getClass().equals(wantedSectorType.getClass()));
 				return nextCoordinates;
 			}
 		return null;
@@ -90,7 +90,7 @@ public class Map {
 		ArrayList<Coordinates> adiacentToAnalyzed = new ArrayList<Coordinates>();
 		
 		reachableCoordinates.add(initialCoordinates);
-		for(int i=distance; i>0; i--){
+		for(int i=0; i<distance; i++){
 			
 			ArrayList<Coordinates> tmpReachable = reachableCoordinates;
 			
@@ -112,7 +112,8 @@ public class Map {
 	}
 
 	public Sector getSector (Coordinates coordinates){
-		return map.get(coordinates);
+		Sector selectedSector = map.get(coordinates);
+		return selectedSector;
 	}
 
 	public String getMapName() {
