@@ -1,6 +1,3 @@
-/**
- * 
- */
 package it.polimi.ingsw.beribinaghi.mapPackage;
 
 /**
@@ -43,6 +40,10 @@ public final class Coordinates {
 		int number = this.getNumber();
 		int letterNumber = getNumberFromLetter(this.getLetter());
 		return (number >= 1 && number <= 14 && letterNumber >= 0 && letterNumber <= 22);
+	}
+	
+	public boolean equals(Coordinates coord){
+		return (this.getLetter() == coord.getLetter() && this.getNumber() == coord.getNumber());
 	}
 	
 	public String toString(){

@@ -75,54 +75,36 @@ public class Map {
 	 * @param distance is the maximum reachable distance allowed in the movement. It depends from the player side, and from the object card he is using
 	 * @return the ArrayList of the reachable coordinates
 	 */
+
 	public ArrayList<Coordinates> getReachableCoordinates(Coordinates initialCoordinates, int distance){
-		ArrayList<Coordinates> reachableCoordinates = new ArrayList<Coordinates>();
-		ArrayList<Coordinates> adiacentToAnalyzed = new ArrayList<Coordinates>();
-		
-		reachableCoordinates.add(initialCoordinates);
-		for(int i=0; i<distance; i++){
-			
-			ArrayList<Coordinates> tmpReachable = reachableCoordinates;
-			
-			for(Coordinates analyzedCoordinates: tmpReachable){
-				Sector analyzedSector = this.getSector(analyzedCoordinates);
-				if(analyzedSector.getClass().equals((new HumanBase()).getClass()) || 
-						analyzedSector.getClass().equals((new AlienBase()).getClass()) || 
-						analyzedSector.getClass().equals((new BlankSector()).getClass()))
-					tmpReachable.remove(analyzedCoordinates);		//rimuove il settore se è blank, alienbase o humanbase
-				else{
-					adiacentToAnalyzed = adiacentCoordinates(analyzedCoordinates);
-					for(Coordinates adiacentCoordinates: adiacentToAnalyzed){
-						if(!reachableCoordinates.contains(adiacentCoordinates))
-							reachableCoordinates.add(adiacentCoordinates);
-					}
-				}
-			}
-		}
-		reachableCoordinates.remove(initialCoordinates);
-		return reachableCoordinates;
-	}
-	
-	public ArrayList<Coordinates> getReachableCoordinatesVersione2(Coordinates initialCoordinates, int distance){
 		ArrayList<Coordinates> reachableCoordinates = new ArrayList<Coordinates>();
 		ArrayList<Coordinates> adiacentToTmp = new ArrayList<Coordinates>();
 		ArrayList<Coordinates> tmpReachable = new ArrayList<Coordinates>();
-		
+		boolean found;
+
 		reachableCoordinates.add(initialCoordinates);
 		tmpReachable.add(initialCoordinates);
-		for(int i=0; i<distance; i++){				
+		for(int i=0; i<distance; i++){				//itera per la distanza raggiungbile
 			for(Coordinates analyzedCoordinates: tmpReachable)
-				adiacentToTmp.addAll(this.adiacentCoordinates(analyzedCoordinates));
+				adiacentToTmp.addAll(this.adiacentCoordinates(analyzedCoordinates));		//agggiungo tutte le raggiunte all'adiacent di tmp
 			tmpReachable.clear();
 			for(Coordinates analyzedCoordinates : adiacentToTmp){
 				Sector analyzedSector = this.getSector(analyzedCoordinates);
-				if(!(analyzedSector.getClass().equals((new HumanBase()).getClass()) || analyzedSector.getClass().equals((new AlienBase()).getClass()) || analyzedSector.getClass().equals((new BlankSector()).getClass())))
-						if(!reachableCoordinates.contains(analyzedCoordinates)){
-							reachableCoordinates.add(analyzedCoordinates);
-							tmpReachable.add(analyzedCoordinates);
+				if(!(analyzedSector instanceof HumanBase || analyzedSector instanceof AlienBase || analyzedSector instanceof BlankSector)){
+					found = false;
+					for(Coordinates coord : reachableCoordinates){
+						if (coord.equals(analyzedCoordinates))
+						found = true;
+					}	
+					if(!found){
+						reachableCoordinates.add(analyzedCoordinates);
+						tmpReachable.add(analyzedCoordinates);
 						}
+					}
 			}
+			adiacentToTmp.clear();
 		}
+		reachableCoordinates.remove(initialCoordinates);
 		return reachableCoordinates;
 	}
 

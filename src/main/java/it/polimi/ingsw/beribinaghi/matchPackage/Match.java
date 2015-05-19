@@ -223,7 +223,7 @@ public class Match {
 		matchDataUpdate.setUsedObjectCard(usedCard);		//update MatchDataUpdate con la carta usata
 		baseCoordinates = map.getHumanBaseCoordinates();
 		move(baseCoordinates);
-		
+	
 		currentPlayer.getCharacter().removeCardFromBag(usedCard);		//toglie la carta usata dal bag del currentPlayer
 	}
 	
