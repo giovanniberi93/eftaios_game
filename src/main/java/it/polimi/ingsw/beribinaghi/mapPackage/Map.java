@@ -14,7 +14,9 @@ public class Map {
 	final static int HEIGHT = 14;		//TODO aggiungi costanti
 	final static int WIDTH = 23;
 	private String mapName;
-	private HashMap <Coordinates, Sector> map = new HashMap<Coordinates, Sector>();
+	private HashMap <String, Sector> map = new HashMap<String, Sector>();
+	private Coordinates AlienBaseCoordinates;
+	private Coordinates HumanBaseCoordinates;
 	
 	/**
 	 * @param mapName is a map model, where all sectors types are defined
@@ -28,10 +30,14 @@ public class Map {
 		for (int i=0;i<graphicMap.length;i++)
 			for (int j=0;j<graphicMap[i].length;j++){
 				
-				Coordinates actualCoordinates = new Coordinates (Coordinates.getLetterFromNumber(i),j);
+				Coordinates actualCoordinates = new Coordinates (Coordinates.getLetterFromNumber(j),i+1);
 				Sector actualSector = (Sector) (graphicMap[i][j].getSector()).clone();
 				actualSector.acceptDeck(deckAssigner);
-				map.put(actualCoordinates, actualSector);				
+				map.put(actualCoordinates.toString(), actualSector);
+				if(actualSector instanceof AlienBase)
+					setAlienBaseCoordinates(actualCoordinates);
+				if(actualSector instanceof HumanBase)
+					setHumanBaseCoordinates(actualCoordinates);
 			}
 		}
 
@@ -60,24 +66,7 @@ public class Map {
 		adiacentCoordinates.add(actualCoordinates);
 			return adiacentCoordinates;
 	}
-		
-	/**
-	 * return the coordinates of the first found instance of the searched sector type 
-	 * @param sectorName is the sector type searched
-	 * @return the coordinates of the desired sector
-	 */
-	public Coordinates searchSectorType (SectorName wantedSectorName){
 
-		Sector wantedSectorType = wantedSectorName.getSector();	//sector is instance of the sector class indicated in wantedSectorName 
-		Iterator<Coordinates> keySetIterator = map.keySet().iterator();
-
-		while(keySetIterator.hasNext()){
-			Coordinates nextCoordinates = keySetIterator.next();
-			if(map.get(nextCoordinates).getClass().equals(wantedSectorType.getClass()));
-				return nextCoordinates;
-			}
-		return null;
-		}
 	
 	/**
 	 * Returns the coordinates reachable with a passed number of steps from a passed Coordinate. 
@@ -97,7 +86,9 @@ public class Map {
 			
 			for(Coordinates analyzedCoordinates: tmpReachable){
 				Sector analyzedSector = this.getSector(analyzedCoordinates);
-				if(analyzedSector.getClass().equals((new HumanBase()).getClass()) || analyzedSector.getClass().equals((new AlienBase()).getClass()) || analyzedSector.getClass().equals((new BlankSector()).getClass()))
+				if(analyzedSector.getClass().equals((new HumanBase()).getClass()) || 
+						analyzedSector.getClass().equals((new AlienBase()).getClass()) || 
+						analyzedSector.getClass().equals((new BlankSector()).getClass()))
 					tmpReachable.remove(analyzedCoordinates);		//rimuove il settore se è blank, alienbase o humanbase
 				else{
 					adiacentToAnalyzed = adiacentCoordinates(analyzedCoordinates);
@@ -111,9 +102,32 @@ public class Map {
 		reachableCoordinates.remove(initialCoordinates);
 		return reachableCoordinates;
 	}
+	
+	public ArrayList<Coordinates> getReachableCoordinatesVersione2(Coordinates initialCoordinates, int distance){
+		ArrayList<Coordinates> reachableCoordinates = new ArrayList<Coordinates>();
+		ArrayList<Coordinates> adiacentToTmp = new ArrayList<Coordinates>();
+		ArrayList<Coordinates> tmpReachable = new ArrayList<Coordinates>();
+		
+		reachableCoordinates.add(initialCoordinates);
+		tmpReachable.add(initialCoordinates);
+		for(int i=0; i<distance; i++){				
+			for(Coordinates analyzedCoordinates: tmpReachable)
+				adiacentToTmp.addAll(this.adiacentCoordinates(analyzedCoordinates));
+			tmpReachable.clear();
+			for(Coordinates analyzedCoordinates : adiacentToTmp){
+				Sector analyzedSector = this.getSector(analyzedCoordinates);
+				if(!(analyzedSector.getClass().equals((new HumanBase()).getClass()) || analyzedSector.getClass().equals((new AlienBase()).getClass()) || analyzedSector.getClass().equals((new BlankSector()).getClass())))
+						if(!reachableCoordinates.contains(analyzedCoordinates)){
+							reachableCoordinates.add(analyzedCoordinates);
+							tmpReachable.add(analyzedCoordinates);
+						}
+			}
+		}
+		return reachableCoordinates;
+	}
 
 	public Sector getSector (Coordinates coordinates){
-		Sector selectedSector = map.get(coordinates);
+		Sector selectedSector = map.get(coordinates.toString());
 		return selectedSector;
 	}
 
@@ -125,9 +139,22 @@ public class Map {
 	public void setMapName(String mapName) {
 		this.mapName = mapName;
 	}
-	
-	
 
+	public Coordinates getAlienBaseCoordinates() {
+		return AlienBaseCoordinates;
+	}
+
+	public void setAlienBaseCoordinates(Coordinates alienBaseCoordinates) {
+		AlienBaseCoordinates = alienBaseCoordinates;
+	}
+
+	public Coordinates getHumanBaseCoordinates() {
+		return HumanBaseCoordinates;
+	}
+
+	public void setHumanBaseCoordinates(Coordinates humanBaseCoordinates) {
+		HumanBaseCoordinates = humanBaseCoordinates;
+	}
 	
 }
 

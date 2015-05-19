@@ -2,7 +2,7 @@ package it.polimi.ingsw.beribinaghi.mapPackage;
 
 import it.polimi.ingsw.beribinaghi.gameNames.SectorName;
 
-public class mapModel {
+public class MapModel {
 	private static SectorName B = SectorName.BLANK;
 	private static SectorName AB = SectorName.ALIENBASE;
 	private static SectorName HB = SectorName.HUMANBASE;
