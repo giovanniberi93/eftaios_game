@@ -86,10 +86,7 @@ public class PreMatch {
 	 */
 	public void start(){
 		active = true;
-		try {
-			match = new Match(players,matchName,new Map(mapModel.GALILEI));
-		} catch (WrongCardTypeException e) {
-		}
+		match = new Match(players,matchName,null);
 	//	match.start();
 	}
 

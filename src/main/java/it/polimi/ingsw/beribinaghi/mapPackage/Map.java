@@ -6,6 +6,7 @@ import it.polimi.ingsw.beribinaghi.decksPackage.ShallopsDeck;
 import it.polimi.ingsw.beribinaghi.gameNames.SectorName;
 import it.polimi.ingsw.beribinaghi.matchPackage.DeckAssigner;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -13,8 +14,7 @@ public class Map {
 	final static int HEIGHT = 14;		//TODO aggiungi costanti
 	final static int WIDTH = 23;
 	private String mapName;
-	private HashMap <Coordinates, Sector> map;;
-	private SectorName[][] graphicMap;
+	private HashMap <Coordinates, Sector> map = new HashMap<Coordinates, Sector>();
 	
 	/**
 	 * @param mapName is a map model, where all sectors type are defined
@@ -28,13 +28,38 @@ public class Map {
 		for (int i=0;i<graphicMap.length;i++)
 			for (int j=0;j<graphicMap[i].length;j++)
 			{
-				Coordinates actualCoordinates = new Coordinates (Coordinates.getLetter(i),j+1);
+				Coordinates actualCoordinates = new Coordinates (Coordinates.getLetterFromNumber(i),j);
 				Sector actualSector = (Sector) (graphicMap[i][j].getSector()).clone();
 				actualSector.acceptDeck(deckAssigner);
 				map.put(actualCoordinates, actualSector);				
 			}
 		}
 
+	public ArrayList<Coordinates> adiacentCoordinates (Coordinates centralCoordinates){
+		int otherNumber;
+		char currentLetter;								//TODO da rifare
+		int currentNumber;
+		Coordinates actualCoordinates;
+		ArrayList<Coordinates> adiacentCoordinates = new ArrayList<Coordinates>();
+		currentLetter = centralCoordinates.getLetter();
+		currentNumber = centralCoordinates.getNumber();
+		if(((int) currentLetter) % 2 == 0)
+			otherNumber = currentNumber - 1;
+		else
+			otherNumber = currentNumber + 1;
+		for(int i = -1; i < 2; i++){
+			actualCoordinates = new Coordinates(Coordinates.getLetterFromNumber( (int)currentLetter + i), currentNumber);
+			if(actualCoordinates.isValid())
+				adiacentCoordinates.add(actualCoordinates);
+			actualCoordinates = new Coordinates(Coordinates.getLetterFromNumber( (int)currentLetter + i), otherNumber);
+			if(actualCoordinates.isValid())
+				adiacentCoordinates.add(actualCoordinates);
+		}
+		otherNumber = currentNumber + (currentNumber - otherNumber);
+		actualCoordinates = new Coordinates(currentLetter, otherNumber);
+		adiacentCoordinates.add(actualCoordinates);
+			return adiacentCoordinates;
+	}
 		
 	/**
 	 * return the coordinates of the first found instance of the searched sector type 
@@ -53,6 +78,38 @@ public class Map {
 			}
 		return null;
 		}
+	
+	/**
+	 * Returns the coordinates reachable with a passed number of steps from a passed Coordinate. Note: this method returns the coordinates reachable with a movement, not the sectors that have a determinate distance from the passed one
+	 * @param initialCoordinates are the coordinates of the sector in which the movement start
+	 * @param distance is the maximum reachable distance allowed in the movement. It depends from the player side, and from the object card he is using
+	 * @return the ArrayList of the reachable coordinates
+	 */
+	public ArrayList<Coordinates> getReachableCoordinates(Coordinates initialCoordinates, int distance){
+		ArrayList<Coordinates> reachableCoordinates = new ArrayList<Coordinates>();
+		ArrayList<Coordinates> adiacentToAnalyzed = new ArrayList<Coordinates>();
+		
+		reachableCoordinates.add(initialCoordinates);
+		for(int i=distance; i>0; i--){
+			
+			ArrayList<Coordinates> tmpReachable = reachableCoordinates;
+			
+			for(Coordinates analyzedCoordinates: tmpReachable){
+				Sector analyzedSector = this.getSector(analyzedCoordinates);
+				if(analyzedSector.getClass().equals((new HumanBase()).getClass()) || analyzedSector.getClass().equals((new AlienBase()).getClass()) || analyzedSector.getClass().equals((new BlankSector()).getClass()))
+					tmpReachable.remove(analyzedCoordinates);		//rimuove il settore se è blank, alienbase o humanbase
+				else{
+					adiacentToAnalyzed = adiacentCoordinates(analyzedCoordinates);
+					for(Coordinates adiacentCoordinates: adiacentToAnalyzed){
+						if(!reachableCoordinates.contains(adiacentCoordinates))
+							reachableCoordinates.add(adiacentCoordinates);
+					}
+				}
+			}
+		}
+		reachableCoordinates.remove(initialCoordinates);
+		return reachableCoordinates;
+	}
 
 	public Sector getSector (Coordinates coordinates){
 		return map.get(coordinates);

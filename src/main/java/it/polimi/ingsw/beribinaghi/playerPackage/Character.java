@@ -1,17 +1,19 @@
 package it.polimi.ingsw.beribinaghi.playerPackage;
 
+import java.util.ArrayList;
+
 import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.ObjectCard;
 import it.polimi.ingsw.beribinaghi.mapPackage.Coordinates;
 import it.polimi.ingsw.beribinaghi.gameNames.*;
 
 
-public abstract class Character {
+public abstract class Character{
 	private String name;
 	private String role;
 	private SideName side;
 	private Coordinates currentPosition;
-	protected ObjectCard[] bag;
-	protected boolean isAlive;
+	private ArrayList<ObjectCard> bag = new ArrayList<ObjectCard>();
+	private boolean isAlive;
 
 	protected int percorrableDistance;
 	
@@ -24,7 +26,7 @@ public abstract class Character {
 		this.name = character.getPersonalName();
 		this.setRole(character.getRoleName());
 		this.setSide(character.getSide());
-		bag = new ObjectCard[3];		//TODO add constant; where?
+		this.setAlive(true);
 		isAlive = true;
 	}
 
@@ -34,30 +36,40 @@ public abstract class Character {
 
 	public String getName() {
 		return name;
-	}
+		}
 
-	public boolean isAlive() {
-		return isAlive;
-	}
 	
 	public void setSide(SideName side) {
 		this.side = side;
 	}
 	
-	//public ObjectCard getBagCard (int index)
-
 	public Coordinates getCurrentPosition() {
 		return currentPosition;
 	}
 	
-	/*public ObjectCard searchCardInBag (ObjectCard searchedCard){
-		for(int i = 0; i<3; i++){	//TODO add constant		
-			if(usedCard.getClass().equals(bag[i])){
-				bag[i] = null;
+	public boolean addCardToBag(ObjectCard pickedCard){
+		if(bag.size() >= 3)
+			return false;
+		bag.add(pickedCard);
+		return true;
+	}
+
+	public ObjectCard getCardFromBag (int index){
+		return bag.get(index);
+	}
+	
+	public ObjectCard removeCardFromBag(ObjectCard searchedCard){
+		ObjectCard temporaryCard;
+		for(int i = 0; i<3; i++){		//TODO constant
+			temporaryCard = getCardFromBag(i);
+			if(temporaryCard.getClass() == searchedCard.getClass()){
+				searchedCard = temporaryCard;
+				bag.remove(i);
 				return searchedCard;
 			}
 		}
-	}*/
+		return null;
+	}
 
 
 	public void setCurrentPosition(Coordinates currentPosition) {
@@ -69,14 +81,21 @@ public abstract class Character {
 		return side;
 	}
 
+	public boolean isAlive() {
+		return isAlive;
+	}
+
+
+	public void setAlive(boolean isAlive) {
+		this.isAlive = isAlive;
+	}
+
 	/**
 	 * @return the role
 	 */
 	public String getRole() {
 		return role;
 	}
-
-
 }
 
 	

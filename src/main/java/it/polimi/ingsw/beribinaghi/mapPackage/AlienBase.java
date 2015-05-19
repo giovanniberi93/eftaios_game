@@ -3,7 +3,7 @@
  */
 package it.polimi.ingsw.beribinaghi.mapPackage;
 
-import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.Card;
+import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.SectorCard;
 import it.polimi.ingsw.beribinaghi.matchPackage.DeckAssigner;
 
 /**
@@ -20,7 +20,7 @@ public class AlienBase extends Sector{
 	}
 	
 	@Override
-	public Card pickFromAssociatedDeck(){
+	public SectorCard pickFromAssociatedDeck(){
 		return null;
 	}
 

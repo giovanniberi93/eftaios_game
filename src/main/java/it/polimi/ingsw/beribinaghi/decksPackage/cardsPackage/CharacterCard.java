@@ -9,6 +9,7 @@ public class CharacterCard implements Card{
 
 	private CharacterName characterName;
 	
+	
 	public CharacterCard (CharacterName characterName){
 		this.setCharacterName(characterName);
 	}

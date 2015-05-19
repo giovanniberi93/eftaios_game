@@ -18,11 +18,14 @@ public class MatchDataUpdate extends Observable {
 	private ArrayList<Player> recentKills = new ArrayList<Player>();
 	private ArrayList<ObjectCard> usedObjectCard = new ArrayList<ObjectCard>();
 	private ArrayList<Player> survivedPlayers = new ArrayList<Player>();
+	private ArrayList<Player> spottedPlayers = new ArrayList<Player>();
 	
 	private int turnNumber;
 	private Player currentPlayer;
 	private Boolean escaped = null;
 	private Coordinates noiseCoordinates;
+	
+	private boolean isMatchFinished;
 	
 	public MatchDataUpdate (Player successiveCurrentPlayer, int turnNumber){
 		this.turnNumber = turnNumber;
@@ -32,27 +35,26 @@ public class MatchDataUpdate extends Observable {
 	public ArrayList<Player> getRecentKills() {
 		return recentKills;
 	}
-	public void setRecentKills(ArrayList<Player> recentKills) {
-		this.recentKills = recentKills;
+	public void setRecentKills(Player killedPlayer) {
+		this.recentKills.add(killedPlayer);
 	}
 	public ArrayList<ObjectCard> getUsedObjectCard() {
 		return usedObjectCard;
 	}
-	public void setUsedObjectCard(ArrayList<ObjectCard> usedObjectCard) {
-		this.usedObjectCard = usedObjectCard;
+	
+	public void setUsedObjectCard(ObjectCard ObjectCard) {
+		this.usedObjectCard.add(ObjectCard);
 	}
 	public ArrayList<Player> getSurvivedPlayers() {
 		return survivedPlayers;
 	}
-	public void setSurvivedPlayers(ArrayList<Player> survivedPlayers) {
-		this.survivedPlayers = survivedPlayers;
+	public void setSurvivedPlayers(Player player) {
+		this.survivedPlayers.add(player);
 	}
 	public Player getCurrentPlayer() {
 		return currentPlayer;
 	}
-	public void setCurrentPlayer(Player currentPlayer) {
-		this.currentPlayer = currentPlayer;
-	}
+	
 	public Boolean getEscaped() {
 		return escaped;
 	}
@@ -68,6 +70,23 @@ public class MatchDataUpdate extends Observable {
 
 	public int getTurnNumber() {
 		return turnNumber;
+	}
+	
+
+	public boolean isMatchFinished() {
+		return isMatchFinished;
+	}
+
+	public void setMatchFinished(boolean isMatchFinished) {
+		this.isMatchFinished = isMatchFinished;
+	}
+
+	public ArrayList<Player> getSpottedPlayers() {
+		return spottedPlayers;
+	}
+
+	public void setSpottedPlayers(Player caughtPlayer) {
+		this.spottedPlayers.add(caughtPlayer);
 	}
 
 }
