@@ -10,8 +10,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 public class Map {
-	final int HEIGHT = 14;		//TODO aggiungi costanti
-	final int WIDTH = 23;
+	final static int HEIGHT = 14;		//TODO aggiungi costanti
+	final static int WIDTH = 23;
 	private String mapName;
 	private HashMap <Coordinates, Sector> map;;
 	private SectorName[][] graphicMap;
@@ -28,8 +28,8 @@ public class Map {
 		for (int i=0;i<graphicMap.length;i++)
 			for (int j=0;j<graphicMap[i].length;j++)
 			{
-				Coordinates actualCoordinates = new Coordinates (Coordinates.getLetter(i),j);
-				Sector actualSector = graphicMap[i][j].getSector();
+				Coordinates actualCoordinates = new Coordinates (Coordinates.getLetter(i),j+1);
+				Sector actualSector = (Sector) (graphicMap[i][j].getSector()).clone();
 				actualSector.acceptDeck(deckAssigner);
 				map.put(actualCoordinates, actualSector);				
 			}

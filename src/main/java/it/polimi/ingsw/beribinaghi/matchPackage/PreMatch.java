@@ -8,6 +8,8 @@ import java.util.Timer;
 
 import it.polimi.ingsw.beribinaghi.App;
 import it.polimi.ingsw.beribinaghi.decksPackage.WrongCardTypeException;
+import it.polimi.ingsw.beribinaghi.mapPackage.Map;
+import it.polimi.ingsw.beribinaghi.mapPackage.mapModel;
 import it.polimi.ingsw.beribinaghi.playerPackage.Player;
 
 /**
@@ -85,7 +87,7 @@ public class PreMatch {
 	public void start(){
 		active = true;
 		try {
-			match = new Match(players,matchName,null);
+			match = new Match(players,matchName,new Map(mapModel.GALILEI));
 		} catch (WrongCardTypeException e) {
 		}
 	//	match.start();
