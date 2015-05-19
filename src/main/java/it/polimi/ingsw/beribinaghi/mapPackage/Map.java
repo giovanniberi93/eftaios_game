@@ -17,7 +17,7 @@ public class Map {
 	private HashMap <Coordinates, Sector> map = new HashMap<Coordinates, Sector>();
 	
 	/**
-	 * @param mapName is a map model, where all sectors type are defined
+	 * @param mapName is a map model, where all sectors types are defined
 	 * 	Generate a new Map with name mapName and graphics map.
 	 */
 	public Map (String mapName, SectorName[][] graphicMap, DangerousSectorsDeck dangerousDeck, ShallopsDeck shallopsDeck){
