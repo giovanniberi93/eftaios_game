@@ -25,8 +25,8 @@ public class ProvaMappa {
 		provaMappa.map = new Map("mappaDiProva",provaMappa.graphicMap,new DangerousSectorsDeck(), new ShallopsDeck());
 		System.out.println("Mappa creata");
 		//Coordinates coordBaseAlienaForse = provaMappa.map.searchSectorType(SectorName.ALIENBASE);
-		
-		Sector sectorCercato = provaMappa.map.getSector(new Coordinates('a',1));
+		Coordinates seeked = new Coordinates('b',3);
+		Sector sectorCercato = provaMappa.map.getSector(seeked);
 		/*System.out.println("dovrebbe stampare z1: " + coordDiProva.getLetter() + coordDiProva.getNumber());
 		
 		System.out.println("base aliena "+provaMappa.map.getSector(new Coordinates('a',1)));
@@ -38,7 +38,7 @@ public class ProvaMappa {
 		Coordinates coordShallop = provaMappa.map.searchSectorType(SectorName.ALIENBASE);
 		System.out.println("prova  "+coordShallop.toString());
 		*/
-		ArrayList<Coordinates> adiacentCoordinates = provaMappa.map.adiacentCoordinates(new Coordinates('a',2));
+		ArrayList<Coordinates> adiacentCoordinates = provaMappa.map.adiacentCoordinates(new Coordinates('c',3));
 		
 		
 		System.out.println("Size: "+adiacentCoordinates.size());

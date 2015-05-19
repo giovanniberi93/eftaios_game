@@ -37,8 +37,8 @@ public class Map {
 
 	public ArrayList<Coordinates> adiacentCoordinates (Coordinates centralCoordinates){
 		int otherNumber;
-		char currentLetter;
-		int currentNumber;
+		char currentLetter;							//non tiene conto dell'effettiva dimensione della mappa
+		int currentNumber;							//però con una mappa come galilei funziona lo stesso
 		Coordinates actualCoordinates;
 		ArrayList<Coordinates> adiacentCoordinates = new ArrayList<Coordinates>();
 		currentLetter = centralCoordinates.getLetter();
