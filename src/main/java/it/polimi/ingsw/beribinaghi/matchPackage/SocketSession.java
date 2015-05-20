@@ -8,7 +8,7 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.Scanner;
 
-public class SocketSession extends GameSession{
+public class SocketSession extends GameSessionServerSide{
 	private Scanner in;
 	private PrintWriter out;
 	ObjectOutputStream oos;

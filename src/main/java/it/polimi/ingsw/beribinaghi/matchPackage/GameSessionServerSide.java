@@ -12,7 +12,7 @@ import java.util.Observer;
  * manages all communication with client. It receives command from client and observe update object
  *
  */
-public abstract class GameSession implements Observer {
+public abstract class GameSessionServerSide implements Observer {
 	protected Player player;
 
 	@Override

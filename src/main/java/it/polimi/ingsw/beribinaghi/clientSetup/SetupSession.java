@@ -5,7 +5,7 @@ package it.polimi.ingsw.beribinaghi.clientSetup;
 
 import java.util.ArrayList;
 
-import clientMatch.GameSession;
+import clientMatch.GameSessionServerSide;
 
 /**
  * interface for communication with server
@@ -72,7 +72,7 @@ public interface SetupSession {
 	/**
 	 * @return the Game session for managing communication with server during the match
 	 */
-	GameSession startGameComunication();
+	GameSessionServerSide startGameComunication();
 
 
 }

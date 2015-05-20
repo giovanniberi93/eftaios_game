@@ -15,7 +15,7 @@ import java.util.Scanner;
  * class that manages all comunication with server during the game
  *
  */
-public class SocketSession implements GameSession {
+public class SocketSession implements GameSessionServerSide {
 	private Socket socket;
 	private PrintWriter out;
 	private Scanner in;

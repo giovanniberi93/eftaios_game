@@ -12,11 +12,11 @@ import it.polimi.ingsw.beribinaghi.playerPackage.Character;
  */
 public class matchController {
 	private GameInterface graphicInterface;
-	private GameSession session;
+	private GameSessionServerSide session;
 	private String myPlayerName;
 	private Character myCharacter;
 
-	public matchController(String playerName, GameInterface graphicInterface, GameSession session) {
+	public matchController(String playerName, GameInterface graphicInterface, GameSessionServerSide session) {
 		this.graphicInterface = graphicInterface;
 		this.session = session;
 		this.graphicInterface.setController(this);

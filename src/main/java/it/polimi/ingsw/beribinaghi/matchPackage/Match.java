@@ -32,7 +32,7 @@ import java.util.Collections;
  * Manages a match
  */
 public class Match {
-	private ArrayList<GameSession> sessions;
+	private ArrayList<GameSessionServerSide> sessions;
 	private String matchName;
 	private ArrayList<Player> players;
 	private int currentPlayerIndex;
@@ -53,7 +53,7 @@ public class Match {
 	 * @param players arrayList of connected players
 	 * @param matchName name of the starting match 
 	 */
-	public Match(ArrayList<GameSession> sessions, ArrayList<Player> players, String matchName, String mapName, SectorName[][] graphicMap){	//TODO riceve graphicMap non map
+	public Match(ArrayList<GameSessionServerSide> sessions, ArrayList<Player> players, String matchName, String mapName, SectorName[][] graphicMap){
 		this.players = players;
 		this.matchName = matchName;
 		this.sessions = sessions;
@@ -62,11 +62,12 @@ public class Match {
 		currentPlayerIndex = 0;
 		
 		matchDataUpdate = new MatchDataUpdate(players.get(currentPlayerIndex), 1);
+		for (GameSessionServerSide gameSession: sessions)
+			matchDataUpdate.addObserver(gameSession);
 		setupDecks(players.size());
 		assignCharacter(players);
 		setInitialPositions(players);
-		for (GameSession gameSession: sessions)
-			matchDataUpdate.addObserver(gameSession);
+		
 	}
 	
 	
@@ -97,7 +98,7 @@ public class Match {
 			
 		}
 		playersDeck.addToDiscardPile(characterCard);
-		for(GameSession gameSession: sessions){
+		for(GameSessionServerSide gameSession: sessions){
 			gameSession.notifyCharacter();
 		}
 	}
