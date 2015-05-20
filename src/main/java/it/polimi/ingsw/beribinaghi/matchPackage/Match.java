@@ -176,6 +176,11 @@ public class Match {
 			matchDataUpdate = new MatchDataUpdate(players.get(currentPlayerIndex), (matchDataUpdate.getTurnNumber())+1);
 		}
 
+	public Map getMap() {
+		return map;
+	}
+
+
 	public void noise(Coordinates noiseCoordinates){
 		matchDataUpdate.setNoiseCoordinates(noiseCoordinates);
 	}
