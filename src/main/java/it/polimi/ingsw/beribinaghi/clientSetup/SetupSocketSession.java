@@ -9,6 +9,9 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import clientMatch.GameSession;
+import clientMatch.SocketSession;
+
 /**
  *  interface for communication with server via socket
  *
@@ -106,7 +109,6 @@ public class SetupSocketSession implements SetupSession {
 			String inLine = in.nextLine();
 			if (inLine.equals("started match"))
 			{
-				
 				return true;
 			} else if (inLine.equals("new player"))
 				setupController.notifyNewPlayer(in.nextLine());
@@ -117,6 +119,11 @@ public class SetupSocketSession implements SetupSession {
 	public void exitRoom() {
 		out.println("exit");
 		out.flush();
+	}
+
+	@Override
+	public GameSession startGameComunication() {
+		return new SocketSession(socket);
 	}
 
 

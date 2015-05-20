@@ -16,9 +16,14 @@ public abstract class GameSession implements Observer {
 	protected Player player;
 
 	@Override
-	public void update(Observable o, Object arg) {
-		// TODO Auto-generated method stub
-
+	public  void update(Observable o, Object arg) {
+		String line = (String) arg;
+		String command[] = line.split(":");
+		if (command[0].equals("turn"))
+			this.notifyBeginTurn(command[1]);
 	}
 
+	protected abstract void notifyBeginTurn(String string);
+
+	public abstract void notifyCharacter();
 }

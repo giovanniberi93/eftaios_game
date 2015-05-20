@@ -3,6 +3,7 @@
  */
 package it.polimi.ingsw.beribinaghi.matchPackage;
 
+import it.polimi.ingsw.beribinaghi.App;
 import it.polimi.ingsw.beribinaghi.decksPackage.CharactersDeck;
 import it.polimi.ingsw.beribinaghi.decksPackage.DangerousSectorsDeck;
 import it.polimi.ingsw.beribinaghi.decksPackage.ObjectsDeck;
@@ -10,7 +11,6 @@ import it.polimi.ingsw.beribinaghi.decksPackage.ShallopsDeck;
 import it.polimi.ingsw.beribinaghi.decksPackage.WrongCardTypeException;
 import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.Adrenalin;
 import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.Attack;
-import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.Card;
 import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.CharacterCard;
 import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.ObjectCard;
 import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.SectorCard;
@@ -32,7 +32,7 @@ import java.util.Collections;
  * Manages a match
  */
 public class Match {
-
+	private ArrayList<GameSession> sessions;
 	private String matchName;
 	private ArrayList<Player> players;
 	private int currentPlayerIndex;
@@ -49,13 +49,15 @@ public class Match {
 	
 	/**
 	 * initialize the match: distribute roles, set initial positions, initialize decks
+	 * @param sessions 
 	 * @param players arrayList of connected players
 	 * @param matchName name of the starting match 
 	 */
-	public Match(ArrayList<Player> players, String matchName, SectorName[][] graphicMap){	//TODO riceve graphicMap non map
+	public Match(ArrayList<GameSession> sessions, ArrayList<Player> players, String matchName, String mapName, SectorName[][] graphicMap){	//TODO riceve graphicMap non map
 		this.players = players;
 		this.matchName = matchName;
-		this.map = new Map ("Galilei", graphicMap, dangerousSectorsDeck, shallopsDeck);
+		this.sessions = sessions;
+		this.map = new Map (mapName, graphicMap, dangerousSectorsDeck, shallopsDeck);
 		Collections.shuffle(players);
 		currentPlayerIndex = 0;
 		
@@ -63,6 +65,8 @@ public class Match {
 		setupDecks(players.size());
 		assignCharacter(players);
 		setInitialPositions(players);
+		for (GameSession gameSession: sessions)
+			matchDataUpdate.addObserver(gameSession);
 	}
 	
 	
@@ -71,7 +75,6 @@ public class Match {
 	 * @param playerNumber
 	 */
 	private void setupDecks(int playerNumber){
-		
 		dangerousSectorsDeck = new DangerousSectorsDeck();
 		objectsDeck = new ObjectsDeck();
 		shallopsDeck = new ShallopsDeck();
@@ -93,8 +96,11 @@ public class Match {
 			player.setCharacter(factory.getNewCharacter(characterCard.getCharacterName()));	//factory method
 			
 		}
-			playersDeck.addToDiscardPile(characterCard);
+		playersDeck.addToDiscardPile(characterCard);
+		for(GameSession gameSession: sessions){
+			gameSession.notifyCharacter();
 		}
+	}
 
 	/**
 	 * set the initial position of all the existing players; in AlienBase or HumanBase according 
@@ -114,11 +120,14 @@ public class Match {
 				player.setCurrentPosition(alienBaseCoordinates);
 			else
 				player.setCurrentPosition(humanBaseCoordinates);
-			}
 		}
+	}
 	
+	/**
+	 * start match
+	 */
 	public void start(){
-		
+		matchDataUpdate.start();
 	}
 
 	/**
@@ -146,9 +155,7 @@ public class Match {
 			}
 				
 		}
-		return pickedCard;
-
-		
+		return pickedCard;	
 	}
 		
 	/**
@@ -159,7 +166,7 @@ public class Match {
 		int remainingHumans = 0;
 		HumanCharacter human;
 		
-		if(matchDataUpdate.getTurnNumber() >= 39)		//TODO add constant. Where?
+		if(matchDataUpdate.getTurnNumber() >= App.NUMBEROFTURNS)
 			return false;
 		for(Player player: players)
 			if(player.getCharacter().getSide() == SideName.HUMAN){
@@ -176,11 +183,10 @@ public class Match {
 	public void finishTurn(){
 		if(currentPlayerIndex == players.size()-1)
 			currentPlayerIndex = 0;
-		else currentPlayerIndex++;
-		
+		else currentPlayerIndex++;	
 		if(!isFinished())		//TODO sennò?
-			matchDataUpdate = new MatchDataUpdate(players.get(currentPlayerIndex), (matchDataUpdate.getTurnNumber())+1);
-		}
+			matchDataUpdate.clear(players.get(currentPlayerIndex));
+	}
 
 	public void noise(Coordinates noiseCoordinates){
 		matchDataUpdate.setNoiseCoordinates(noiseCoordinates);
@@ -217,7 +223,6 @@ public class Match {
 			ObjectCard usedCard = new Attack();
 			matchDataUpdate.setUsedObjectCard(usedCard);
 			currentPlayer.getCharacter().removeCardFromBag(usedCard);
-		
 		}
 	}
 	
@@ -247,7 +252,6 @@ public class Match {
 	public void sedatives(){
 		ObjectCard usedCard = new Sedatives();
 		Player currentPlayer = matchDataUpdate.getCurrentPlayer();
-		
 		matchDataUpdate.setUsedObjectCard(usedCard);
 		currentPlayer.getCharacter().removeCardFromBag(usedCard);		//toglie la carta usata dal bag del currentPlayer
 	}

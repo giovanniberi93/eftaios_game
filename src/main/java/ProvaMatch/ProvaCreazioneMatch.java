@@ -27,7 +27,7 @@ public class ProvaCreazioneMatch {
 		players.add(sassate);
 		players.add(spugna);
 		
-		match = new Match(players, "mappaDiProva", graphicMap);
+		match = new Match(null,players, "mappaDiProva","galilei", graphicMap);
 	}
 	
 	public static void main(String[] args) {

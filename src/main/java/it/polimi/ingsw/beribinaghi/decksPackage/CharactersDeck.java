@@ -1,5 +1,6 @@
 package it.polimi.ingsw.beribinaghi.decksPackage;
 
+import it.polimi.ingsw.beribinaghi.App;
 import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.CharacterCard;
 import it.polimi.ingsw.beribinaghi.gameNames.CharacterName;
 
@@ -25,7 +26,7 @@ public class CharactersDeck extends Deck {
 		super.validCards.add(new CharacterCard(CharacterName.FOURTHALIEN));
 		super.validCards.add(new CharacterCard(CharacterName.SOLDIER));
 		
-		for(int i = 8-1; i >= playerNumber; i--)		//TODO add constant
+		for(int i = App.MAX_PLAYER-1; i >= playerNumber; i--)	
 			super.validCards.remove(i);
 		}
 }

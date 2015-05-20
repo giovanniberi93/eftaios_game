@@ -30,8 +30,15 @@ public class MatchTest {
 		players.add(sassate);
 		players.add(spugna);
 		
-		match = new Match(players, "mappaDiProva", graphicMap);
+		match = new Match(null,players, "mappaDiProva","galilei", graphicMap);
 		assertNotNull(match);
+	}	
+	
+	@Test
+	public void testStartMatch(){
+		testMatchNotNull();
+		match.start();
+		assertTrue(true);
 	}	
 }
 

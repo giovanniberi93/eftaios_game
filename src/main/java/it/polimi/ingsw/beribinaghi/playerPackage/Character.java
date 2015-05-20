@@ -1,5 +1,6 @@
 package it.polimi.ingsw.beribinaghi.playerPackage;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.ObjectCard;
@@ -7,7 +8,8 @@ import it.polimi.ingsw.beribinaghi.mapPackage.Coordinates;
 import it.polimi.ingsw.beribinaghi.gameNames.*;
 
 
-public abstract class Character{
+public abstract class Character implements Serializable{
+	private static final long serialVersionUID = 1L;
 	private String name;
 	private String role;
 	private SideName side;

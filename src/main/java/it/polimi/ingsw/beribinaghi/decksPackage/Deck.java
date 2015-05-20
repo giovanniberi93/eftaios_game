@@ -21,7 +21,7 @@ public abstract class Deck {
 		Card pickedCard;
 		if(validCards.size() == 0)
 			restore();
-		int randomIndex = (int) Math.random()*validCards.size();
+		int randomIndex = (int) (Math.random()*validCards.size());
 		pickedCard = validCards.get(randomIndex);
 		validCards.remove(randomIndex);
 		return pickedCard;

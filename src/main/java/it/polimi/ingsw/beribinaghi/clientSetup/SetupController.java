@@ -5,6 +5,8 @@ package it.polimi.ingsw.beribinaghi.clientSetup;
 
 import java.util.ArrayList;
 
+import clientMatch.matchController;
+
 /**
  * This class manages the setup of game
  *
@@ -12,6 +14,7 @@ import java.util.ArrayList;
 public class SetupController {
 	private SetupSession setupSession;
 	private GraphicInterface graphicInterface;
+	private String playerName;
 	
 	/**
 	 * @param setupSession
@@ -44,7 +47,7 @@ public class SetupController {
 		while (!setupSession.isStarted(this))
 		{
 		}
-		graphicInterface.beginMatch();
+		new matchController(playerName,graphicInterface.beginMatch(),setupSession.startGameComunication());
 	}
 
 	/**
@@ -66,7 +69,8 @@ public class SetupController {
 	}
 
 	private void login() {
-		setupSession.login(graphicInterface.getUserName());
+		playerName = graphicInterface.getUserName();
+		setupSession.login(playerName);
 	}
 
 	public boolean create(String name) {

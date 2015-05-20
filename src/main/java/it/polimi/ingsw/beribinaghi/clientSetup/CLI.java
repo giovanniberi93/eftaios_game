@@ -6,6 +6,9 @@ package it.polimi.ingsw.beribinaghi.clientSetup;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import clientMatch.GameCLI;
+import clientMatch.GameInterface;
+
 /**
  * class for CLI
  *
@@ -38,7 +41,7 @@ public class CLI implements GraphicInterface {
 
 	@Override
 	public String getUserName() {
-		System.out.println("Inserire il nome dell'utente:");
+		System.out.println("Inserire il tuo nome:");
 		return inLine.nextLine();
 	}
 
@@ -121,8 +124,9 @@ public class CLI implements GraphicInterface {
 	}
 
 	@Override
-	public void beginMatch() {
+	public GameInterface beginMatch() {
 		System.out.println("Partita iniziata");
+		return (GameInterface) new GameCLI();
 	}
 
 	@Override

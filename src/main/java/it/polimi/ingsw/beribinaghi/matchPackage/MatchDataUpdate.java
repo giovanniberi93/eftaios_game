@@ -88,5 +88,23 @@ public class MatchDataUpdate extends Observable {
 	public void setSpottedPlayers(Player caughtPlayer) {
 		this.spottedPlayers.add(caughtPlayer);
 	}
+	
+	public void start()
+	{
+		this.setChanged();
+		this.notifyObservers("turn:" + currentPlayer.getUser());
+	}
+
+	public void clear(Player player) {
+		this.turnNumber++;
+		this.currentPlayer = player;
+		escaped = null;
+		recentKills.clear();
+		usedObjectCard.clear();
+		survivedPlayers.clear();
+		spottedPlayers.clear();
+		this.setChanged();
+		this.notifyObservers("turn:" + player.getUser());
+	}
 
 }

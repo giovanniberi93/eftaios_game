@@ -5,6 +5,8 @@ package it.polimi.ingsw.beribinaghi.clientSetup;
 
 import java.util.ArrayList;
 
+import clientMatch.GameInterface;
+
 /**
  *  interface for graphics command
  *
@@ -48,8 +50,9 @@ public interface GraphicInterface {
 
 	/**
 	 * communicates to user that match in began
+	 * @return 
 	 */
-	public void beginMatch();
+	public GameInterface beginMatch();
 
 	/**
 	 * notify that a new player is in the room
