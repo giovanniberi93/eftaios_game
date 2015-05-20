@@ -5,6 +5,8 @@ package it.polimi.ingsw.beribinaghi.clientSetup;
 
 import java.util.ArrayList;
 
+import clientMatch.GameSession;
+
 /**
  * interface for communication with server
  *
@@ -20,6 +22,7 @@ public interface SetupSession {
 	/**
 	 * @param userName
 	 * sends user name to server
+	 * @return 
 	 */
 	public void login(String userName);
 
@@ -65,6 +68,11 @@ public interface SetupSession {
 	 * exit rooms
 	 */
 	public void exitRoom();
+
+	/**
+	 * @return the Game session for managing communication with server during the match
+	 */
+	GameSession startGameComunication();
 
 
 }

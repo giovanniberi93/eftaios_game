@@ -8,8 +8,7 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.Scanner;
 
-public class SocketSession extends GameSession implements Runnable{
-	private final long TIMEWAITASSIGNCHARACTER = 100;
+public class SocketSession extends GameSession{
 	private Scanner in;
 	private PrintWriter out;
 	ObjectOutputStream oos;
@@ -22,14 +21,9 @@ public class SocketSession extends GameSession implements Runnable{
 	}
 
 	
-	
-	private synchronized void notifyCharacter() {
-		while (player.getCharacter()!=null)
-			try {
-				this.wait(TIMEWAITASSIGNCHARACTER);
-			} catch (InterruptedException e) {
-			}
+	public void notifyCharacter() {
 		out.println("sending character");
+		out.flush();
 		try {
 			oos.writeObject(player.getCharacter());
 		} catch (IOException e) {
@@ -37,11 +31,10 @@ public class SocketSession extends GameSession implements Runnable{
 	}
 
 
-
 	@Override
-	public void run() {
-	    notifyCharacter();
-		
+	protected void notifyBeginTurn(String string) {
+		out.println("turn=" + string);
+		out.flush();
 	}
 
 }

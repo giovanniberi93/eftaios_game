@@ -1,11 +1,14 @@
 package it.polimi.ingsw.beribinaghi.mapPackage;
 
+import java.io.Serializable;
+
 /**
  * Immutable class.
  * It conteins a cordinate of the map
  *	
  */
-public final class Coordinates {
+public final class Coordinates implements Serializable{
+	private static final long serialVersionUID = 1L;
 	private char letter;
 	private int number;
 	

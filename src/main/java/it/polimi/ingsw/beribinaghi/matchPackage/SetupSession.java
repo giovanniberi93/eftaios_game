@@ -21,5 +21,7 @@ public interface SetupSession {
 	public void notifyNewPlayer(String namePlayer);
 	
 	public String getMatchName();
+
+	public GameSession getGameSession();
 	
 }

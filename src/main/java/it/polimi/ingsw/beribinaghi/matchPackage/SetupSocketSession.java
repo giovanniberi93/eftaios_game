@@ -135,9 +135,6 @@ public class SetupSocketSession extends Thread implements SetupSession {
 			} catch (InterruptedException e) {
 			}
 		}
-		out.println("started match");
-		out.flush();
-		createSession();
 		while (active)
 			try {
 				this.wait();
@@ -147,13 +144,6 @@ public class SetupSocketSession extends Thread implements SetupSession {
 	}
 
 
-	private void createSession() {
-		try {
-			 new Thread((new SocketSession(socket,player))).start();;
-		} catch (IOException e) {
-
-		}
-	}
 
 
 	private void printMatchName() {
@@ -185,6 +175,19 @@ public class SetupSocketSession extends Thread implements SetupSession {
 		out.println("new player");
 		out.println(namePlayer);
 		out.flush();
+	}
+
+	@Override
+	public GameSession getGameSession() {
+		try {
+		    out.println("started match");
+		    out.flush();
+			SocketSession socketSession = new SocketSession(socket,player);
+			return socketSession;
+		} catch (IOException e) {
+
+		}
+		return null;
 	}
 	
 }

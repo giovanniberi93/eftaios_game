@@ -33,7 +33,8 @@ public class MatchTest {
 		players.add(player3);
 		players.add(player4);
 		
-		match = new Match(players, "testMap", MapModel.GALILEI);
+		match = new Match(null, players, "testMap", null, MapModel.GALILEI);
+		assertNotNull(match);
 	}	
 	
 	@Test
@@ -74,6 +75,12 @@ public class MatchTest {
 		pickedCard = match.move(new Coordinates('a',2));
 		assertTrue(pickedCard instanceof DangerousSectorCard);
 	}
+	
+	/*public void testStartMatch(){
+		testMatchNotNull();
+		match.start();
+		assertTrue(true);
+	}	*/
 }
 
 

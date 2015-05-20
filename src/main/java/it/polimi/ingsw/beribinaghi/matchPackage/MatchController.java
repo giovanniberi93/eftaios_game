@@ -88,10 +88,14 @@ public class MatchController {
 	 * start the match
 	 */
 	public void start(PreMatch match) {
-		match.start();
+		ArrayList<GameSession> gameSessions = new ArrayList<GameSession>();
 		for (SetupSession setupSession: sessions)
 			if ((setupSession.getMatchName()!=null) && setupSession.getMatchName().equals(match.getMatchName()))
+			{
+				gameSessions.add(setupSession.getGameSession());
 				setupSession.startMatch();
+			}
+		match.start(gameSessions);
 	}
 
 	private boolean nameExists(String name) {
