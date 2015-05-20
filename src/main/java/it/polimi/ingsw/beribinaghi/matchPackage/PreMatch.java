@@ -7,7 +7,9 @@ import java.util.ArrayList;
 import java.util.Timer;
 
 import it.polimi.ingsw.beribinaghi.App;
-import it.polimi.ingsw.beribinaghi.mapPackage.mapModel;
+import it.polimi.ingsw.beribinaghi.decksPackage.WrongCardTypeException;
+import it.polimi.ingsw.beribinaghi.mapPackage.Map;
+import it.polimi.ingsw.beribinaghi.mapPackage.MapModel;
 import it.polimi.ingsw.beribinaghi.playerPackage.Player;
 
 /**
@@ -85,7 +87,7 @@ public class PreMatch {
 	public void start(ArrayList<GameSession> sessions){
 		active = true;
 		timer.cancel();
-		match = new Match(sessions,players,matchName,"galilei",mapModel.GALILEI);
+		match = new Match(sessions,players,matchName,"galilei",MapModel.GALILEI);
 		match.start();
 	}
 

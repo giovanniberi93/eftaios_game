@@ -14,10 +14,12 @@ public class Map {
 	final static int HEIGHT = 14;		//TODO aggiungi costanti
 	final static int WIDTH = 23;
 	private String mapName;
-	private HashMap <Coordinates, Sector> map = new HashMap<Coordinates, Sector>();
+	private HashMap <String, Sector> map = new HashMap<String, Sector>();
+	private Coordinates AlienBaseCoordinates;
+	private Coordinates HumanBaseCoordinates;
 	
 	/**
-	 * @param mapName is a map model, where all sectors type are defined
+	 * @param mapName is a map model, where all sectors types are defined
 	 * 	Generate a new Map with name mapName and graphics map.
 	 */
 	public Map (String mapName, SectorName[][] graphicMap, DangerousSectorsDeck dangerousDeck, ShallopsDeck shallopsDeck){
@@ -26,32 +28,36 @@ public class Map {
 		DeckAssigner deckAssigner = new WatcherDeckAssigner(dangerousDeck, shallopsDeck);
 	
 		for (int i=0;i<graphicMap.length;i++)
-			for (int j=0;j<graphicMap[i].length;j++)
-			{
-				Coordinates actualCoordinates = new Coordinates (Coordinates.getLetterFromNumber(i),j);
+			for (int j=0;j<graphicMap[i].length;j++){
+				
+				Coordinates actualCoordinates = new Coordinates (Coordinates.getLetterFromNumber(j),i+1);
 				Sector actualSector = (Sector) (graphicMap[i][j].getSector()).clone();
 				actualSector.acceptDeck(deckAssigner);
-				map.put(actualCoordinates, actualSector);				
+				map.put(actualCoordinates.toString(), actualSector);
+				if(actualSector instanceof AlienBase)
+					setAlienBaseCoordinates(actualCoordinates);
+				if(actualSector instanceof HumanBase)
+					setHumanBaseCoordinates(actualCoordinates);
 			}
 		}
 
 	public ArrayList<Coordinates> adiacentCoordinates (Coordinates centralCoordinates){
 		int otherNumber;
-		char currentLetter;								//TODO da rifare
-		int currentNumber;
+		char currentLetter;							//non tiene conto dell'effettiva dimensione della mappa
+		int currentNumber;							//però con una mappa come galilei funziona lo stesso
 		Coordinates actualCoordinates;
 		ArrayList<Coordinates> adiacentCoordinates = new ArrayList<Coordinates>();
 		currentLetter = centralCoordinates.getLetter();
 		currentNumber = centralCoordinates.getNumber();
-		if(((int) currentLetter) % 2 == 0)
+		if(((int) currentLetter) % 2 != 0)		//a,c,e...
 			otherNumber = currentNumber - 1;
 		else
-			otherNumber = currentNumber + 1;
+			otherNumber = currentNumber + 1;	//b,d,f...
 		for(int i = -1; i < 2; i++){
-			actualCoordinates = new Coordinates(Coordinates.getLetterFromNumber( (int)currentLetter + i), currentNumber);
+			actualCoordinates = new Coordinates((char) ((int)currentLetter + i), currentNumber);	
 			if(actualCoordinates.isValid())
 				adiacentCoordinates.add(actualCoordinates);
-			actualCoordinates = new Coordinates(Coordinates.getLetterFromNumber( (int)currentLetter + i), otherNumber);
+			actualCoordinates = new Coordinates((char) ((int)currentLetter + i), otherNumber);
 			if(actualCoordinates.isValid())
 				adiacentCoordinates.add(actualCoordinates);
 		}
@@ -60,59 +66,51 @@ public class Map {
 		adiacentCoordinates.add(actualCoordinates);
 			return adiacentCoordinates;
 	}
-		
-	/**
-	 * return the coordinates of the first found instance of the searched sector type 
-	 * @param sectorName is the sector type searched
-	 * @return the coordinates of the desired sector
-	 */
-	public Coordinates searchSectorType (SectorName wantedSectorName){
 
-		Sector wantedSectorType = wantedSectorName.getSector();	//sector is instance of the sector class indicated in wantedSectorName 
-		Iterator<Coordinates> keySetIterator = map.keySet().iterator();
-
-		while(keySetIterator.hasNext()){
-			Coordinates nextCoordinates = keySetIterator.next();
-			if(map.get(nextCoordinates).getClass() == wantedSectorType.getClass())
-				return nextCoordinates;
-			}
-		return null;
-		}
 	
 	/**
-	 * Returns the coordinates reachable with a passed number of steps from a passed Coordinate. Note: this method returns the coordinates reachable with a movement, not the sectors that have a determinate distance from the passed one
+	 * Returns the coordinates reachable with a passed number of steps from a passed Coordinate. 
+	 * Note: this method returns the coordinates reachable with a movement, not the sectors that have a determinate distance from the passed one
 	 * @param initialCoordinates are the coordinates of the sector in which the movement start
 	 * @param distance is the maximum reachable distance allowed in the movement. It depends from the player side, and from the object card he is using
 	 * @return the ArrayList of the reachable coordinates
 	 */
+
 	public ArrayList<Coordinates> getReachableCoordinates(Coordinates initialCoordinates, int distance){
 		ArrayList<Coordinates> reachableCoordinates = new ArrayList<Coordinates>();
-		ArrayList<Coordinates> adiacentToAnalyzed = new ArrayList<Coordinates>();
-		
+		ArrayList<Coordinates> adiacentToTmp = new ArrayList<Coordinates>();
+		ArrayList<Coordinates> tmpReachable = new ArrayList<Coordinates>();
+		boolean found;
+
 		reachableCoordinates.add(initialCoordinates);
-		for(int i=distance; i>0; i--){
-			
-			ArrayList<Coordinates> tmpReachable = reachableCoordinates;
-			
-			for(Coordinates analyzedCoordinates: tmpReachable){
+		tmpReachable.add(initialCoordinates);
+		for(int i=0; i<distance; i++){				//itera per la distanza raggiungbile
+			for(Coordinates analyzedCoordinates: tmpReachable)
+				adiacentToTmp.addAll(this.adiacentCoordinates(analyzedCoordinates));		//agggiungo tutte le raggiunte all'adiacent di tmp
+			tmpReachable.clear();
+			for(Coordinates analyzedCoordinates : adiacentToTmp){
 				Sector analyzedSector = this.getSector(analyzedCoordinates);
-				if(analyzedSector.getClass().equals((new HumanBase()).getClass()) || analyzedSector.getClass().equals((new AlienBase()).getClass()) || analyzedSector.getClass().equals((new BlankSector()).getClass()))
-					tmpReachable.remove(analyzedCoordinates);		//rimuove il settore se è blank, alienbase o humanbase
-				else{
-					adiacentToAnalyzed = adiacentCoordinates(analyzedCoordinates);
-					for(Coordinates adiacentCoordinates: adiacentToAnalyzed){
-						if(!reachableCoordinates.contains(adiacentCoordinates))
-							reachableCoordinates.add(adiacentCoordinates);
+				if(!(analyzedSector instanceof HumanBase || analyzedSector instanceof AlienBase || analyzedSector instanceof BlankSector)){
+					found = false;
+					for(Coordinates coord : reachableCoordinates){
+						if (coord.equals(analyzedCoordinates))
+						found = true;
+					}	
+					if(!found){
+						reachableCoordinates.add(analyzedCoordinates);
+						tmpReachable.add(analyzedCoordinates);
+						}
 					}
-				}
 			}
+			adiacentToTmp.clear();
 		}
 		reachableCoordinates.remove(initialCoordinates);
 		return reachableCoordinates;
 	}
 
 	public Sector getSector (Coordinates coordinates){
-		return map.get(coordinates);
+		Sector selectedSector = map.get(coordinates.toString());
+		return selectedSector;
 	}
 
 	public String getMapName() {
@@ -123,9 +121,22 @@ public class Map {
 	public void setMapName(String mapName) {
 		this.mapName = mapName;
 	}
-	
-	
 
+	public Coordinates getAlienBaseCoordinates() {
+		return AlienBaseCoordinates;
+	}
+
+	public void setAlienBaseCoordinates(Coordinates alienBaseCoordinates) {
+		AlienBaseCoordinates = alienBaseCoordinates;
+	}
+
+	public Coordinates getHumanBaseCoordinates() {
+		return HumanBaseCoordinates;
+	}
+
+	public void setHumanBaseCoordinates(Coordinates humanBaseCoordinates) {
+		HumanBaseCoordinates = humanBaseCoordinates;
+	}
 	
 }
 

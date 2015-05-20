@@ -109,18 +109,12 @@ public class Match {
 	 */
 	private void setInitialPositions(ArrayList<Player> players){
 		
-		Coordinates alienBaseCoordinates;
-		Coordinates humanBaseCoordinates;
-		
-		alienBaseCoordinates = map.searchSectorType(SectorName.ALIENBASE);
-		humanBaseCoordinates = map.searchSectorType(SectorName.HUMANBASE);
-		
 		for(Player player: players){
 			if(player.getCharacter().getSide() == SideName.ALIEN)
-				player.setCurrentPosition(alienBaseCoordinates);
+				player.setCurrentPosition(map.getAlienBaseCoordinates());
 			else
-				player.setCurrentPosition(humanBaseCoordinates);
-		}
+				player.setCurrentPosition(map.getHumanBaseCoordinates());
+			}
 	}
 	
 	/**
@@ -232,12 +226,9 @@ public class Match {
 		Player currentPlayer = players.get(currentPlayerIndex);
 		
 		matchDataUpdate.setUsedObjectCard(usedCard);		//update MatchDataUpdate con la carta usata
-		if(currentPlayer.getCharacter().getSide() == SideName.ALIEN)		//setta base giusta
-			baseCoordinates = map.searchSectorType(SectorName.ALIENBASE);
-		else
-			baseCoordinates = map.searchSectorType(SectorName.HUMANBASE);
+		baseCoordinates = map.getHumanBaseCoordinates();
 		move(baseCoordinates);
-		
+	
 		currentPlayer.getCharacter().removeCardFromBag(usedCard);		//toglie la carta usata dal bag del currentPlayer
 	}
 	

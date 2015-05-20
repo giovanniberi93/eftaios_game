@@ -1,6 +1,3 @@
-/**
- * 
- */
 package it.polimi.ingsw.beribinaghi.mapPackage;
 
 import java.io.Serializable;
@@ -32,7 +29,7 @@ public final class Coordinates implements Serializable{
 	}
 	
 	/**	
-	 * Constructs a Coordinates object with letter and number
+	 * Constructs a Coordinates object from letter and number
 	 * @param letter
 	 * @param number
 	 * 
@@ -46,8 +43,17 @@ public final class Coordinates implements Serializable{
 		int number = this.getNumber();
 		int letterNumber = getNumberFromLetter(this.getLetter());
 		return (number >= 1 && number <= 14 && letterNumber >= 0 && letterNumber <= 22);
-		
 	}
+	
+	public boolean equals(Coordinates coord){
+		return (this.getLetter() == coord.getLetter() && this.getNumber() == coord.getNumber());
+	}
+	
+	public String toString(){
+		String string = new String(this.getLetter()+""+this.getNumber());
+		return string;
+	}
+	
 	public static char getLetterFromNumber(int num){
 		return (char) ('a' + num);
 	}
