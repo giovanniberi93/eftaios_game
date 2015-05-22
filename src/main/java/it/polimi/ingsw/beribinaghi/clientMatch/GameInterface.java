@@ -1,7 +1,7 @@
 /**
  * 
  */
-package clientMatch;
+package it.polimi.ingsw.beribinaghi.clientMatch;
 
 import it.polimi.ingsw.beribinaghi.gameNames.SideName;
 

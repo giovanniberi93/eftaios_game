@@ -3,14 +3,14 @@
  */
 package it.polimi.ingsw.beribinaghi.clientSetup;
 
+import it.polimi.ingsw.beribinaghi.clientMatch.GameSessionClientSide;
+import it.polimi.ingsw.beribinaghi.clientMatch.SocketSession;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Scanner;
-
-import clientMatch.GameSessionClientSide;
-import clientMatch.SocketSession;
 
 /**
  *  interface for communication with server via socket

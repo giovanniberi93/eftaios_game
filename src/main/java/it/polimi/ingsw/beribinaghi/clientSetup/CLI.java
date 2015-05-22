@@ -3,11 +3,11 @@
  */
 package it.polimi.ingsw.beribinaghi.clientSetup;
 
+import it.polimi.ingsw.beribinaghi.clientMatch.GameCLI;
+import it.polimi.ingsw.beribinaghi.clientMatch.GameInterface;
+
 import java.util.ArrayList;
 import java.util.Scanner;
-
-import clientMatch.GameCLI;
-import clientMatch.GameInterface;
 
 /**
  * class for CLI

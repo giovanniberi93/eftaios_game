@@ -3,9 +3,9 @@
  */
 package it.polimi.ingsw.beribinaghi.clientSetup;
 
-import java.util.ArrayList;
+import it.polimi.ingsw.beribinaghi.clientMatch.GameSessionClientSide;
 
-import clientMatch.GameSessionClientSide;
+import java.util.ArrayList;
 
 /**
  * interface for communication with server

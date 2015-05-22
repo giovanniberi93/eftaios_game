@@ -3,9 +3,9 @@
  */
 package it.polimi.ingsw.beribinaghi.clientSetup;
 
-import java.util.ArrayList;
+import it.polimi.ingsw.beribinaghi.clientMatch.matchController;
 
-import clientMatch.matchController;
+import java.util.ArrayList;
 
 /**
  * This class manages the setup of game

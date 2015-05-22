@@ -45,15 +45,38 @@ public final class Coordinates implements Serializable{
 		return (number >= 1 && number <= 14 && letterNumber >= 0 && letterNumber <= 22);
 	}
 	
-	public boolean equals(Coordinates coord){
-		return (this.getLetter() == coord.getLetter() && this.getNumber() == coord.getNumber());
-	}
-	
-	public String toString(){
-		String string = new String(this.getLetter()+""+this.getNumber());
+	@Override
+	public String toString() {
+		String adaptedNumber = String.format("%02d", this.getNumber());
+		String string = new String(this.getLetter()+adaptedNumber);
 		return string;
 	}
-	
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + letter;
+		result = prime * result + number;
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Coordinates other = (Coordinates) obj;
+		if (letter != other.letter)
+			return false;
+		if (number != other.number)
+			return false;
+		return true;
+	}
+
 	public static char getLetterFromNumber(int num){
 		return (char) ('a' + num);
 	}

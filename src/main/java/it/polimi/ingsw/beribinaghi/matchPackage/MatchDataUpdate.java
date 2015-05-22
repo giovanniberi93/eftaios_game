@@ -15,96 +15,90 @@ import java.util.Observable;
  * Informations about: killed players, used cards, players survived from an attack, current player, noise coordinates, escape try outcome
  */
 public class MatchDataUpdate extends Observable {
-	private ArrayList<Player> recentKills = new ArrayList<Player>();
 	private ArrayList<ObjectCard> usedObjectCard = new ArrayList<ObjectCard>();
-	private ArrayList<Player> survivedPlayers = new ArrayList<Player>();
-	private ArrayList<Player> spottedPlayers = new ArrayList<Player>();
 	
 	private int turnNumber;
 	private Player currentPlayer;
-	private Boolean escaped = null;
-	private Coordinates noiseCoordinates;
-	
 	private boolean isMatchFinished;
+	
 	
 	public MatchDataUpdate (Player successiveCurrentPlayer, int turnNumber){
 		this.turnNumber = turnNumber;
 		this.currentPlayer = successiveCurrentPlayer;
 	}
 	
-	public ArrayList<Player> getRecentKills() {
-		return recentKills;
+	public void setUsedObjectCard(ObjectCard objectCard) {
+		String usedCard = new String(objectCard.toString());
+		this.setChanged();
+		this.notifyObservers(usedCard);
 	}
-	public void setRecentKills(Player killedPlayer) {
-		this.recentKills.add(killedPlayer);
-	}
-	public ArrayList<ObjectCard> getUsedObjectCard() {
-		return usedObjectCard;
+
+	public void setAttackOutcome(ArrayList<Player> killed, ArrayList<Player> survived) {
+		String attackResult = new String("killed:");
+		for(Player player : killed)
+			attackResult = attackResult+player.getUser()+":";
+		attackResult += "survived:";
+		for(Player player : survived)
+			attackResult += player.getUser()+":";
+		this.setChanged();
+		this.notifyObservers(attackResult);
 	}
 	
-	public void setUsedObjectCard(ObjectCard ObjectCard) {
-		this.usedObjectCard.add(ObjectCard);
-	}
-	public ArrayList<Player> getSurvivedPlayers() {
-		return survivedPlayers;
-	}
-	public void setSurvivedPlayers(Player player) {
-		this.survivedPlayers.add(player);
-	}
 	public Player getCurrentPlayer() {
 		return currentPlayer;
 	}
-	
-	public Boolean getEscaped() {
-		return escaped;
-	}
+
 	public void setEscaped(Boolean escaped) {
-		this.escaped = escaped;
+		String escape = new String("escape:"+escaped);
+		this.setChanged();
+		this.notifyObservers(escape);
 	}
-	public Coordinates getNoiseCoordinates() {
-		return noiseCoordinates;
-	}
+
 	public void setNoiseCoordinates(Coordinates noiseCoordinates) {
-		this.noiseCoordinates = noiseCoordinates;
+		String noise = new String("noise:"+noiseCoordinates.toString());
+		this.setChanged();
+		this.notifyObservers(noise);
 	}
 
 	public int getTurnNumber() {
 		return turnNumber;
 	}
 	
+	public ArrayList<ObjectCard> getUsedObjectCard() {
+		return usedObjectCard;
+	}
 
 	public boolean isMatchFinished() {
 		return isMatchFinished;
 	}
 
 	public void setMatchFinished(boolean isMatchFinished) {
-		this.isMatchFinished = isMatchFinished;
+		String end = new String("endMatch");
+		this.setChanged();
+		this.notifyObservers(end);
 	}
 
-	public ArrayList<Player> getSpottedPlayers() {
-		return spottedPlayers;
-	}
-
-	public void setSpottedPlayers(Player caughtPlayer) {
-		this.spottedPlayers.add(caughtPlayer);
+	public void setSpottedPlayers(ArrayList<Player> caughtPlayer) {
+		String spotted = new String("spotted:");
+		for(Player player : caughtPlayer){
+			spotted = spotted+player.getUser()+":";
+		}
+		this.setChanged();
+		this.notifyObservers(spotted);
 	}
 	
 	public void start()
 	{
 		this.setChanged();
-		this.notifyObservers("turn:" + currentPlayer.getUser());
+		this.notifyObservers("turn:" + currentPlayer.getUser() + ":" + getTurnNumber());
 	}
 
 	public void clear(Player player) {
 		this.turnNumber++;
 		this.currentPlayer = player;
-		escaped = null;
-		recentKills.clear();
 		usedObjectCard.clear();
-		survivedPlayers.clear();
-		spottedPlayers.clear();
 		this.setChanged();
-		this.notifyObservers("turn:" + player.getUser());
+		this.notifyObservers("turn:" + player.getUser()+":"+getTurnNumber());
 	}
 
 }

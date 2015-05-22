@@ -48,10 +48,10 @@ public class ServerManager {
 	private void stopServer() {
 		if (socketServer.isActive()){
 			socketServer.setInactive();
-			System.out.println("Server successfully stoped");
+			System.out.println("Server successfully stopped");
 		}
 		else 
-			System.out.println("Server alredy stoped");
+			System.out.println("Server alredy stopped");
 	}
 	
 	private void notifyServer() {
