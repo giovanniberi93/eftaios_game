@@ -123,7 +123,7 @@ public class SetupSocketSession implements SetupSession {
 
 	@Override
 	public GameSession startGameComunication() {
-		return new SocketSession(socket);
+		return new SocketSession(socket,in,out);
 	}
 
 

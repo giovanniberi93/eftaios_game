@@ -10,6 +10,7 @@ import it.polimi.ingsw.beribinaghi.gameNames.CharacterName;
  */
 public class HumanCharacter extends Character {
 
+	private static final long serialVersionUID = 1L;
 	private boolean isEscaped = false;
 	
 	public HumanCharacter(CharacterName character) {

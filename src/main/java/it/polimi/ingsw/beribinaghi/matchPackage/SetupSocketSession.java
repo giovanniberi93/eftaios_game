@@ -182,7 +182,7 @@ public class SetupSocketSession extends Thread implements SetupSession {
 		try {
 		    out.println("started match");
 		    out.flush();
-			SocketSession socketSession = new SocketSession(socket,player);
+			SocketSession socketSession = new SocketSession(socket,in,out,player);
 			return socketSession;
 		} catch (IOException e) {
 

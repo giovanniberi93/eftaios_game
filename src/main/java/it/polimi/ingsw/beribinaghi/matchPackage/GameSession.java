@@ -3,6 +3,7 @@
  */
 package it.polimi.ingsw.beribinaghi.matchPackage;
 
+import it.polimi.ingsw.beribinaghi.mapPackage.Map;
 import it.polimi.ingsw.beribinaghi.playerPackage.Player;
 
 import java.util.Observable;
@@ -23,7 +24,20 @@ public abstract class GameSession implements Observer {
 			this.notifyBeginTurn(command[1]);
 	}
 
-	protected abstract void notifyBeginTurn(String string);
+	/**
+	 * @param playerName
+	 * notify client that is turn of playerName
+	 */
+	protected abstract void notifyBeginTurn(String playerName);
 
+	/**
+	 * notify client about his character
+	 */
 	public abstract void notifyCharacter();
+
+	/**
+	 * @param map
+	 * sends all map to client
+	 */
+	public abstract void sendMap(Map map);
 }

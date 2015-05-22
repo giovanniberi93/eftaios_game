@@ -1,14 +1,12 @@
 package it.polimi.ingsw.beribinaghi.mapPackage;
 
 import it.polimi.ingsw.beribinaghi.decksPackage.DangerousSectorsDeck;
-import it.polimi.ingsw.beribinaghi.gameNames.*;
 import it.polimi.ingsw.beribinaghi.decksPackage.ShallopsDeck;
 import it.polimi.ingsw.beribinaghi.gameNames.SectorName;
 import it.polimi.ingsw.beribinaghi.matchPackage.DeckAssigner;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 
 public class Map {
 	final static int HEIGHT = 14;		//TODO aggiungi costanti
@@ -17,6 +15,7 @@ public class Map {
 	private HashMap <String, Sector> map = new HashMap<String, Sector>();
 	private Coordinates AlienBaseCoordinates;
 	private Coordinates HumanBaseCoordinates;
+	private SectorName[][] graphicMap;
 	
 	/**
 	 * @param mapName is a map model, where all sectors types are defined
@@ -26,6 +25,7 @@ public class Map {
 		
 		this.setMapName(mapName);
 		DeckAssigner deckAssigner = new WatcherDeckAssigner(dangerousDeck, shallopsDeck);
+		this.graphicMap = graphicMap;
 	
 		for (int i=0;i<graphicMap.length;i++)
 			for (int j=0;j<graphicMap[i].length;j++){
@@ -40,6 +40,15 @@ public class Map {
 					setHumanBaseCoordinates(actualCoordinates);
 			}
 		}
+
+	public Map(String mapName, SectorName[][] graphicMap) {
+		for (int i=0;i<graphicMap.length;i++)
+			for (int j=0;j<graphicMap[i].length;j++){
+				Coordinates actualCoordinates = new Coordinates (Coordinates.getLetterFromNumber(j),i+1);
+				Sector actualSector = (Sector) (graphicMap[i][j].getSector()).clone();
+				map.put(actualCoordinates.toString(), actualSector);
+			}
+	}
 
 	public ArrayList<Coordinates> adiacentCoordinates (Coordinates centralCoordinates){
 		int otherNumber;
@@ -137,7 +146,13 @@ public class Map {
 	public void setHumanBaseCoordinates(Coordinates humanBaseCoordinates) {
 		HumanBaseCoordinates = humanBaseCoordinates;
 	}
-	
+
+	/**
+	 * @return the graphicMap
+	 */
+	public SectorName[][] getGraphicMap() {
+		return graphicMap;
+	}
 }
 
 

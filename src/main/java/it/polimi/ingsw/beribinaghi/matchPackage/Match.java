@@ -63,6 +63,7 @@ public class Match {
 		
 		matchDataUpdate = new MatchDataUpdate(players.get(currentPlayerIndex), 1);
 		setupDecks(players.size());
+		sendMap();
 		assignCharacter(players);
 		setInitialPositions(players);
 		for (GameSession gameSession: sessions)
@@ -70,6 +71,13 @@ public class Match {
 	}
 	
 	
+	private void sendMap() {
+		for(GameSession gameSession: sessions){
+			gameSession.sendMap(map);
+		}
+	}
+
+
 	/**
 	 * setup of the decks, according to playerNumber
 	 * @param playerNumber

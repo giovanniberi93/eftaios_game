@@ -3,6 +3,7 @@
  */
 package clientMatch;
 
+import it.polimi.ingsw.beribinaghi.mapPackage.Map;
 import it.polimi.ingsw.beribinaghi.playerPackage.Character;
 
 
@@ -15,6 +16,7 @@ public class matchController {
 	private GameSession session;
 	private String myPlayerName;
 	private Character myCharacter;
+	private Map map;
 
 	public matchController(String playerName, GameInterface graphicInterface, GameSession session) {
 		this.graphicInterface = graphicInterface;
@@ -22,6 +24,7 @@ public class matchController {
 		this.graphicInterface.setController(this);
 		this.session.setController(this);
 		this.myPlayerName = playerName;
+		map = session.getMap();
 		myCharacter = session.getCharacter();
 		graphicInterface.printCharacter(myCharacter.getName(),myCharacter.getRole(),myCharacter.getSide());
 		turn();
@@ -31,7 +34,8 @@ public class matchController {
 		String playerTurn = session.listenTurn();
 		if (playerTurn.equals(myPlayerName))
 			graphicInterface.managesTurn();
-			
+		else
+			graphicInterface.notifyOthersTurn(playerTurn);
 	}
 
 }

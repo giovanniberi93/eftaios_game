@@ -17,4 +17,6 @@ public interface GameInterface {
 
 	void managesTurn();
 
+	void notifyOthersTurn(String playerTurn);
+
 }

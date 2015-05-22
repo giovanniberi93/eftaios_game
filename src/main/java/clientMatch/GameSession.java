@@ -3,6 +3,7 @@
  */
 package clientMatch;
 
+import it.polimi.ingsw.beribinaghi.mapPackage.Map;
 import it.polimi.ingsw.beribinaghi.playerPackage.Character;
 
 /**
@@ -14,9 +15,11 @@ public interface GameSession {
 
 	void setController(matchController matchController);
 
-	Character getCharacter();
+	public Character getCharacter();
 
-	String listenTurn();
+	public String listenTurn();
+
+	public Map getMap();
 
 
 }

@@ -33,4 +33,9 @@ public class GameCLI implements GameInterface {
 		System.out.println("E' il tuo turno!");
 	}
 
+	@Override
+	public void notifyOthersTurn(String playerTurn) {
+		System.out.println("E' il tuo turno di " + playerTurn);
+	}
+
 }
