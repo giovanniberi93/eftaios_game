@@ -22,6 +22,6 @@ public interface SetupSession {
 	
 	public String getMatchName();
 
-	public GameSession getGameSession();
+	public GameSessionServerSide getGameSession();
 	
 }

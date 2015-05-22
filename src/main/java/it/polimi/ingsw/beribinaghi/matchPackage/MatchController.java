@@ -88,7 +88,7 @@ public class MatchController {
 	 * start the match
 	 */
 	public void start(PreMatch match) {
-		ArrayList<GameSession> gameSessions = new ArrayList<GameSession>();
+		ArrayList<GameSessionServerSide> gameSessions = new ArrayList<GameSessionServerSide>();
 		for (SetupSession setupSession: sessions)
 			if ((setupSession.getMatchName()!=null) && setupSession.getMatchName().equals(match.getMatchName()))
 			{

@@ -9,7 +9,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-import clientMatch.GameSession;
+import clientMatch.GameSessionClientSide;
 import clientMatch.SocketSession;
 
 /**
@@ -122,7 +122,7 @@ public class SetupSocketSession implements SetupSession {
 	}
 
 	@Override
-	public GameSession startGameComunication() {
+	public GameSessionClientSide startGameComunication() {
 		return new SocketSession(socket,in,out);
 	}
 

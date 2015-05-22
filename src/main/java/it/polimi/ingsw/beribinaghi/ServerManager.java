@@ -31,7 +31,7 @@ public class ServerManager {
 			}
 		}
 		else
-			System.out.println("Server just existing");
+			System.out.println("Server already existing");
 		if (!error)
 			controllerInterface();
 	}
@@ -42,7 +42,7 @@ public class ServerManager {
 			System.out.println("Server successfully started");
 		}
 		else 
-			System.out.println("Server already started");
+			System.out.println("Server is already running");
 	}
 	
 	private void stopServer() {

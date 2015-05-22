@@ -82,7 +82,7 @@ public class PreMatch {
 	/**
 	 *  Start the match
 	 */
-	public void start(ArrayList<GameSession> sessions){
+	public void start(ArrayList<GameSessionServerSide> sessions){
 		active = true;
 		timer.cancel();
 		match = new Match(sessions,players,matchName,"galilei",MapModel.GALILEI);

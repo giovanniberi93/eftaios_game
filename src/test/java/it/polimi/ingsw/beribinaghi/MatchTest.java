@@ -3,18 +3,21 @@ package it.polimi.ingsw.beribinaghi;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+
+import java.util.ArrayList;
+
 import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.Card;
 import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.DangerousSectorCard;
 import it.polimi.ingsw.beribinaghi.gameNames.SideName;
 import it.polimi.ingsw.beribinaghi.mapPackage.Coordinates;
 import it.polimi.ingsw.beribinaghi.mapPackage.MapModel;
+import it.polimi.ingsw.beribinaghi.matchPackage.GameSessionServerSide;
 import it.polimi.ingsw.beribinaghi.matchPackage.Match;
 import it.polimi.ingsw.beribinaghi.playerPackage.Player;
 
-import java.util.ArrayList;
-
 import org.junit.Before;
 import org.junit.Test;
+ 
 
 public class MatchTest {
 	Match match;
@@ -33,7 +36,9 @@ public class MatchTest {
 		players.add(player3);
 		players.add(player4);
 		
-		match = new Match(null, players, "testMap", null, MapModel.GALILEI);
+		ArrayList<GameSessionServerSide> gameSessions = new ArrayList<GameSessionServerSide>();
+		gameSessions = null;
+		match = new Match(gameSessions, players, "testMap", "Galilei", MapModel.GALILEI);
 		assertNotNull(match);
 	}	
 	

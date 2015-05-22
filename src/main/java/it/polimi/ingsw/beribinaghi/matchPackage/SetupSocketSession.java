@@ -178,7 +178,7 @@ public class SetupSocketSession extends Thread implements SetupSession {
 	}
 
 	@Override
-	public GameSession getGameSession() {
+	public GameSessionServerSide getGameSession() {
 		try {
 		    out.println("started match");
 		    out.flush();

@@ -11,7 +11,7 @@ import it.polimi.ingsw.beribinaghi.playerPackage.Character;
  * it recives command that will be sent to server
  *
  */
-public interface GameSession {
+public interface GameSessionClientSide {
 
 	void setController(matchController matchController);
 
