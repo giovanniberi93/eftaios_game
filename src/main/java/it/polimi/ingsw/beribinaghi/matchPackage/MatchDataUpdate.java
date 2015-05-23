@@ -18,9 +18,7 @@ public class MatchDataUpdate extends Observable {
 	private ArrayList<ObjectCard> usedObjectCard = new ArrayList<ObjectCard>();
 	
 	private int turnNumber;
-	private Player currentPlayer;
-	private boolean isMatchFinished;
-	
+	private Player currentPlayer;	
 	
 	public MatchDataUpdate (Player successiveCurrentPlayer, int turnNumber){
 		this.turnNumber = turnNumber;
@@ -30,7 +28,7 @@ public class MatchDataUpdate extends Observable {
 	public void setUsedObjectCard(ObjectCard objectCard) {
 		String usedCard = new String(objectCard.toString());
 		this.setChanged();
-		this.notifyObservers(usedCard);
+		this.notifyObservers("card:"+usedCard);
 	}
 
 	public void setAttackOutcome(ArrayList<Player> killed, ArrayList<Player> survived) {
@@ -66,10 +64,6 @@ public class MatchDataUpdate extends Observable {
 	
 	public ArrayList<ObjectCard> getUsedObjectCard() {
 		return usedObjectCard;
-	}
-
-	public boolean isMatchFinished() {
-		return isMatchFinished;
 	}
 
 	public void setMatchFinished(boolean isMatchFinished) {

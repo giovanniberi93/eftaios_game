@@ -155,6 +155,7 @@ public class Match {
 			if(!(shallopCard.isDamaged())){
 				matchDataUpdate.getCurrentPlayer().setCurrentPosition(null);
 				matchDataUpdate.setEscaped(true);
+				this.finishTurn();
 			}
 			else
 				matchDataUpdate.setEscaped(false);
@@ -188,8 +189,10 @@ public class Match {
 		if(currentPlayerIndex == players.size()-1)
 			currentPlayerIndex = 0;
 		else currentPlayerIndex++;	
-		if(!isFinished())		//TODO sennò?
+		if(!isFinished())
 			matchDataUpdate.clear(players.get(currentPlayerIndex));
+		else
+			matchDataUpdate.setMatchFinished(true);
 	}
 
 	public Map getMap() {
