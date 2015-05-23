@@ -19,15 +19,15 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 /**
- * class that manages all comunication with server during the game
+ * class that manages all communication with server during the game
  *
  */
 public class SocketSession implements GameSessionClientSide {
 	private Socket socket;
 	private PrintWriter out;
 	private Scanner in;
-	private ObjectInputStream ois;
-	private matchController controller;
+	private ObjectInputStream objectInputStream;
+	private MatchController controller;
 	
 	public SocketSession(Socket socket, Scanner in, PrintWriter out) {
 			this.socket = socket;
@@ -36,7 +36,7 @@ public class SocketSession implements GameSessionClientSide {
 	}
 
 	@Override
-	public void setController(matchController matchController) {
+	public void setController(MatchController matchController) {
 		this.controller = matchController;
 		
 	}

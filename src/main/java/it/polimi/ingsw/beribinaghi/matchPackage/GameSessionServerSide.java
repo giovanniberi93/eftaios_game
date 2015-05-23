@@ -20,23 +20,23 @@ public abstract class GameSessionServerSide implements Observer {
 	@Override
 	public  void update(Observable o, Object arg) {
 		String line = (String) arg;
-		String command[] = line.split(":");
+		String command[] = line.split("=");
 		if (command[0].equals("turn"))
-			this.notifyBeginTurn(command[1]);
+			this.notifyBeginTurn(line);
 		else if (command[0].equals("killed")){
-			this.notifyAttackResult(command);
+			this.notifyAttackResult(line);
 		}
-		else if (command[0].equals("escape")){
-			this.notifyEscape();
+		else if (command[0].equals("escaped")){
+			this.notifyEscape(line);
 		}
 		else if (command[0].equals("noise")){
-			this.notifyNoise(command[1]);
+			this.notifyNoise(line);
 		}
 		else if (command[0].equals("spotted")){
-			this.notifySpotted(command);
+			this.notifySpotted(line);
 		}
 		else if (command[0].equals("card")){
-			this.notifyCard(command[1]);
+			this.notifyCard(line);
 		}
 		else if (command[0].equals("endMatch")){
 			this.notifyEndMatch();
@@ -44,49 +44,54 @@ public abstract class GameSessionServerSide implements Observer {
 	}
 
 	/**
-	 * Notify to all players the end of the running match
+	 * Notifies to all players the end of the running match
 	 */
 	protected void notifyEndMatch() {}
 
 	/**
-	 * Notify to all players an object used by current player
+	 * Notifies to all players an object used by current player
 	 * @param string is usedCard.toString(); represent the used card 
 	 */
 	protected void notifyCard(String string) {}
 	
 	/**
-	 * Notify to all players the position of the players spotted by a spotlight
-	 * @param command is an Array containing the usernames of the spotted players
+	 * Notifies to all players the position of the players spotted by a spotlight
+	 * @param spottedPlayers contains the usernames of spotted players, divided by the character "="
 	 */
-	protected void notifySpotted(String[] command){}
+	protected void notifySpotted(String spottedPlayers){}
 
 	/**
-	 * Notify to all players the position of the noise signaled by the current player
-	 * @param string
+	 * Notifies to all players the position of the noise signaled by the current player
+	 * @param string contains a string representing the coordinates in which the noise is declared
 	 */
-	protected void notifyNoise(String string){}
+	protected void notifyNoise(String noisePosition){}
 
 	/**
-	 * Notify to all players the escape from the alien of a human player
+	 * Notifies to all players the escape from the aliens of a the current player
+	 * @param escapeResult 
 	 */
-	protected void notifyEscape(){}
+	protected void notifyEscape(String escapeResult){}
 	
-	protected void notifyAttackResult(String[] command){}
+	/**
+	 * Notifies to all players the result of an attack of the current player
+	 * @param attackResult the "survived" string divides the killed characters usernames from the survived characters usernames; all useranames are divided by the character "="
+	 */
+	protected void notifyAttackResult(String attackResult){}
 
 	/**
+	 * Notifies to all players the username of the new current player
 	 * @param playerName
-	 * notify client that is turn of playerName
 	 */
 	protected abstract void notifyBeginTurn(String playerName);
 
 	/**
-	 * notify client about his character
+	 * Notifies to every player the received character
 	 */
 	public abstract void notifyCharacter();
 
 	/**
-	 * @param map
-	 * sends all map to client
-	 */
+	 * Send the map of the game to all the players connected at the match
+	 * @param map is a Map object representing the match	 
+	 * */
 	public abstract void sendMap(Map map);
 }

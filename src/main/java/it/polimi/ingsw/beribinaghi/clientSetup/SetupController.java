@@ -3,7 +3,7 @@
  */
 package it.polimi.ingsw.beribinaghi.clientSetup;
 
-import it.polimi.ingsw.beribinaghi.clientMatch.matchController;
+import it.polimi.ingsw.beribinaghi.clientMatch.MatchController;
 
 import java.util.ArrayList;
 
@@ -47,7 +47,7 @@ public class SetupController {
 		while (!setupSession.isStarted(this))
 		{
 		}
-		new matchController(playerName,graphicInterface.beginMatch(),setupSession.startGameComunication());
+		new MatchController(playerName,graphicInterface.beginMatch(),setupSession.startGameComunication());
 	}
 
 	/**

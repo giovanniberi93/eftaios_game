@@ -12,10 +12,10 @@ import it.polimi.ingsw.beribinaghi.mapPackage.Map;
  */
 public class GameCLI implements GameInterface {
 
-	private matchController controller;
+	private MatchController controller;
 
 	@Override
-	public void setController(matchController matchController) {
+	public void setController(MatchController matchController) {
 		this.controller = matchController;
 		
 	}

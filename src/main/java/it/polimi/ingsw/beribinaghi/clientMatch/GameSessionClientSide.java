@@ -13,7 +13,7 @@ import it.polimi.ingsw.beribinaghi.playerPackage.Character;
  */
 public interface GameSessionClientSide {
 
-	void setController(matchController matchController);
+	void setController(MatchController matchController);
 
 	public Character getCharacter();
 

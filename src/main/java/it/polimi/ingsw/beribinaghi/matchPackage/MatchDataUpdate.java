@@ -27,17 +27,18 @@ public class MatchDataUpdate extends Observable {
 	
 	public void setUsedObjectCard(ObjectCard objectCard) {
 		String usedCard = new String(objectCard.toString());
+		usedObjectCard.add(objectCard);
 		this.setChanged();
-		this.notifyObservers("card:"+usedCard);
+		this.notifyObservers("card="+usedCard);
 	}
 
 	public void setAttackOutcome(ArrayList<Player> killed, ArrayList<Player> survived) {
-		String attackResult = new String("killed:");
+		String attackResult = new String("killed=");
 		for(Player player : killed)
-			attackResult = attackResult+player.getUser()+":";
-		attackResult += "survived:";
+			attackResult = attackResult+player.getUser()+"=";
+		attackResult += "survived=";
 		for(Player player : survived)
-			attackResult += player.getUser()+":";
+			attackResult += player.getUser()+"=";
 		this.setChanged();
 		this.notifyObservers(attackResult);
 	}
@@ -47,13 +48,13 @@ public class MatchDataUpdate extends Observable {
 	}
 
 	public void setEscaped(Boolean escaped) {
-		String escape = new String("escape:"+escaped);
+		String escapeResult = new String("escaped="+escaped);
 		this.setChanged();
-		this.notifyObservers(escape);
+		this.notifyObservers(escapeResult);
 	}
 
 	public void setNoiseCoordinates(Coordinates noiseCoordinates) {
-		String noise = new String("noise:"+noiseCoordinates.toString());
+		String noise = new String("noise="+noiseCoordinates.toString());
 		this.setChanged();
 		this.notifyObservers(noise);
 	}
@@ -73,9 +74,9 @@ public class MatchDataUpdate extends Observable {
 	}
 
 	public void setSpottedPlayers(ArrayList<Player> caughtPlayer) {
-		String spotted = new String("spotted:");
+		String spotted = new String("spotted=");
 		for(Player player : caughtPlayer){
-			spotted = spotted+player.getUser()+":";
+			spotted = spotted+player.getUser()+"=";
 		}
 		this.setChanged();
 		this.notifyObservers(spotted);
@@ -84,7 +85,7 @@ public class MatchDataUpdate extends Observable {
 	public void start()
 	{
 		this.setChanged();
-		this.notifyObservers("turn:" + currentPlayer.getUser() + ":" + getTurnNumber());
+		this.notifyObservers("turn=" + currentPlayer.getUser() + "=" + getTurnNumber());
 	}
 
 	public void clear(Player player) {
@@ -92,7 +93,7 @@ public class MatchDataUpdate extends Observable {
 		this.currentPlayer = player;
 		usedObjectCard.clear();
 		this.setChanged();
-		this.notifyObservers("turn:" + player.getUser()+":"+getTurnNumber());
+		this.notifyObservers("turn=" + player.getUser()+"="+getTurnNumber());
 	}
 
 }

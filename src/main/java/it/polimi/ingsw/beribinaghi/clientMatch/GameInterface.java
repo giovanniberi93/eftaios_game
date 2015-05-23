@@ -13,7 +13,7 @@ import it.polimi.ingsw.beribinaghi.mapPackage.Map;
  */
 public interface GameInterface {
 
-	void setController(matchController matchController);
+	void setController(MatchController matchController);
 
 	void printCharacter(String name, String role, SideName side);
 

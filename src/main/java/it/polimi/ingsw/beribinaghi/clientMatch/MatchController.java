@@ -11,14 +11,14 @@ import it.polimi.ingsw.beribinaghi.playerPackage.Character;
  * this class manages all match, it manages all communications with network and graphics and it manages the model
  *
  */
-public class matchController {
+public class MatchController {
 	private GameInterface graphicInterface;
 	private GameSessionClientSide session;
 	private String myPlayerName;
 	private Character myCharacter;
 	private Map map;
 
-	public matchController(String playerName, GameInterface graphicInterface, GameSessionClientSide session) {
+	public MatchController(String playerName, GameInterface graphicInterface, GameSessionClientSide session) {
 		this.graphicInterface = graphicInterface;
 		this.session = session;
 		this.graphicInterface.setController(this);

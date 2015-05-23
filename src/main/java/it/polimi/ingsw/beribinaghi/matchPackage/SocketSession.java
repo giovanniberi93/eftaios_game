@@ -28,16 +28,15 @@ public class SocketSession extends GameSessionServerSide{
 		out.println("sending character");
 		out.flush();
 		out.println("name="+player.getCharacter().getName()+"&poslet="+player.getCharacter().getCurrentPosition().getLetter()+"&posnum="+player.getCharacter().getCurrentPosition().getNumber());
-	}
-
-
-	@Override
-	protected void notifyBeginTurn(String string) {
-		out.println("turn=" + string);
 		out.flush();
 	}
 
 
+	@Override
+	protected void notifyBeginTurn(String turn) {
+		out.println(turn);
+		out.flush();
+	}
 
 	@Override
 	public void sendMap(Map map) {
@@ -55,6 +54,48 @@ public class SocketSession extends GameSessionServerSide{
 			line = line.substring(0, line.length()-1);
 			out.println(line);
 		}	
+		out.flush();
+	}
+
+
+	@Override
+	protected void notifyEndMatch() {
+		out.println("endMatch");
+		out.flush();
+	}
+
+
+	@Override
+	protected void notifyCard(String usedCard) {
+		out.println(usedCard);
+		out.flush();
+	}
+
+
+	@Override
+	protected void notifySpotted(String spottedPlayers) {
+		out.println(spottedPlayers);
+		out.flush();
+	}
+
+
+	@Override
+	protected void notifyNoise(String noisePosition) {
+		out.println(noisePosition);
+		out.flush();
+	}
+
+
+	@Override
+	protected void notifyEscape(String escapeResult) {
+		out.println(escapeResult);
+		out.flush();
+	}
+
+
+	@Override
+	protected void notifyAttackResult(String attackResult) {
+		out.println(attackResult);
 		out.flush();
 	}
 }
