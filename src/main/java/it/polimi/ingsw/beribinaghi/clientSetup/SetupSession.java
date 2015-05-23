@@ -45,6 +45,7 @@ public interface SetupSession {
 	 * return 0 if the operation is successful
 	 * return 1 if name not exists
 	 * return 2 if there are too many player in room
+	 * return 3 match is just started
 	 */
 	public int enterGame(String matchName);
 
@@ -72,7 +73,7 @@ public interface SetupSession {
 	/**
 	 * @return the Game session for managing communication with server during the match
 	 */
-	GameSessionClientSide startGameComunication();
+	public GameSessionClientSide startGameComunication();
 
 
 }

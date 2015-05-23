@@ -1,6 +1,8 @@
-package it.polimi.ingsw.beribinaghi.matchPackage;
+package it.polimi.ingsw.beribinaghi.serverSetup;
 
 import it.polimi.ingsw.beribinaghi.App;
+import it.polimi.ingsw.beribinaghi.matchPackage.GameSessionServerSide;
+import it.polimi.ingsw.beribinaghi.matchPackage.TooManyPlayerException;
 import it.polimi.ingsw.beribinaghi.playerPackage.Player;
 
 import java.util.ArrayList;
@@ -63,18 +65,24 @@ public class MatchController {
 	 * @throws NotExistingNameException
 	 * @throws TooManyPlayerException
 	 * add a player to a match
+	 * @throws MatchJustStartingException 
 	 */
-	public void addPlayer(String matchName, Player player)  throws NotExistingNameException,TooManyPlayerException {
+	public void addPlayer(String matchName, Player player)  throws NotExistingNameException,TooManyPlayerException, MatchJustStartingException {
 		PreMatch match = getMatch(matchName);
-		match.addPlayer(player);
-		if (match.countPlayer()==App.MAX_PLAYER)
-			start(match);
-		else if (match.countPlayer()>1){
-			Timer timer = match.getTimer();
-			timer.purge();
-			timer.schedule(new TimerManager(this,match), App.WAITBEGINMATCH);
+		if (!match.isActive())
+		{
+			match.addPlayer(player);
+			if (match.countPlayer()==App.MAX_PLAYER)
+				start(match);
+			else if (match.countPlayer()>1){
+				Timer timer = match.getTimer();
+				timer.purge();
+				timer.schedule(new TimerManager(this,match), App.WAITBEGINMATCH);
+			}
+			notifyAddPlayer(match,player.getUser());
 		}
-		notifyAddPlayer(match,player.getUser());
+		else
+			throw new MatchJustStartingException();
 	}
 
 	private void notifyAddPlayer(PreMatch match,String namePlayer) {

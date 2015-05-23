@@ -1,9 +1,9 @@
 package it.polimi.ingsw.beribinaghi;
 
 import static org.junit.Assert.assertTrue;
-import it.polimi.ingsw.beribinaghi.matchPackage.AlreadyExistingNameException;
-import it.polimi.ingsw.beribinaghi.matchPackage.MatchController;
 import it.polimi.ingsw.beribinaghi.playerPackage.Player;
+import it.polimi.ingsw.beribinaghi.serverSetup.AlreadyExistingNameException;
+import it.polimi.ingsw.beribinaghi.serverSetup.MatchController;
 
 import org.junit.After;
 import org.junit.AfterClass;

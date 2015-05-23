@@ -1,10 +1,12 @@
 /**
  * 
  */
-package it.polimi.ingsw.beribinaghi.matchPackage;
+package it.polimi.ingsw.beribinaghi.serverSetup;
+
+import it.polimi.ingsw.beribinaghi.matchPackage.GameSessionServerSide;
 
 /**
- * @author damianobinaghi
+ * interface for communication between matchController and Socket or RMI Session
  *
  */
 public interface SetupSession {
@@ -20,8 +22,14 @@ public interface SetupSession {
 	 */
 	public void notifyNewPlayer(String namePlayer);
 	
+	/**
+	 * @return all inactive match name 
+	 */
 	public String getMatchName();
 
+	/**
+	 * @return the gameSession
+	 */
 	public GameSessionServerSide getGameSession();
 	
 }

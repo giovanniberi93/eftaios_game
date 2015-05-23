@@ -76,7 +76,9 @@ public class SetupSocketSession implements SetupSession {
 			return 0;
 		if (answer.equals("name not exists"))
 			return 1;
-		return 2;
+		if (answer.equals("too many player"))
+			return 2;
+		else return 3;
 	}
 
 	@Override

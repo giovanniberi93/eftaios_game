@@ -3,6 +3,7 @@
  */
 package it.polimi.ingsw.beribinaghi.clientMatch;
 
+import it.polimi.ingsw.beribinaghi.mapPackage.Coordinates;
 import it.polimi.ingsw.beribinaghi.mapPackage.Map;
 import it.polimi.ingsw.beribinaghi.playerPackage.AlienCharacter;
 import it.polimi.ingsw.beribinaghi.playerPackage.Character;
@@ -26,7 +27,6 @@ public class SocketSession implements GameSessionClientSide {
 	private Socket socket;
 	private PrintWriter out;
 	private Scanner in;
-	private ObjectInputStream ois;
 	private matchController controller;
 	
 	public SocketSession(Socket socket, Scanner in, PrintWriter out) {
@@ -49,7 +49,7 @@ public class SocketSession implements GameSessionClientSide {
 		{
 			ArrayList<String> list = manageCommand(in.nextLine());
 			for (CharacterName characterName:CharacterName.values())
-				if (characterName.getPersonalName().equals(list.get(5)))
+				if (characterName.getPersonalName().equals(list.get(1)))
 				{
 					myName = characterName;
 					break;
@@ -58,6 +58,7 @@ public class SocketSession implements GameSessionClientSide {
 					character = new HumanCharacter(myName);
 			else
 					character = new AlienCharacter(myName);
+			character.setCurrentPosition(new Coordinates(list.get(3).charAt(0),Integer.parseInt(list.get(5))));
 		}
 		return character;
 	}

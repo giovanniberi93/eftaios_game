@@ -1,8 +1,11 @@
 /**
  * 
  */
-package it.polimi.ingsw.beribinaghi.matchPackage;
+package it.polimi.ingsw.beribinaghi.serverSetup;
 
+import it.polimi.ingsw.beribinaghi.matchPackage.GameSessionServerSide;
+import it.polimi.ingsw.beribinaghi.matchPackage.SocketSession;
+import it.polimi.ingsw.beribinaghi.matchPackage.TooManyPlayerException;
 import it.polimi.ingsw.beribinaghi.playerPackage.Player;
 
 import java.io.IOException;
@@ -96,6 +99,9 @@ public class SetupSocketSession extends Thread implements SetupSession {
 			out.flush();
 		} catch (TooManyPlayerException e) {
 			out.println("too many player");
+			out.flush();
+		} catch (MatchJustStartingException e) {
+			out.println("match just started");
 			out.flush();
 		}
 		return false;

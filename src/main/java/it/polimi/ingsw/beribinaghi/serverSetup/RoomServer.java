@@ -1,7 +1,8 @@
 /**
  * 
  */
-package it.polimi.ingsw.beribinaghi.matchPackage;
+package it.polimi.ingsw.beribinaghi.serverSetup;
+
 
 /**
  * 
