@@ -13,7 +13,7 @@ public enum SectorName {
 	    BLANK(new BlankSector(),"B"),
 	    SAFE(new SafeSector(),"S"), 
 	    DANGEROUS(new DangerousSector(),"D"),
-	    SHALLOP(new ShallopSector(),"S"), 
+	    SHALLOP(new ShallopSector(),"SH"), 
 	    HUMANBASE(new HumanBase(),"HM"),
 	    ALIENBASE(new AlienBase(),"AB");
 	    

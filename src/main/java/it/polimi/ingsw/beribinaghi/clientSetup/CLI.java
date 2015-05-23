@@ -65,7 +65,7 @@ public class CLI implements GraphicInterface {
 			String command = inLine.nextLine().trim();
 			String commandType[] = command.split(" "); //Divide il comando in parole
 			commandType[0] = correct(commandType[0]);
-			if (commandType[0].equals("crea"))
+			if (commandType.length>1 && commandType[0].equals("crea"))
 			{
 				if (setupController.create(command.substring(commandType[0].length()+1, command.length()))) //Tutta la stringa tranne il comando
 				{
@@ -76,7 +76,7 @@ public class CLI implements GraphicInterface {
 				else 
 					System.out.println("Nome partita già esistente");
 			}
-			else if (commandType[0].equals("entra"))
+			else if (commandType.length>1 && commandType[0].equals("entra"))
 			{
 				int result = setupController.enter(command.substring(commandType[0].length()+1, command.length()));
 				if (result==0){
@@ -89,9 +89,9 @@ public class CLI implements GraphicInterface {
 				else
 					System.out.println("Ci sono troppi giocatori in questa partita");
 			}
-			else if (commandType[0].equals("aggiorna"))
+			else if (commandType.length>0 && commandType[0].equals("aggiorna"))
 				setupController.printMatch();
-			else if (commandType[0].equals("esci"))
+			else if (commandType.length>0 && commandType[0].equals("esci"))
 				exitGame = true;
 			else
 				System.out.println("Comando non riconosciuto!");

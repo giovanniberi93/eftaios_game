@@ -42,6 +42,8 @@ public class Map {
 		}
 
 	public Map(String mapName, SectorName[][] graphicMap) {
+		this.setMapName(mapName);
+		this.graphicMap = graphicMap;
 		for (int i=0;i<graphicMap.length;i++)
 			for (int j=0;j<graphicMap[i].length;j++){
 				Coordinates actualCoordinates = new Coordinates (Coordinates.getLetterFromNumber(j),i+1);

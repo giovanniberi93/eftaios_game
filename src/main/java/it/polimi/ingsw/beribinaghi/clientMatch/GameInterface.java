@@ -4,6 +4,8 @@
 package it.polimi.ingsw.beribinaghi.clientMatch;
 
 import it.polimi.ingsw.beribinaghi.gameNames.SideName;
+import it.polimi.ingsw.beribinaghi.mapPackage.Coordinates;
+import it.polimi.ingsw.beribinaghi.mapPackage.Map;
 
 /**
  * manages all communications during the game with user a graphic interface
@@ -18,5 +20,7 @@ public interface GameInterface {
 	void managesTurn();
 
 	void notifyOthersTurn(String playerTurn);
+
+	void printMap(Map map, Coordinates myCoordinates);
 
 }

@@ -63,11 +63,11 @@ public class MatchTest {
 		boolean tmpRight;
 		for(Player analyzedPlayer : players){
 			if(analyzedPlayer.getCharacter().getSide().equals(SideName.ALIEN)){
-				tmpRight = (analyzedPlayer.getCurrentPosition().equals(match.getMap().getAlienBaseCoordinates()));
+				tmpRight = (analyzedPlayer.getCharacter().getCurrentPosition().equals(match.getMap().getAlienBaseCoordinates()));
 				rightInitialPosition = (rightInitialPosition && tmpRight);
 			}	
 			if(analyzedPlayer.getCharacter().getSide().equals(SideName.HUMAN)){
-				tmpRight = (analyzedPlayer.getCurrentPosition().equals(match.getMap().getHumanBaseCoordinates()));
+				tmpRight = (analyzedPlayer.getCharacter().getCurrentPosition().equals(match.getMap().getHumanBaseCoordinates()));
 				rightInitialPosition = (rightInitialPosition && tmpRight);
 			}	
 		}

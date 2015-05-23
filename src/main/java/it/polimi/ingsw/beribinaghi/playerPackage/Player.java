@@ -13,7 +13,6 @@ import it.polimi.ingsw.beribinaghi.mapPackage.Coordinates;
 public class Player {
 	
 	private String userName;
-	private Coordinates currentPosition; 
 	private Character character;
 	
 	public Player(String user){
@@ -26,23 +25,6 @@ public class Player {
 	 */
 	public String getUser() {
 		return userName;
-	}
-
-
-	/**
-	 * @return current position
-	 */
-	public Coordinates getCurrentPosition() {
-		return currentPosition;
-	}
-
-
-	/**
-	 * sets the parameter as the new currentPosition
-	 * @param currentPosition
-	 */
-	public void setCurrentPosition(Coordinates currentPosition) {
-		this.currentPosition = currentPosition;
 	}
 
 

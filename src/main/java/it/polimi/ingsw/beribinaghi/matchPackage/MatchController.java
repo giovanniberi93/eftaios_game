@@ -106,7 +106,7 @@ public class MatchController {
 	}
 
 
-	private PreMatch getMatch(String name) throws NotExistingNameException{
+	public PreMatch getMatch(String name) throws NotExistingNameException{
 		for (PreMatch pre : matches)
 			if(pre.getMatchName().equals(name))
 				return pre;

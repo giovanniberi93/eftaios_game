@@ -20,6 +20,10 @@ public class PreMatch {
 	private Timer timer;
 	private Match match;
 
+	public Match getMatch() {
+		return match;
+	}
+
 	/**
 	 * @return the status of the match
 	 */

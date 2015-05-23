@@ -89,7 +89,7 @@ public class RoomSocketServer extends RoomServer {
 			while (!this.isActive())
 				this.wait();
 			try {
-				server = new ServerSocket(App.PORT);
+				server = new ServerSocket(App.PORTSOCKET);
 			} catch (IOException e) {
 				
 			}
