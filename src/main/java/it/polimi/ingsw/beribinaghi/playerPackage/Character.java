@@ -18,7 +18,6 @@ public abstract class Character implements Serializable{
 	private boolean isAlive;
 
 	protected int percorrableDistance;
-	
 
 	/**
 	 * Construct a character from a characterName, and assign to the character the CharacterName attributes

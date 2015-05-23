@@ -22,6 +22,7 @@ public abstract class GameSessionServerSide implements Observer {
 		String command[] = line.split(":");
 		if (command[0].equals("turn"))
 			this.notifyBeginTurn(command[1]);
+		
 	}
 
 	/**

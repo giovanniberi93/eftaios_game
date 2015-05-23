@@ -2,7 +2,6 @@
  * 
  */
 package it.polimi.ingsw.beribinaghi.clientMatch;
-
 import it.polimi.ingsw.beribinaghi.gameNames.SectorName;
 import it.polimi.ingsw.beribinaghi.gameNames.SideName;
 import it.polimi.ingsw.beribinaghi.mapPackage.Coordinates;
@@ -57,5 +56,4 @@ public class GameCLI implements GameInterface {
 			System.out.println(graphicMap[i][j].getAbbrevation());
 		}
 	}
-
 }

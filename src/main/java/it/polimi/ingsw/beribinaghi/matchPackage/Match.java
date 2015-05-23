@@ -12,6 +12,7 @@ import it.polimi.ingsw.beribinaghi.decksPackage.WrongCardTypeException;
 import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.Adrenalin;
 import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.Attack;
 import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.CharacterCard;
+import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.Defense;
 import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.ObjectCard;
 import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.SectorCard;
 import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.Sedatives;
@@ -137,7 +138,6 @@ public class Match {
 	 * @return the card picked from the deck associated to the destination sector
 	 */
 	public SectorCard move(Coordinates destinationCoordinates){
-		
 		Player currentPlayer = matchDataUpdate.getCurrentPlayer();
 		
 		currentPlayer.getCharacter().setCurrentPosition(destinationCoordinates);
@@ -152,11 +152,13 @@ public class Match {
 		if(pickedCard instanceof ShallopCard){
 			ShallopCard shallopCard = (ShallopCard) pickedCard;
 			if(!(shallopCard.isDamaged())){
-				//(ShallopSector)destinationCoordinates.		//TODO fallo!!!!!
+				matchDataUpdate.getCurrentPlayer().getCharacter().setCurrentPosition(null);
+				matchDataUpdate.setEscaped(true);
 			}
-				
+			else
+				matchDataUpdate.setEscaped(false);
 		}
-		return pickedCard;	
+		return pickedCard;
 	}
 		
 	/**
@@ -206,6 +208,7 @@ public class Match {
 				if(analyzedPlayer.getCharacter().getCurrentPosition().equals(analyzedCoordinates))
 					spottedPlayers.add(analyzedPlayer);
 		}
+		matchDataUpdate.setSpottedPlayers(spottedPlayers);
 	}
 	
 	public void discard(ObjectCard discardedCard){
@@ -213,23 +216,30 @@ public class Match {
 	}
 	
 	public void attack(){
-		Player checkedPlayer;
+		Player analyzedPlayer;
+		ArrayList<Player> killed = new ArrayList<Player>();
+		ArrayList<Player> survived = new ArrayList<Player>();
+
 		Player currentPlayer = matchDataUpdate.getCurrentPlayer();
 		for(int i = 0; i < players.size(); i++){
 			if(i != this.currentPlayerIndex){
-				checkedPlayer = players.get(i);
-				if(checkedPlayer.getCharacter().getCurrentPosition().equals(currentPlayer.getCharacter().getCurrentPosition())){
-					matchDataUpdate.setRecentKills(checkedPlayer);
-					checkedPlayer.getCharacter().setAlive(false);
-					checkedPlayer.getCharacter().setCurrentPosition(null);
+				analyzedPlayer = players.get(i);
+				if(analyzedPlayer.getCharacter().getCurrentPosition().equals(currentPlayer.getCharacter().getCurrentPosition())){
+					if(analyzedPlayer.getCharacter().getSide() == SideName.HUMAN && (analyzedPlayer.getCharacter().removeCardFromBag(new Defense()) != null))
+						survived.add(analyzedPlayer);
+					else{
+						killed.add(analyzedPlayer);
+						analyzedPlayer.getCharacter().setAlive(false);
+						analyzedPlayer.getCharacter().setCurrentPosition(null);
+					}	
 				}
 			}
 		}
 		if(currentPlayer.getCharacter().getSide() == SideName.HUMAN){
 			ObjectCard usedCard = new Attack();
-			matchDataUpdate.setUsedObjectCard(usedCard);
 			currentPlayer.getCharacter().removeCardFromBag(usedCard);
 		}
+		matchDataUpdate.setAttackOutcome(killed, survived);
 	}
 	
 	public void teleport(){

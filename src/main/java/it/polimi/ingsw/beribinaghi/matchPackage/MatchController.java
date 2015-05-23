@@ -84,18 +84,18 @@ public class MatchController {
 	}
 
 	/**
-	 * @param match
-	 * start the match
+	 * @param preMatch
+	 * start the preMatch
 	 */
-	public void start(PreMatch match) {
+	public void start(PreMatch preMatch) {
 		ArrayList<GameSessionServerSide> gameSessions = new ArrayList<GameSessionServerSide>();
 		for (SetupSession setupSession: sessions)
-			if ((setupSession.getMatchName()!=null) && setupSession.getMatchName().equals(match.getMatchName()))
+			if ((setupSession.getMatchName()!=null) && setupSession.getMatchName().equals(preMatch.getMatchName()))
 			{
 				gameSessions.add(setupSession.getGameSession());
 				setupSession.startMatch();
 			}
-		match.start(gameSessions);
+		preMatch.start(gameSessions);
 	}
 
 	private boolean nameExists(String name) {
