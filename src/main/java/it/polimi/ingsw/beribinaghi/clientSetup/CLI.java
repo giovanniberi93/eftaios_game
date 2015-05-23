@@ -86,8 +86,13 @@ public class CLI implements GraphicInterface {
 				}
 				else if (result==1)
 					System.out.println("Nome partita non esistente");
-				else
+				else if (result==2)
 					System.out.println("Ci sono troppi giocatori in questa partita");
+				else
+				{
+					System.out.println("Partita già iniziata");
+					setupController.printMatch();
+				}
 			}
 			else if (commandType.length>0 && commandType[0].equals("aggiorna"))
 				setupController.printMatch();

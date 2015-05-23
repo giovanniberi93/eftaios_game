@@ -1,7 +1,7 @@
 /**
  * 
  */
-package it.polimi.ingsw.beribinaghi.matchPackage;
+package it.polimi.ingsw.beribinaghi.serverSetup;
 
 import it.polimi.ingsw.beribinaghi.App;
 
@@ -11,7 +11,7 @@ import java.net.Socket;
 
 /**
  * Room server with socket
- *
+ * this class manages all new communication with server using socket
  */
 public class RoomSocketServer extends RoomServer {
 	private ServerSocket server;

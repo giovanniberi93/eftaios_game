@@ -3,7 +3,7 @@ package it.polimi.ingsw.beribinaghi;
 import java.io.IOException;
 import java.util.Scanner;
 
-import it.polimi.ingsw.beribinaghi.matchPackage.RoomSocketServer;
+import it.polimi.ingsw.beribinaghi.serverSetup.RoomSocketServer;
 
 /**
  * This class manages the server
@@ -15,15 +15,16 @@ public class ServerManager {
 	private Scanner inCommand;
 	
 	/**
-	 * This procedure create, if not existing, the server at port indicate and start receiving command from CLI
+	 * This procedure create, if not existing, the servers (Sokcet and RMI) at ports indicate and start receiving command from CLI
+	 * @param portSocket, portRMI 
 	 */
-	public ServerManager(int port){
+	public ServerManager(int portSocket, int portRMI){
 		Boolean error = false;
 		if (socketServer==null)
 		{
 			try {
-				socketServer = new RoomSocketServer(port);
-				System.out.println("Server successfully created at port: " + port);
+				socketServer = new RoomSocketServer(portSocket);
+				System.out.println("Socket server successfully created at port: " + portSocket);
 				startServer();
 			} catch (IOException e) {
 				System.out.println("Error occurred, impossible to create the server");

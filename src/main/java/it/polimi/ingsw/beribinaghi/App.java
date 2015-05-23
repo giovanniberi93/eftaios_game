@@ -15,6 +15,6 @@ public class App
 	
     public static void main( String[] args )
     {
-       new ServerManager(PORTSOCKET);
+       new ServerManager(PORTSOCKET,PORTRMI);
     }
 }
