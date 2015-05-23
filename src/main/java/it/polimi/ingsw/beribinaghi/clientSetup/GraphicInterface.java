@@ -3,9 +3,9 @@
  */
 package it.polimi.ingsw.beribinaghi.clientSetup;
 
-import java.util.ArrayList;
+import it.polimi.ingsw.beribinaghi.clientMatch.GameInterface;
 
-import clientMatch.GameInterface;
+import java.util.ArrayList;
 
 /**
  *  interface for graphics command

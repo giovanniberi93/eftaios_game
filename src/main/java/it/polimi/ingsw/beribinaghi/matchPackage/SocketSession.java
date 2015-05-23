@@ -13,19 +13,21 @@ public class SocketSession extends GameSessionServerSide{
 	private Socket socket;
 	private Scanner in;
 	private PrintWriter out;
+	private Match match;
 	
-	public SocketSession(Socket socket,Scanner in, PrintWriter out, Player player) throws IOException {
+	public SocketSession(Socket socket,Scanner in, PrintWriter out, Match match, Player player) throws IOException {
 		this.in = in;
 	    this.out = out;
 	    this.player = player;
 	    this.socket = socket;
+	    this.match = match;
 	}
 
 	
 	public synchronized void notifyCharacter() {
 		out.println("sending character");
 		out.flush();
-		out.println("side="+player.getCharacter().getSide()+"&role="+player.getCharacter().getRole()+"&name="+player.getCharacter().getName());
+		out.println("name="+player.getCharacter().getName()+"&poslet="+player.getCharacter().getCurrentPosition().getLetter()+"&posnum="+player.getCharacter().getCurrentPosition().getNumber());
 	}
 
 
@@ -48,9 +50,9 @@ public class SocketSession extends GameSessionServerSide{
 		{
 			line = "";
 			for (int j=0;j<graphicMap[i].length;j++){
-				line.concat(graphicMap[i][j].getAbbrevation() + ",");
+				line = line.concat(graphicMap[i][j].getAbbrevation() + ",");
 			}
-			line.substring(0, line.length()-2);
+			line = line.substring(0, line.length()-1);
 			out.println(line);
 		}	
 		out.flush();

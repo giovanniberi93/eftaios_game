@@ -1,7 +1,7 @@
 /**
  * 
  */
-package clientMatch;
+package it.polimi.ingsw.beribinaghi.clientMatch;
 
 import it.polimi.ingsw.beribinaghi.mapPackage.Map;
 import it.polimi.ingsw.beribinaghi.playerPackage.Character;
@@ -26,6 +26,7 @@ public class matchController {
 		this.myPlayerName = playerName;
 		map = session.getMap();
 		myCharacter = session.getCharacter();
+		graphicInterface.printMap(map,myCharacter.getCurrentPosition());
 		graphicInterface.printCharacter(myCharacter.getName(),myCharacter.getRole(),myCharacter.getSide());
 		turn();
 	}

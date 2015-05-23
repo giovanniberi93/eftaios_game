@@ -45,6 +45,9 @@ public abstract class Character implements Serializable{
 		this.side = side;
 	}
 	
+	/**
+	 * @return current position
+	 */
 	public Coordinates getCurrentPosition() {
 		return currentPosition;
 	}
@@ -73,7 +76,10 @@ public abstract class Character implements Serializable{
 		return null;
 	}
 
-
+	/**
+	 * sets the parameter as the new currentPosition
+	 * @param currentPosition
+	 */
 	public void setCurrentPosition(Coordinates currentPosition) {
 		this.currentPosition = currentPosition;
 	}

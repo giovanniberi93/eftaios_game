@@ -68,7 +68,8 @@ public class Match {
 		sendMap();
 		assignCharacter(players);
 		setInitialPositions(players);
-		
+		for(GameSessionServerSide gameSession: sessions)
+			gameSession.notifyCharacter();
 	}
 	
 	
@@ -106,9 +107,6 @@ public class Match {
 			
 		}
 		playersDeck.addToDiscardPile(characterCard);
-		for(GameSessionServerSide gameSession: sessions){
-			gameSession.notifyCharacter();
-		}
 	}
 
 	/**
@@ -120,9 +118,9 @@ public class Match {
 		
 		for(Player player: players){
 			if(player.getCharacter().getSide() == SideName.ALIEN)
-				player.setCurrentPosition(map.getAlienBaseCoordinates());
+				player.getCharacter().setCurrentPosition(map.getAlienBaseCoordinates());
 			else
-				player.setCurrentPosition(map.getHumanBaseCoordinates());
+				player.getCharacter().setCurrentPosition(map.getHumanBaseCoordinates());
 			}
 	}
 	
@@ -142,7 +140,7 @@ public class Match {
 		
 		Player currentPlayer = matchDataUpdate.getCurrentPlayer();
 		
-		currentPlayer.setCurrentPosition(destinationCoordinates);
+		currentPlayer.getCharacter().setCurrentPosition(destinationCoordinates);
 		if(matchDataUpdate.getUsedObjectCard().contains(new Sedatives()))
 			return null;
 		
@@ -205,7 +203,7 @@ public class Match {
 		ArrayList<Coordinates> lightedCoordinates = map.adiacentCoordinates(selectedCoordinates);
 		for(Coordinates analyzedCoordinates : lightedCoordinates){
 			for(Player analyzedPlayer : players)
-				if(analyzedPlayer.getCurrentPosition().equals(analyzedCoordinates))
+				if(analyzedPlayer.getCharacter().getCurrentPosition().equals(analyzedCoordinates))
 					spottedPlayers.add(analyzedPlayer);
 		}
 	}
@@ -220,10 +218,10 @@ public class Match {
 		for(int i = 0; i < players.size(); i++){
 			if(i != this.currentPlayerIndex){
 				checkedPlayer = players.get(i);
-				if(checkedPlayer.getCurrentPosition().equals(currentPlayer.getCurrentPosition())){
+				if(checkedPlayer.getCharacter().getCurrentPosition().equals(currentPlayer.getCharacter().getCurrentPosition())){
 					matchDataUpdate.setRecentKills(checkedPlayer);
 					checkedPlayer.getCharacter().setAlive(false);
-					checkedPlayer.setCurrentPosition(null);
+					checkedPlayer.getCharacter().setCurrentPosition(null);
 				}
 			}
 		}
