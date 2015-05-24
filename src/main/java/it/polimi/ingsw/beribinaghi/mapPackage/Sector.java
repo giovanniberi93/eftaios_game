@@ -3,6 +3,8 @@
  */
 package it.polimi.ingsw.beribinaghi.mapPackage;
 
+import java.io.Serializable;
+
 import it.polimi.ingsw.beribinaghi.decksPackage.Deck;
 import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.Card;
 import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.SectorCard;
@@ -11,7 +13,8 @@ import it.polimi.ingsw.beribinaghi.matchPackage.DeckAssigner;
 /**
  * Class representing a coordinate. It is identified by a letter and a number
  */
-public abstract class Sector implements Cloneable{
+public abstract class Sector implements Cloneable,Serializable{
+	private static final long serialVersionUID = 1L;
 	private Deck associatedDeck;
 	
 	

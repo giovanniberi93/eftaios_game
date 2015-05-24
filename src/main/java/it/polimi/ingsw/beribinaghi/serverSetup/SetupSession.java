@@ -23,7 +23,7 @@ public interface SetupSession {
 	public void notifyNewPlayer(String namePlayer);
 	
 	/**
-	 * @return all inactive match name 
+	 * @return matchName of player
 	 */
 	public String getMatchName();
 

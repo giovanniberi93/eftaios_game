@@ -5,10 +5,12 @@ import it.polimi.ingsw.beribinaghi.decksPackage.ShallopsDeck;
 import it.polimi.ingsw.beribinaghi.gameNames.SectorName;
 import it.polimi.ingsw.beribinaghi.matchPackage.DeckAssigner;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class Map {
+public class Map implements Serializable {
+	private static final long serialVersionUID = 1L;
 	final static int HEIGHT = 14;		//TODO aggiungi costanti
 	final static int WIDTH = 23;
 	private String mapName;

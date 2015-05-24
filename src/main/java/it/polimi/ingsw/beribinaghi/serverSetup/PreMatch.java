@@ -10,13 +10,12 @@ import it.polimi.ingsw.beribinaghi.App;
 import it.polimi.ingsw.beribinaghi.mapPackage.MapModel;
 import it.polimi.ingsw.beribinaghi.matchPackage.GameSessionServerSide;
 import it.polimi.ingsw.beribinaghi.matchPackage.Match;
-import it.polimi.ingsw.beribinaghi.matchPackage.TooManyPlayerException;
 import it.polimi.ingsw.beribinaghi.playerPackage.Player;
 
 /**
  * This class manages a pre match and a close match
  */
-public class PreMatch {
+public class PreMatch{
 	private String matchName;
 	private Boolean active;
 	private ArrayList<Player> players;

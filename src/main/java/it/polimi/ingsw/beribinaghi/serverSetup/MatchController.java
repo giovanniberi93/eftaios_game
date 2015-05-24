@@ -2,7 +2,6 @@ package it.polimi.ingsw.beribinaghi.serverSetup;
 
 import it.polimi.ingsw.beribinaghi.App;
 import it.polimi.ingsw.beribinaghi.matchPackage.GameSessionServerSide;
-import it.polimi.ingsw.beribinaghi.matchPackage.TooManyPlayerException;
 import it.polimi.ingsw.beribinaghi.playerPackage.Player;
 
 import java.util.ArrayList;

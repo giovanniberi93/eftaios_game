@@ -13,7 +13,6 @@ public class SocketSession extends GameSessionServerSide{
 	private Socket socket;
 	private Scanner in;
 	private PrintWriter out;
-	private Match match;
 	
 	public SocketSession(Socket socket,Scanner in, PrintWriter out, Match match, Player player) throws IOException {
 		this.in = in;
