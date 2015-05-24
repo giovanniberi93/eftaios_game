@@ -74,12 +74,12 @@ public class MatchTest {
 		assertTrue(rightInitialPosition);
 	}
 	
-	@Test 
+	/*@Test 
 	public void dangerousSectorCardPicked(){
 		Card pickedCard;
 		pickedCard = match.move(new Coordinates('a',2));
 		assertTrue(pickedCard instanceof DangerousSectorCard);
-	}
+	}*/
 	
 	/*public void testStartMatch(){
 		testMatchNotNull();

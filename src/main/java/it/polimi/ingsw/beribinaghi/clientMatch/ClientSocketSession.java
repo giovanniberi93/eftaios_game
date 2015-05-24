@@ -8,6 +8,7 @@ import it.polimi.ingsw.beribinaghi.mapPackage.Map;
 import it.polimi.ingsw.beribinaghi.playerPackage.AlienCharacter;
 import it.polimi.ingsw.beribinaghi.playerPackage.Character;
 import it.polimi.ingsw.beribinaghi.playerPackage.HumanCharacter;
+import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.Card;
 import it.polimi.ingsw.beribinaghi.gameNames.CharacterName;
 import it.polimi.ingsw.beribinaghi.gameNames.SectorName;
 import it.polimi.ingsw.beribinaghi.gameNames.SideName;
@@ -23,7 +24,7 @@ import java.util.Scanner;
  * class that manages all communication with server during the game
  *
  */
-public class SocketSession implements GameSessionClientSide {
+public class ClientSocketSession implements GameSessionClientSide {
 	private Socket socket;
 	private PrintWriter out;
 	private Scanner in;
@@ -31,7 +32,7 @@ public class SocketSession implements GameSessionClientSide {
 	private MatchController controller;
 
 	
-	public SocketSession(Socket socket, Scanner in, PrintWriter out) {
+	public ClientSocketSession(Socket socket, Scanner in, PrintWriter out) {
 			this.socket = socket;
 			this.in = in;
 		    this.out = out;
@@ -83,7 +84,7 @@ public class SocketSession implements GameSessionClientSide {
 		String command[] = line.split("=");
 		if (command[0].equals("turn"))
 		{
-			return line.substring(command[0].length()+1, line.length());
+			return command[1];
 		}
 		return null;
 	}
@@ -114,6 +115,12 @@ public class SocketSession implements GameSessionClientSide {
 				break;
 			}
 		return correctSector;
+	}
+
+	@Override
+	public ArrayList<Card> move(Coordinates destinationCoord) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

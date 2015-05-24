@@ -3,6 +3,7 @@
  */
 package it.polimi.ingsw.beribinaghi.clientMatch;
 
+import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.Card;
 import it.polimi.ingsw.beribinaghi.gameNames.SideName;
 import it.polimi.ingsw.beribinaghi.mapPackage.Coordinates;
 import it.polimi.ingsw.beribinaghi.mapPackage.Map;
@@ -17,10 +18,14 @@ public interface GameInterface {
 
 	void printCharacter(String name, String role, SideName side);
 
-	void managesTurn();
+	void managesMyTurn();
 
 	void notifyOthersTurn(String playerTurn);
 
 	void printMap(Map map, Coordinates myCoordinates);
+
+	void manageSectorCard(Card card);
+
+	void manageNewObjectCard(Card card);
 
 }

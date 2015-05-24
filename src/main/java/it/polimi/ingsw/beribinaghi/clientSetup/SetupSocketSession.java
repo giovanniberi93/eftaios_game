@@ -4,7 +4,7 @@
 package it.polimi.ingsw.beribinaghi.clientSetup;
 
 import it.polimi.ingsw.beribinaghi.clientMatch.GameSessionClientSide;
-import it.polimi.ingsw.beribinaghi.clientMatch.SocketSession;
+import it.polimi.ingsw.beribinaghi.clientMatch.ClientSocketSession;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -125,7 +125,7 @@ public class SetupSocketSession implements SetupSession {
 
 	@Override
 	public GameSessionClientSide startGameComunication() {
-		return new SocketSession(socket,in,out);
+		return new ClientSocketSession(socket,in,out);
 	}
 
 

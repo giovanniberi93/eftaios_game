@@ -11,4 +11,8 @@ public abstract class DangerousSectorCard extends SectorCard {
 	public void setContainsObject(boolean containsObject) {
 		this.containsObject = containsObject;
 	}
+	
+	public String toString(){
+		return new String("dangerous");
+	}
 }

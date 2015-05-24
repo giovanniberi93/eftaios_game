@@ -1,7 +1,7 @@
 /**
  * 
  */
-package it.polimi.ingsw.beribinaghi.matchPackage;
+package it.polimi.ingsw.beribinaghi.serverSetup;
 
 /**
  * exception invoke when a player can not register on a match

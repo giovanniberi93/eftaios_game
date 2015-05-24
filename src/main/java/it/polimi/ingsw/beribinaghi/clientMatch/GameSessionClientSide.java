@@ -3,12 +3,16 @@
  */
 package it.polimi.ingsw.beribinaghi.clientMatch;
 
+import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.Card;
+import it.polimi.ingsw.beribinaghi.mapPackage.Coordinates;
 import it.polimi.ingsw.beribinaghi.mapPackage.Map;
 import it.polimi.ingsw.beribinaghi.playerPackage.Character;
 
+import java.util.ArrayList;
+
 /**
- * interface for managing the comunication with server
- * it recives command that will be sent to server
+ * interface for managing the communication with server
+ * it receives command that will be sent to server
  *
  */
 public interface GameSessionClientSide {
@@ -20,6 +24,7 @@ public interface GameSessionClientSide {
 	public String listenTurn();
 
 	public Map getMap();
-
-
+	
+	public ArrayList<Card> move(Coordinates destinationCoord);
+	
 }

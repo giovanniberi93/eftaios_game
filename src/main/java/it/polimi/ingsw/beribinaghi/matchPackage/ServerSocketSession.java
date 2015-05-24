@@ -1,21 +1,24 @@
 package it.polimi.ingsw.beribinaghi.matchPackage;
 
+import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.Card;
 import it.polimi.ingsw.beribinaghi.gameNames.SectorName;
+import it.polimi.ingsw.beribinaghi.mapPackage.Coordinates;
 import it.polimi.ingsw.beribinaghi.mapPackage.Map;
 import it.polimi.ingsw.beribinaghi.playerPackage.Player;
 
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.Scanner;
 
-public class SocketSession extends GameSessionServerSide{
+public class ServerSocketSession extends GameSessionServerSide{
 	private Socket socket;
 	private Scanner in;
 	private PrintWriter out;
 	private Match match;
 	
-	public SocketSession(Socket socket,Scanner in, PrintWriter out, Match match, Player player) throws IOException {
+	public ServerSocketSession(Socket socket,Scanner in, PrintWriter out, Match match, Player player) throws IOException {
 		this.in = in;
 	    this.out = out;
 	    this.player = player;
@@ -34,8 +37,11 @@ public class SocketSession extends GameSessionServerSide{
 
 	@Override
 	protected void notifyBeginTurn(String turn) {
+		String[] command = turn.split("=");
 		out.println(turn);
 		out.flush();
+		if(command[1].equals(this.player.getUser()))
+			this.myTurn();
 	}
 
 	@Override
@@ -57,6 +63,57 @@ public class SocketSession extends GameSessionServerSide{
 		out.flush();
 	}
 
+	protected void myTurn(){
+		String line = in.nextLine();
+		String[] command = line.split("=");
+
+		while(!command[0].equals("endTurn")){
+			if(command[0].equals("move")){
+				executeMove(command[1]);	
+			}
+			else if (command[0].equals("card")){
+				executeCardAction(command);
+			}
+		}
+		match.finishTurn();  
+	}
+	
+	private void executeCardAction(String[] command) {
+		switch(command[1]){
+		case "teleport" : 
+			match.teleport();
+			break;
+		case "attack" :
+			match.attack();
+			break;
+		case "sedatives" :
+			match.sedatives();
+			break;
+		case "adrenalin" :
+			match.adrenalin();
+			break;
+		case "spotlight" :
+			Coordinates selectedCoordinates = Coordinates.stringToCoordinates(command[2]);
+			match.spotlight(selectedCoordinates);
+			break;
+		}
+	}
+
+
+	private void executeMove(String coordinatesString){
+		ArrayList<Card> pickedCards = new ArrayList<Card>();
+		String pickedCardString = new String("card=");
+		Coordinates destinationCoordinates = Coordinates.stringToCoordinates(coordinatesString);
+		
+		pickedCards = match.move(destinationCoordinates);
+		for(Card card : pickedCards)
+			pickedCardString += card.toString() + "=";
+		out.println(pickedCardString);
+		out.flush();
+		String[] noise = in.nextLine().split("=");
+		Coordinates noiseCoordinates = Coordinates.stringToCoordinates(noise[1]);
+		match.noise(noiseCoordinates);
+	}
 
 	@Override
 	protected void notifyEndMatch() {
@@ -75,7 +132,6 @@ public class SocketSession extends GameSessionServerSide{
 	@Override
 	protected void notifySpotted(String spottedPlayers) {
 		out.println(spottedPlayers);
-		out.flush();
 	}
 
 

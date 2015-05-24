@@ -31,6 +31,12 @@ public abstract class Character implements Serializable{
 		isAlive = true;
 	}
 
+	
+	public int getPercorrableDistance() {
+		return percorrableDistance;
+	}
+
+
 	private void setRole(String roleName) {
 		this.role = roleName;
 	}
@@ -44,6 +50,9 @@ public abstract class Character implements Serializable{
 		this.side = side;
 	}
 	
+	public int getBagSize(){
+		return bag.size();
+	}
 	/**
 	 * @return current position
 	 */

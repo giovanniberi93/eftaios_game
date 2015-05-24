@@ -4,8 +4,7 @@
 package it.polimi.ingsw.beribinaghi.serverSetup;
 
 import it.polimi.ingsw.beribinaghi.matchPackage.GameSessionServerSide;
-import it.polimi.ingsw.beribinaghi.matchPackage.SocketSession;
-import it.polimi.ingsw.beribinaghi.matchPackage.TooManyPlayerException;
+import it.polimi.ingsw.beribinaghi.matchPackage.ServerSocketSession;
 import it.polimi.ingsw.beribinaghi.playerPackage.Player;
 
 import java.io.IOException;
@@ -188,9 +187,9 @@ public class SetupSocketSession extends Thread implements SetupSession {
 		try {
 		    out.println("started match");
 		    out.flush();
-			SocketSession socketSession = null;
+			ServerSocketSession socketSession = null;
 			try {
-				socketSession = new SocketSession(socket,in,out,(matchController.getMatch(this.matchName)).getMatch(),player);
+				socketSession = new ServerSocketSession(socket,in,out,(matchController.getMatch(this.matchName)).getMatch(),player);
 			} catch (NotExistingNameException e) {
 			}
 			return socketSession;
