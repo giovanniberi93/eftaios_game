@@ -3,6 +3,7 @@ package it.polimi.ingsw.beribinaghi;
 import java.io.IOException;
 import java.util.Scanner;
 
+import it.polimi.ingsw.beribinaghi.serverSetup.RoomRMIServer;
 import it.polimi.ingsw.beribinaghi.serverSetup.RoomSocketServer;
 
 /**
@@ -13,6 +14,7 @@ import it.polimi.ingsw.beribinaghi.serverSetup.RoomSocketServer;
 public class ServerManager {
 	private static RoomSocketServer socketServer;
 	private Scanner inCommand;
+	private RoomRMIServer rmiServer;
 	
 	/**
 	 * This procedure create, if not existing, the servers (Sokcet and RMI) at ports indicate and start receiving command from CLI
@@ -25,6 +27,8 @@ public class ServerManager {
 			try {
 				socketServer = new RoomSocketServer(portSocket);
 				System.out.println("Socket server successfully created at port: " + portSocket);
+				rmiServer = new RoomRMIServer(portRMI);
+				System.out.println("RMI server successfully created at port: " + portRMI);
 				startServer();
 			} catch (IOException e) {
 				System.out.println("Error occurred, impossible to create the server");
@@ -38,8 +42,9 @@ public class ServerManager {
 	}
 	
 	private void startServer(){
-		if (!socketServer.isAlive()){
+		if (!socketServer.isAlive() && !rmiServer.isAlive()){
 			socketServer.start();
+			rmiServer.start();
 			System.out.println("Server successfully started");
 		}
 		else 
@@ -47,8 +52,9 @@ public class ServerManager {
 	}
 	
 	private void stopServer() {
-		if (socketServer.isActive()){
+		if (socketServer.isActive() && rmiServer.isActive()){
 			socketServer.setInactive();
+			rmiServer.setInactive();
 			System.out.println("Server successfully stopped");
 		}
 		else 
@@ -56,9 +62,10 @@ public class ServerManager {
 	}
 	
 	private void notifyServer() {
-		if (!socketServer.isActive())
+		if (!socketServer.isActive() && !rmiServer.isActive())
 		{
 			socketServer.setActive();
+			rmiServer.setActive();
 			System.out.println("Server successfully awake");
 		}
 		else
@@ -67,6 +74,7 @@ public class ServerManager {
 	
 	private void exitServer() {
 		socketServer.exit();
+		rmiServer.exit();
 	}
 
 	private void controllerInterface() {

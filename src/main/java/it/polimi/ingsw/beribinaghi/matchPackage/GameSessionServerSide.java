@@ -15,6 +15,7 @@ import java.util.Observer;
  */
 public abstract class GameSessionServerSide implements Observer {
 	protected Player player;
+	protected Match match;
 
 	
 	@Override

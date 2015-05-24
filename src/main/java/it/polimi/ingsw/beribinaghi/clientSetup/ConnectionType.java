@@ -9,7 +9,7 @@ package it.polimi.ingsw.beribinaghi.clientSetup;
  *
  */
 public enum ConnectionType {
-	RMI(null),SOCKET(new SetupSocketSession()); //TODO modificare rmi
+	RMI(new SetupRMISession()),SOCKET(new SetupSocketSession());
 	
 	  private SetupSession setupSession;
 	    

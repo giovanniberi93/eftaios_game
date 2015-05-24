@@ -15,7 +15,7 @@ import it.polimi.ingsw.beribinaghi.playerPackage.Player;
 /**
  * This class manages a pre match and a close match
  */
-public class PreMatch {
+public class PreMatch{
 	private String matchName;
 	private Boolean active;
 	private ArrayList<Player> players;

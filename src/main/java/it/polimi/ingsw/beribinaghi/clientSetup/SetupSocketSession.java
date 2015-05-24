@@ -25,7 +25,7 @@ public class SetupSocketSession implements SetupSession {
 	@Override
 	public Boolean connect() {
 		try {
-			socket = new Socket(EscapeFromTheAliensInOuterSpace.address,EscapeFromTheAliensInOuterSpace.port);
+			socket = new Socket(EscapeFromTheAliensInOuterSpace.ADDRESS,EscapeFromTheAliensInOuterSpace.SOCKETPORT);
 			in = new Scanner(socket.getInputStream());
 		    out = new PrintWriter(socket.getOutputStream());
 			return true;

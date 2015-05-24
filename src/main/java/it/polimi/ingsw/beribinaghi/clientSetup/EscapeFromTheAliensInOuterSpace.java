@@ -9,10 +9,11 @@ package it.polimi.ingsw.beribinaghi.clientSetup;
  */
 public class EscapeFromTheAliensInOuterSpace {
 
-	public final static ConnectionType connectionType = ConnectionType.SOCKET;
+	public final static ConnectionType connectionType = ConnectionType.RMI;
 	public final static InterfaceType interfaceType = InterfaceType.CLI;
-	public final static String address = "127.0.0.1";
-	public final static int port = 2767;
+	public final static String ADDRESS = "127.0.0.1";
+	public final static int SOCKETPORT = 2767;
+	public final static int RMIPORT = 2768;
 	
 	public static void main(String[] args) {
 		GraphicInterface gi = interfaceType.getGraphicInterface();

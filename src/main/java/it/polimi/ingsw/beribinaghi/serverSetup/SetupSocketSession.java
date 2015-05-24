@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 /**
- * Class that manage a session with a new client
+ * Class that manage a session with a new client using Socket
  *
  */
 public class SetupSocketSession extends Thread implements SetupSession {
@@ -27,10 +27,6 @@ public class SetupSocketSession extends Thread implements SetupSession {
 	private MatchController matchController;
 	private String matchName;
 	private Boolean active;
-	
-	public String getMatchName() {
-		return matchName;
-	}
 	
 	public SetupSocketSession(Socket socket,MatchController matchController) throws IOException{
 		this.matchController = matchController;
@@ -199,4 +195,8 @@ public class SetupSocketSession extends Thread implements SetupSession {
 		return null;
 	}
 	
+	@Override
+	public String getMatchName() {
+		return matchName;
+	}
 }
