@@ -10,7 +10,8 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 /**
- * class for CLI
+ * class for CLI 
+ * it manages the interface for pre match communication
  *
  */
 public class CLI implements GraphicInterface {
@@ -24,11 +25,11 @@ public class CLI implements GraphicInterface {
 
 	public CLI() {
 		inLine = new Scanner(System.in);
-		System.out.println("Connessione al server in corso...");
 	}
 
 	@Override
 	public boolean signalConnessionError() {
+		System.out.println("Connessione al server in corso...");
 		System.out.println("Connessione con il server fallita, riprovare? (Si/No)");
 		String answer = correct(inLine.nextLine());
 		return answer.equals("si");
@@ -41,6 +42,7 @@ public class CLI implements GraphicInterface {
 
 	@Override
 	public String getUserName() {
+		System.out.println("Connessione al server in corso...");
 		System.out.println("Inserire il tuo nome:");
 		return inLine.nextLine();
 	}
