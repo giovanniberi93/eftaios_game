@@ -14,6 +14,8 @@ public enum InterfaceType {
 	}
 
 	public GraphicInterface getGraphicInterface(){
+		if (graphicInterface==null)
+			graphicInterface = new GUI();
 		return graphicInterface;
 	}
 
