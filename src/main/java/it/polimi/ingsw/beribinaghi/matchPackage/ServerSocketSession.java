@@ -4,6 +4,7 @@ import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.Card;
 import it.polimi.ingsw.beribinaghi.gameNames.SectorName;
 import it.polimi.ingsw.beribinaghi.mapPackage.Coordinates;
 import it.polimi.ingsw.beribinaghi.mapPackage.Map;
+import it.polimi.ingsw.beribinaghi.mapPackage.StringSyntaxNotOfCoordinatesException;
 import it.polimi.ingsw.beribinaghi.playerPackage.Player;
 
 import java.io.IOException;
@@ -93,7 +94,12 @@ public class ServerSocketSession extends GameSessionServerSide{
 			match.adrenalin();
 			break;
 		case "spotlight" :
-			Coordinates selectedCoordinates = Coordinates.stringToCoordinates(command[2]);
+			Coordinates selectedCoordinates = null;
+			try {
+				selectedCoordinates = Coordinates.stringToCoordinates(command[2]);
+			} catch (StringSyntaxNotOfCoordinatesException e) {
+				System.out.println("Stringa non convertibile in coordinate");
+			}
 			match.spotlight(selectedCoordinates);
 			break;
 		}
@@ -103,7 +109,12 @@ public class ServerSocketSession extends GameSessionServerSide{
 	private void executeMove(String coordinatesString){
 		ArrayList<Card> pickedCards = new ArrayList<Card>();
 		String pickedCardString = new String("card=");
-		Coordinates destinationCoordinates = Coordinates.stringToCoordinates(coordinatesString);
+		Coordinates destinationCoordinates = null;
+		try {
+			destinationCoordinates = Coordinates.stringToCoordinates(coordinatesString);
+		} catch (StringSyntaxNotOfCoordinatesException e1) {
+			System.out.println("Stringa non convertibile in coordinate");
+		}
 		
 		pickedCards = match.move(destinationCoordinates);
 		for(Card card : pickedCards)
@@ -111,7 +122,12 @@ public class ServerSocketSession extends GameSessionServerSide{
 		out.println(pickedCardString);
 		out.flush();
 		String[] noise = in.nextLine().split("=");
-		Coordinates noiseCoordinates = Coordinates.stringToCoordinates(noise[1]);
+		Coordinates noiseCoordinates = null;
+		try {
+			noiseCoordinates = Coordinates.stringToCoordinates(noise[1]);
+		} catch (StringSyntaxNotOfCoordinatesException e) {
+			System.out.println("Stringa non convertibile in coordinate");
+		}
 		match.noise(noiseCoordinates);
 	}
 

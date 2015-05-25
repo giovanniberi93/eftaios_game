@@ -8,6 +8,7 @@ import it.polimi.ingsw.beribinaghi.gameNames.SectorName;
 import it.polimi.ingsw.beribinaghi.gameNames.SideName;
 import it.polimi.ingsw.beribinaghi.mapPackage.Coordinates;
 import it.polimi.ingsw.beribinaghi.mapPackage.Map;
+import it.polimi.ingsw.beribinaghi.mapPackage.StringSyntaxNotOfCoordinatesException;
 
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -93,11 +94,20 @@ public class GameCLI implements GameInterface {
 		if(chosenCard.equals("spotlight")){
 			System.out.println("In quali coordinate vuoi lanciare lo spotlight?");
 			String stringDestination = in.nextLine();
-			Coordinates destinationCoord = Coordinates.stringToCoordinates(stringDestination);
+			Coordinates destinationCoord = null;
+			try {
+				destinationCoord = Coordinates.stringToCoordinates(stringDestination);
+			} catch (StringSyntaxNotOfCoordinatesException e) {
+				System.out.println("Stringa non convertibile in coordinate");
+			}
 			while(!destinationCoord.isValid()){
 				System.out.println("ERRORE: inserisci coordinate valide");
 				stringDestination = in.nextLine();
-				destinationCoord = Coordinates.stringToCoordinates(stringDestination);
+				try {
+					destinationCoord = Coordinates.stringToCoordinates(stringDestination);
+				} catch (StringSyntaxNotOfCoordinatesException e) {
+					System.out.println("Stringa non convertibile in coordinate");
+				}
 			}
 			command.add(stringDestination);
 		}
@@ -119,11 +129,20 @@ public class GameCLI implements GameInterface {
 			System.out.println(coord.toString());
 		}
 		String stringCoord = in.nextLine();
-		Coordinates selectedCoord = Coordinates.stringToCoordinates(stringCoord);
+		Coordinates selectedCoord = null;
+		try {
+			selectedCoord = Coordinates.stringToCoordinates(stringCoord);
+		} catch (StringSyntaxNotOfCoordinatesException e) {
+			System.out.println("Stringa non convertibile in coordinate");
+		}
 		while(!selectableCoordinates.contains(selectedCoord)){
 			System.out.println("ERROR: Inserisci coordinate valide!");
 			stringCoord = in.nextLine();
-			selectedCoord = Coordinates.stringToCoordinates(stringCoord);
+			try {
+				selectedCoord = Coordinates.stringToCoordinates(stringCoord);
+			} catch (StringSyntaxNotOfCoordinatesException e) {
+				System.out.println("Stringa non convertibile in coordinate");
+			}
 		}
 		return selectedCoord;	
 	}
@@ -159,7 +178,8 @@ public class GameCLI implements GameInterface {
 	@Override
 	public void notifyOthersTurn(String playerTurn) {
 		System.out.println("E' il turno di " + playerTurn);
-		controller.listenOtherTurn();
+		System.out.println("Aspetto perche' non so cosa fare");
+		in.nextLine();
 	}
 
 	@Override

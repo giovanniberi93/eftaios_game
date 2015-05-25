@@ -81,9 +81,9 @@ public final class Coordinates implements Serializable{
 		return (char) ('a' + num);
 	}
 	
-	public static Coordinates stringToCoordinates(String string){
-		if(string.length() >= 3)
-			return new Coordinates ('a',-1);
+	public static Coordinates stringToCoordinates(String string) throws StringSyntaxNotOfCoordinatesException{
+		if(string.length() > 3)
+			throw new StringSyntaxNotOfCoordinatesException();
 		char letter  = string.charAt(0);
 		int number = Integer.parseInt(string.substring(1, string.length()));
 		return new Coordinates(letter,number);
