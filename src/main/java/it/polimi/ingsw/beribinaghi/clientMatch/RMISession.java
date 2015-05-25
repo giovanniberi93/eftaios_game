@@ -72,4 +72,34 @@ public class RMISession implements GameSessionClientSide {
 		return null;
 	}
 
+	@Override
+	public void teleport() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void adrenalin() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void sedatives() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void attack() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void endTurn() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }
