@@ -3,17 +3,25 @@
  */
 package it.polimi.ingsw.beribinaghi.clientMatch;
 
+import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.Adrenalin;
+import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.Attack;
+import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.Card;
+import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.Defense;
+import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.NoiseInAnySector;
+import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.NoiseInYourSector;
+import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.Sedatives;
+import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.Silence;
+import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.Spotlight;
+import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.Teleport;
+import it.polimi.ingsw.beribinaghi.gameNames.CharacterName;
+import it.polimi.ingsw.beribinaghi.gameNames.SectorName;
+import it.polimi.ingsw.beribinaghi.gameNames.SideName;
 import it.polimi.ingsw.beribinaghi.mapPackage.Coordinates;
 import it.polimi.ingsw.beribinaghi.mapPackage.Map;
 import it.polimi.ingsw.beribinaghi.playerPackage.AlienCharacter;
 import it.polimi.ingsw.beribinaghi.playerPackage.Character;
 import it.polimi.ingsw.beribinaghi.playerPackage.HumanCharacter;
-import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.Card;
-import it.polimi.ingsw.beribinaghi.gameNames.CharacterName;
-import it.polimi.ingsw.beribinaghi.gameNames.SectorName;
-import it.polimi.ingsw.beribinaghi.gameNames.SideName;
 
-import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
@@ -118,9 +126,64 @@ public class ClientSocketSession implements GameSessionClientSide {
 	}
 
 	@Override
-	public ArrayList<Card> move(Coordinates destinationCoord) {
+	public ArrayList<Card> move(Coordinates destinationCoord) throws WrongSyntaxException {
+		String pickedCardString = new String();
+		ArrayList<Card> pickedCards = new ArrayList<Card>();
+		out.println("move="+destinationCoord.toString());
+		pickedCardString = in.nextLine();
+		String[] command = pickedCardString.split("=");
+			if(!command[0].equals("card"))
+				throw new WrongSyntaxException();
+			if(command[1].equals("anySector"))
+				pickedCards.add(new NoiseInAnySector(false));
+			else if (command[1].equals("yourSector"))
+				pickedCards.add(new NoiseInYourSector(false));
+			else if (command[1].equals("silence"))
+				pickedCards.add(new Silence(false));
+			if(command.length > 0)
+				if(command[1].equals("adrenalin"))
+					pickedCards.add(new Adrenalin());
+				else if(command[1].equals("sedatives"))
+				pickedCards.add(new Sedatives());
+				else if(command[1].equals("defense"))
+					pickedCards.add(new Defense());
+				else if(command[1].equals("attack"))
+					pickedCards.add(new Attack());
+				else if(command[1].equals("spotlight"))
+					pickedCards.add(new Spotlight());
+				else if(command[1].equals("teleport"))
+					pickedCards.add(new Teleport());
+		return pickedCards;
+	}
+
+	@Override
+	public void teleport() {
 		// TODO Auto-generated method stub
-		return null;
+		
+	}
+
+	@Override
+	public void adrenalin() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void sedatives() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void attack() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void endTurn() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

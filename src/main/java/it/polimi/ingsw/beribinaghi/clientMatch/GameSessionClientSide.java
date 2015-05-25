@@ -25,6 +25,16 @@ public interface GameSessionClientSide {
 
 	public Map getMap();
 	
-	public ArrayList<Card> move(Coordinates destinationCoord);
+	public ArrayList<Card> move(Coordinates destinationCoord) throws WrongSyntaxException;
+
+	public void teleport();
+
+	public void adrenalin();
+
+	public void sedatives();
+
+	public void attack();
+
+	public void endTurn();
 	
 }

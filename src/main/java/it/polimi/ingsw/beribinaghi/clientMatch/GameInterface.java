@@ -3,7 +3,10 @@
  */
 package it.polimi.ingsw.beribinaghi.clientMatch;
 
+import java.util.ArrayList;
+
 import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.Card;
+import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.ObjectCard;
 import it.polimi.ingsw.beribinaghi.gameNames.SideName;
 import it.polimi.ingsw.beribinaghi.mapPackage.Coordinates;
 import it.polimi.ingsw.beribinaghi.mapPackage.Map;
@@ -26,6 +29,10 @@ public interface GameInterface {
 
 	void manageSectorCard(Card card);
 
-	void manageNewObjectCard(Card card);
+	void manageNewObjectCard(ObjectCard objectCard);
+
+	void showUsedCard(ArrayList<String> command);
+
+	void manageUsedObjectCard(ArrayList<String> command);
 
 }

@@ -3,6 +3,7 @@
  */
 package it.polimi.ingsw.beribinaghi.clientMatch;
 import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.Card;
+import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.ObjectCard;
 import it.polimi.ingsw.beribinaghi.gameNames.SectorName;
 import it.polimi.ingsw.beribinaghi.gameNames.SideName;
 import it.polimi.ingsw.beribinaghi.mapPackage.Coordinates;
@@ -100,12 +101,11 @@ public class GameCLI implements GameInterface {
 			}
 			command.add(stringDestination);
 		}
-		controller.callObjectCard(command);
-		showUsedCard(command);
-		
+		controller.callObjectCard(command);	
 	}
 
-	private void showUsedCard(ArrayList<String> command) {
+	@Override
+	public void showUsedCard(ArrayList<String> command) {
 		System.out.println("Hai usato la carta"+command.get(0));
 		if(command.size()>1)
 			System.out.println("alle coordinate "+command.get(1));
@@ -159,6 +159,7 @@ public class GameCLI implements GameInterface {
 	@Override
 	public void notifyOthersTurn(String playerTurn) {
 		System.out.println("E' il turno di " + playerTurn);
+		controller.listenOtherTurn();
 	}
 
 	@Override
@@ -185,8 +186,14 @@ public class GameCLI implements GameInterface {
 	}
 
 	@Override
-	public void manageNewObjectCard(Card card) {
-		// TODO Auto-generated method stub
-		
+	public void manageNewObjectCard(ObjectCard card) {
+		System.out.println("Hai pescato una nuova carta: "+card.toString());
+	}
+
+	@Override
+	public void manageUsedObjectCard(ArrayList<String> command) {
+		System.out.println("Hai usato la carta "+command.get(0).toString());
+		if(command.size() > 0)
+			System.out.println("nella coordinata "+command.get(1));
 	}
 }
