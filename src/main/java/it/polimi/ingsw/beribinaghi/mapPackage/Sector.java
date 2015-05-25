@@ -39,7 +39,7 @@ public abstract class Sector implements Cloneable,Serializable{
 	 * @return the picked Card
 	 */
 	public SectorCard pickFromAssociatedDeck(){
-		return (SectorCard)associatedDeck.pickCard();
+		return (SectorCard)(associatedDeck.pickCard());
 	}
 	
 }

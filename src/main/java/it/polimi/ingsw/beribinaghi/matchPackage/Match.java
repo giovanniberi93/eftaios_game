@@ -57,6 +57,7 @@ public class Match {
 	 */
 	public Match(ArrayList<GameSessionServerSide> sessions, ArrayList<Player> players, String matchName, String mapName, SectorName[][] graphicMap){
 		this.players = players;
+		setupDecks(players.size());
 		this.matchName = matchName;
 		this.sessions = sessions;
 		this.map = new Map (mapName, graphicMap, dangerousSectorsDeck, shallopsDeck);
@@ -66,7 +67,6 @@ public class Match {
 		matchDataUpdate = new MatchDataUpdate(players.get(currentPlayerIndex), 1);
 		for (GameSessionServerSide gameSession: sessions)
 			matchDataUpdate.addObserver(gameSession);
-		setupDecks(players.size());
 		sendMap();
 		assignCharacter(players);
 		setInitialPositions(players);

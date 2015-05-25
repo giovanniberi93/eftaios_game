@@ -16,7 +16,7 @@ import it.polimi.ingsw.beribinaghi.mapPackage.Map;
  * receive command that will be presented to user
  */
 public interface GameInterface {
-
+	
 	void setController(MatchController matchController);
 
 	void printCharacter(String name, String role, SideName side);

@@ -37,7 +37,6 @@ public class MatchTest {
 		players.add(player4);
 		
 		ArrayList<GameSessionServerSide> gameSessions = new ArrayList<GameSessionServerSide>();
-		gameSessions = null;
 		match = new Match(gameSessions, players, "testMap", "Galilei", MapModel.GALILEI);
 		assertNotNull(match);
 	}	
@@ -74,18 +73,13 @@ public class MatchTest {
 		assertTrue(rightInitialPosition);
 	}
 	
-	/*@Test 
+	@Test 
 	public void dangerousSectorCardPicked(){
-		Card pickedCard;
+		ArrayList<Card> pickedCard =  new ArrayList<Card>();
 		pickedCard = match.move(new Coordinates('a',2));
-		assertTrue(pickedCard instanceof DangerousSectorCard);
-	}*/
+		assertTrue(pickedCard.get(0) instanceof DangerousSectorCard);
+	}
 	
-	/*public void testStartMatch(){
-		testMatchNotNull();
-		match.start();
-		assertTrue(true);
-	}	*/
 }
 
 

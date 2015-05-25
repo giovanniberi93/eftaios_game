@@ -130,6 +130,7 @@ public class ClientSocketSession implements GameSessionClientSide {
 		String pickedCardString = new String();
 		ArrayList<Card> pickedCards = new ArrayList<Card>();
 		out.println("move="+destinationCoord.toString());
+		out.flush();
 		pickedCardString = in.nextLine();
 		String[] command = pickedCardString.split("=");
 			if(!command[0].equals("card"))
