@@ -80,8 +80,11 @@ public class MatchDataUpdate extends Observable {
 		return turnNumber;
 	}
 	
-	public ArrayList<ObjectCard> getUsedObjectCard() {
-		return usedObjectCard;
+	public boolean searchUsedObjectCard(ObjectCard searchedCard) {
+		for(ObjectCard card : usedObjectCard)
+			if(searchedCard.getClass().equals(card.getClass()))
+				return true;
+		return false;
 	}
 
 	/**

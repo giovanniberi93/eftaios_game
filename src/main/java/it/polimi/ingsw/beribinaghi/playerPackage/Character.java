@@ -71,17 +71,17 @@ public abstract class Character implements Serializable{
 		return bag.get(index);
 	}
 	
-	public ObjectCard removeCardFromBag(ObjectCard searchedCard){
+	public boolean removeCardFromBag(ObjectCard searchedCard){
 		ObjectCard temporaryCard;
 		for(int i = 0; i<3; i++){		//TODO constant
 			temporaryCard = getCardFromBag(i);
 			if(temporaryCard.getClass() == searchedCard.getClass()){
 				searchedCard = temporaryCard;
 				bag.remove(i);
-				return searchedCard;
+				return true;
 			}
 		}
-		return null;
+		return false;
 	}
 
 	/**

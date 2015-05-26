@@ -15,7 +15,7 @@ public class TestDeck {
 	@Test
 	public void creationDeck() {
 		ObjectsDeck od = new ObjectsDeck();
-		ObjectCard oc = (ObjectCard) od.pickCard();
-		assertTrue(true);
+		ObjectCard oc = od.pickCard();
+		assertTrue(oc instanceof ObjectCard);
 	}
 }

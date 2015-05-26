@@ -3,17 +3,17 @@ package it.polimi.ingsw.beribinaghi;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-
-import java.util.ArrayList;
-
 import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.Card;
 import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.DangerousSectorCard;
+import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.Sedatives;
 import it.polimi.ingsw.beribinaghi.gameNames.SideName;
 import it.polimi.ingsw.beribinaghi.mapPackage.Coordinates;
 import it.polimi.ingsw.beribinaghi.mapPackage.MapModel;
 import it.polimi.ingsw.beribinaghi.matchPackage.GameSessionServerSide;
 import it.polimi.ingsw.beribinaghi.matchPackage.Match;
 import it.polimi.ingsw.beribinaghi.playerPackage.Player;
+
+import java.util.ArrayList;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -37,10 +37,23 @@ public class MatchTest {
 		players.add(player4);
 		
 		ArrayList<GameSessionServerSide> gameSessions = new ArrayList<GameSessionServerSide>();
-		gameSessions = null;
 		match = new Match(gameSessions, players, "testMap", "Galilei", MapModel.GALILEI);
 		assertNotNull(match);
 	}	
+	
+	@Test
+	void attackTest(){
+		Coordinates coord = new Coordinates ('c',5);
+		for(int i = 0; i<3; i++)
+			players.get(i).getCharacter().setCurrentPosition(coord);
+		match.attack();
+		int survived = 0;
+		for (Player player : players)
+			if(player.getCharacter().isAlive())
+				survived++;
+		assertTrue(survived == 1);
+	}
+	
 	
 	@Test
 	public void matchNotNull(){
@@ -74,18 +87,22 @@ public class MatchTest {
 		assertTrue(rightInitialPosition);
 	}
 	
-	/*@Test 
-	public void dangerousSectorCardPicked(){
-		Card pickedCard;
+	@Test 
+	public void sedativesCardEffectTest(){
+		ArrayList<Card> pickedCard =  new ArrayList<Card>();
+		this.match.matchDataUpdate.setUsedObjectCard(new Sedatives());
 		pickedCard = match.move(new Coordinates('a',2));
-		assertTrue(pickedCard instanceof DangerousSectorCard);
-	}*/
+		assertTrue(pickedCard.get(0) == null);
+	}
 	
-	/*public void testStartMatch(){
-		testMatchNotNull();
-		match.start();
-		assertTrue(true);
-	}	*/
+	@Test 
+	public void dangerousSectorCardPicked(){
+		ArrayList<Card> pickedCard =  new ArrayList<Card>();
+		pickedCard = match.move(new Coordinates('a',2));
+		assertTrue(pickedCard.get(0) instanceof DangerousSectorCard);
+	}
+	
+	
 }
 
 

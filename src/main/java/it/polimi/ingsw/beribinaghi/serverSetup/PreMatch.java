@@ -86,12 +86,18 @@ public class PreMatch{
 	}
 
 	/**
-	 *  Start the match
+	 *  Set the game sessions and create the match
 	 */
-	public void start(ArrayList<GameSessionServerSide> sessions){
+	public void setGameSession(ArrayList<GameSessionServerSide> sessions){
 		active = true;
 		timer.cancel();
 		match = new Match(sessions,players,matchName,"galilei",MapModel.GALILEI);
+	}
+	
+	/**
+	 *  Start the match
+	 */
+	public void start(){
 		match.start();
 	}
 
