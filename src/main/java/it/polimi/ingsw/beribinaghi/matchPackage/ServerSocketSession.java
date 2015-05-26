@@ -19,14 +19,16 @@ public class ServerSocketSession extends GameSessionServerSide{
 	private PrintWriter out;
 	private Match match;
 	
-	public ServerSocketSession(Socket socket,Scanner in, PrintWriter out, Match match, Player player) throws IOException {
+	public ServerSocketSession(Socket socket,Scanner in, PrintWriter out, Player player) throws IOException {
 		this.in = in;
 	    this.out = out;
 	    this.player = player;
 	    this.socket = socket;
-	    this.match = match;
 	}
 
+	public void setMatch(Match match) {
+		this.match = match;
+	}
 	
 	public synchronized void notifyCharacter() {
 		out.println("sending character");

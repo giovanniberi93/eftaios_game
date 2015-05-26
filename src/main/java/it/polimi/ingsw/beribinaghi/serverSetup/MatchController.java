@@ -98,11 +98,12 @@ public class MatchController {
 		ArrayList<GameSessionServerSide> gameSessions = new ArrayList<GameSessionServerSide>();
 		for (SetupSession setupSession: sessions)
 			if ((setupSession.getMatchName()!=null) && setupSession.getMatchName().equals(preMatch.getMatchName()))
-			{
 				gameSessions.add(setupSession.getGameSession());
+		preMatch.setGameSession(gameSessions);
+		for (SetupSession setupSession: sessions)
+			if ((setupSession.getMatchName()!=null) && setupSession.getMatchName().equals(preMatch.getMatchName()))
 				setupSession.startMatch();
-			}
-		preMatch.start(gameSessions);
+		preMatch.start();
 	}
 
 	private boolean nameExists(String name) {

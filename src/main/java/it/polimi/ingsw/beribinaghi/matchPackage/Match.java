@@ -143,12 +143,13 @@ public class Match {
 		ArrayList<Card> allCards = new ArrayList<Card>();
 		
 		currentPlayer.getCharacter().setCurrentPosition(destinationCoordinates);
-		if(matchDataUpdate.getUsedObjectCard().contains(new Sedatives()))
-			return null;
+		if(matchDataUpdate.searchUsedObjectCard(new Sedatives())){
+			allCards.add(null);
+		}
 		
 		SectorCard pickedCard = map.getSector(destinationCoordinates).pickFromAssociatedDeck();
 		allCards.add(pickedCard);
-		if(pickedCard.containsObject()){
+		if(pickedCard.containsObject() && !objectsDeck.isEmpty()){
 			ObjectCard objectCard = this.objectsDeck.pickCard();
 			currentPlayer.getCharacter().addCardToBag(objectCard);
 			allCards.add(objectCard);
@@ -232,7 +233,7 @@ public class Match {
 			if(i != this.currentPlayerIndex){
 				analyzedPlayer = players.get(i);
 				if(analyzedPlayer.getCharacter().getCurrentPosition().equals(currentPlayer.getCharacter().getCurrentPosition())){
-					if(analyzedPlayer.getCharacter().getSide() == SideName.HUMAN && (analyzedPlayer.getCharacter().removeCardFromBag(new Defense()) != null))
+					if(analyzedPlayer.getCharacter().getSide() == SideName.HUMAN && (analyzedPlayer.getCharacter().removeCardFromBag(new Defense())))
 						survived.add(analyzedPlayer);
 					else{
 						killed.add(analyzedPlayer);
