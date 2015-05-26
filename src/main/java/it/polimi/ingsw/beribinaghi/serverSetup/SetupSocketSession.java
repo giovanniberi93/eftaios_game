@@ -105,6 +105,7 @@ public class SetupSocketSession extends Thread implements SetupSession {
 
 	private void printPlayerInRoom(String matchName) throws NotExistingNameException {
 		ArrayList<String> playerName = matchController.getPlayer(matchName);
+		in.nextLine();
 		out.println("print name players");
 		out.println(playerName.size());
 		for (String player: playerName)
