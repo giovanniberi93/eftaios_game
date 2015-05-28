@@ -5,6 +5,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.Card;
 import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.DangerousSectorCard;
+import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.NothingToPick;
 import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.Sedatives;
 import it.polimi.ingsw.beribinaghi.gameNames.SideName;
 import it.polimi.ingsw.beribinaghi.mapPackage.Coordinates;
@@ -41,10 +42,11 @@ public class MatchTest {
 		assertNotNull(match);
 	}	
 	
+	
 	@Test
-	void attackTest(){
+	public void killEveryonettackTest(){
 		Coordinates coord = new Coordinates ('c',5);
-		for(int i = 0; i<3; i++)
+		for(int i = 0; i<4; i++)
 			players.get(i).getCharacter().setCurrentPosition(coord);
 		match.attack();
 		int survived = 0;
@@ -53,13 +55,7 @@ public class MatchTest {
 				survived++;
 		assertTrue(survived == 1);
 	}
-	
-	
-	@Test
-	public void matchNotNull(){
-		assertNotNull(match);
-	}
-	
+
 	@Test
 	public void charactersNotNull(){
 		boolean unassignedCharacter = false;
@@ -102,6 +98,22 @@ public class MatchTest {
 		assertTrue(pickedCard.get(0) instanceof DangerousSectorCard);
 	}
 	
+	@Test 
+	public void safeSectorCardPicked(){
+		ArrayList<Card> pickedCard =  new ArrayList<Card>();
+		pickedCard = match.move(new Coordinates('h',7));
+		assertTrue(pickedCard.get(0) instanceof NothingToPick);
+	}
+	
+	@Test
+	public void teleportTest(){
+		Coordinates coord = new Coordinates ('c',5);
+		for(Player player : players)
+			player.getCharacter().setCurrentPosition(coord);
+		match.teleport();
+		assertTrue(match.matchDataUpdate.getCurrentPlayer().getCharacter().getCurrentPosition().equals(match.getMap().getHumanBaseCoordinates()));		
+	}
+
 	
 }
 

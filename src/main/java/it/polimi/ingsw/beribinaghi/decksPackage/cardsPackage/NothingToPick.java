@@ -2,20 +2,20 @@ package it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage;
 
 import it.polimi.ingsw.beribinaghi.clientMatch.NoiseCoordinatesSelector;
 
-public class NoiseInAnySector extends DangerousSectorCard {
+public class NothingToPick extends SectorCard {
 
-	public NoiseInAnySector(boolean containsObject) {
-		super(containsObject);
+	public NothingToPick(){
+		super.containsObject = false;
 	}
 	
-	public String toString(){
-		return new String("anySector");
+	@Override
+	public String toString() {
+		return "nothing";
 	}
-
+	
 	@Override
 	public void accept(NoiseCoordinatesSelector noiseAssigner) {
 		noiseAssigner.visit(this);
 	}
-	
-	
+
 }

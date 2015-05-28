@@ -11,6 +11,7 @@ public final class Coordinates implements Serializable{
 	private static final long serialVersionUID = 1L;
 	private char letter;
 	private int number;
+	public static final Coordinates SILENCE = new Coordinates('a',0);
 	
 	public char getLetter() {
 		return letter;
@@ -47,8 +48,11 @@ public final class Coordinates implements Serializable{
 	
 	@Override
 	public String toString() {
+		if(this.equals(SILENCE))
+			return "silence";
 		String adaptedNumber = String.format("%02d", this.getNumber());
 		String string = new String(this.getLetter()+adaptedNumber);
+		
 		return string;
 	}
 
@@ -81,9 +85,9 @@ public final class Coordinates implements Serializable{
 		return (char) ('a' + num);
 	}
 	
-	public static Coordinates stringToCoordinates(String string) throws StringSyntaxNotOfCoordinatesException{
+	public static Coordinates stringToCoordinates(String string){
 		if(string.length() > 3)
-			throw new StringSyntaxNotOfCoordinatesException();
+			return null;
 		char letter  = string.charAt(0);
 		int number = Integer.parseInt(string.substring(1, string.length()));
 		return new Coordinates(letter,number);

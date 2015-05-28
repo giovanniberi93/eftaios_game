@@ -1,5 +1,7 @@
 package it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage;
 
+import it.polimi.ingsw.beribinaghi.clientMatch.NoiseCoordinatesSelector;
+
 
 public class ShallopCard extends SectorCard {
 	private boolean isDamaged;
@@ -15,6 +17,11 @@ public class ShallopCard extends SectorCard {
 
 	public void setDamaged(boolean isDamaged) {
 		this.isDamaged = isDamaged;
+	}
+	
+	@Override
+	public void accept(NoiseCoordinatesSelector noiseAssigner) {
+		noiseAssigner.visit(this);
 	}
 
 }

@@ -15,4 +15,5 @@ public abstract class DangerousSectorCard extends SectorCard {
 	public String toString(){
 		return new String("dangerous");
 	}
+
 }

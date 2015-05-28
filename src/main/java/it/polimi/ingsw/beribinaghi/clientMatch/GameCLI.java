@@ -3,12 +3,13 @@
  */
 package it.polimi.ingsw.beribinaghi.clientMatch;
 import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.Card;
+import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.NothingToPick;
 import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.ObjectCard;
 import it.polimi.ingsw.beribinaghi.gameNames.SectorName;
 import it.polimi.ingsw.beribinaghi.gameNames.SideName;
 import it.polimi.ingsw.beribinaghi.mapPackage.Coordinates;
 import it.polimi.ingsw.beribinaghi.mapPackage.Map;
-import it.polimi.ingsw.beribinaghi.mapPackage.StringSyntaxNotOfCoordinatesException;
+import it.polimi.ingsw.beribinaghi.playerPackage.Player;
 
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -49,12 +50,14 @@ public class GameCLI implements GameInterface {
 			switch(choose){
 			case "move": 
 				Coordinates destinationCoordinates = chooseAdiacentCoordinates(controller.getMyCharacter().getCurrentPosition(), controller.getMyCharacter().getPercorrableDistance());
+				hasMoved = true;
 				controller.callMove(destinationCoordinates);
 				break;
 			case "card":
 				chooseObjectCard();
 				break;
 			case "attack":
+				hasAttacked= true;
 				ArrayList<String> command = new ArrayList<String>();
 				command.add("attack");
 				controller.callObjectCard(command);
@@ -67,7 +70,22 @@ public class GameCLI implements GameInterface {
 		controller.callEndTurn();
 	}
 
-	private void chooseObjectCard() {
+	@Override
+	public Coordinates chooseAnyCoordinates(){
+		Coordinates selected = null;
+		System.out.println("Inserisci la coordinata desiderata");
+		String coordinatesInString = in.nextLine();
+		selected = Coordinates.stringToCoordinates(coordinatesInString);
+		while(selected== null || !selected.isValid()){
+			System.out.println("Sintassi della stringa inserita errata, reinserisci");
+			coordinatesInString = in.nextLine();
+			selected = Coordinates.stringToCoordinates(coordinatesInString);
+		}
+		return selected;
+	}
+	
+	@Override
+	public void chooseObjectCard() {
 		ArrayList<String> availableCards = new ArrayList<String>();
 		System.out.println("Carte disponibili:");
 		for(int i = 0; i < controller.getMyCharacter().getBagSize(); i++){
@@ -95,19 +113,11 @@ public class GameCLI implements GameInterface {
 			System.out.println("In quali coordinate vuoi lanciare lo spotlight?");
 			String stringDestination = in.nextLine();
 			Coordinates destinationCoord = null;
-			try {
-				destinationCoord = Coordinates.stringToCoordinates(stringDestination);
-			} catch (StringSyntaxNotOfCoordinatesException e) {
-				System.out.println("Stringa non convertibile in coordinate");
-			}
-			while(!destinationCoord.isValid()){
+			destinationCoord = Coordinates.stringToCoordinates(stringDestination);
+			while(destinationCoord == null || !destinationCoord.isValid()){
 				System.out.println("ERRORE: inserisci coordinate valide");
 				stringDestination = in.nextLine();
-				try {
-					destinationCoord = Coordinates.stringToCoordinates(stringDestination);
-				} catch (StringSyntaxNotOfCoordinatesException e) {
-					System.out.println("Stringa non convertibile in coordinate");
-				}
+				destinationCoord = Coordinates.stringToCoordinates(stringDestination);
 			}
 			command.add(stringDestination);
 		}
@@ -115,10 +125,8 @@ public class GameCLI implements GameInterface {
 	}
 
 	@Override
-	public void showUsedCard(ArrayList<String> command) {
-		System.out.println("Hai usato la carta"+command.get(0));
-		if(command.size()>1)
-			System.out.println("alle coordinate "+command.get(1));
+	public void showUsedCard(ObjectCard card) {
+		System.out.println("Il giocatore corrente ha usato la carta "+ card.toString());
 		
 	}
 
@@ -130,20 +138,12 @@ public class GameCLI implements GameInterface {
 		}
 		String stringCoord = in.nextLine();
 		Coordinates selectedCoord = null;
-		try {
-			selectedCoord = Coordinates.stringToCoordinates(stringCoord);
-		} catch (StringSyntaxNotOfCoordinatesException e) {
-			System.out.println("Stringa non convertibile in coordinate");
-		}
+		selectedCoord = Coordinates.stringToCoordinates(stringCoord);
 		while(!selectableCoordinates.contains(selectedCoord)){
 			System.out.println("ERROR: Inserisci coordinate valide!");
 			stringCoord = in.nextLine();
-			try {
-				selectedCoord = Coordinates.stringToCoordinates(stringCoord);
-			} catch (StringSyntaxNotOfCoordinatesException e) {
-				System.out.println("Stringa non convertibile in coordinate");
+			selectedCoord = Coordinates.stringToCoordinates(stringCoord);
 			}
-		}
 		return selectedCoord;	
 	}
 
@@ -178,13 +178,12 @@ public class GameCLI implements GameInterface {
 	@Override
 	public void notifyOthersTurn(String playerTurn) {
 		System.out.println("E' il turno di " + playerTurn);
-		System.out.println("Aspetto perche' non so cosa fare");
-		in.nextLine();
 	}
 
 	@Override
 	public void printMap(Map map,Coordinates myCoordinates) {
 		int j;
+		
 		System.out.println("La tua posizione è indicata con mappa è:");
 		SectorName[][] graphicMap = map.getGraphicMap();
 		for (int i=0;i<graphicMap.length;i++)
@@ -200,14 +199,16 @@ public class GameCLI implements GameInterface {
 	}
 
 	@Override
-	public void manageSectorCard(Card card) {
-		// TODO Auto-generated method stub
-		
+	public void showPickedCard(ArrayList<Card> pickedCards) {
+		if(pickedCards.size() == 2)
+			System.out.println("Hai trovato un oggetto di tipo " + pickedCards.get(1).toString() + ", fanne buon uso!");
+		if(!(pickedCards.get(0) instanceof NothingToPick))
+			System.out.println("Hai pescato una carta rumore di tipo "+pickedCards.get(0));	
 	}
 
 	@Override
 	public void manageNewObjectCard(ObjectCard card) {
-		System.out.println("Hai pescato una nuova carta: "+card.toString());
+		System.out.println("Hai trovato un oggetto di tip: "+card.toString()+"! Fanne buon uso");
 	}
 
 	@Override
@@ -215,5 +216,40 @@ public class GameCLI implements GameInterface {
 		System.out.println("Hai usato la carta "+command.get(0).toString());
 		if(command.size() > 0)
 			System.out.println("nella coordinata "+command.get(1));
+	}
+
+
+	@Override
+	public void showEscapeResult(boolean result, Coordinates coord) {
+		System.out.println(controller.getCurrentPlayer());
+		if(!result)
+			System.out.print(" non");
+		System.out.print(" è riuscito a scappare!");
+		if(!result)
+			System.out.print("Peggio per lui.");		
+	}
+
+	@Override
+	public void showNoise(Coordinates noiseCoord) {
+		if(noiseCoord.equals(Coordinates.SILENCE))
+			System.out.println("SILENZIO");
+		System.out.print("Rumore in "+noiseCoord.toString());	
+	}
+
+	@Override
+	public void showAttackResult(ArrayList<String> killed, ArrayList<String> survived) {
+		System.out.println("E' stato effettuato un attacco!");
+		for(String kills : killed)
+			System.out.print(kills);
+		System.out.print(" sono stati uccisi");
+		for(String surv : survived)
+			System.out.print(surv);
+		System.out.print(" sono riusciti a difendersi");		
+	}
+
+	@Override
+	public void showSpottedPlayer(String username, Coordinates position) {
+		System.out.println("Spotlight!");
+		System.out.println(username + " si trova in " + position);	
 	}
 }

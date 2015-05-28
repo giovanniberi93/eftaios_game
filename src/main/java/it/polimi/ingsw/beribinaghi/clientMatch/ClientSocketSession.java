@@ -9,6 +9,8 @@ import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.Card;
 import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.Defense;
 import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.NoiseInAnySector;
 import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.NoiseInYourSector;
+import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.NothingToPick;
+import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.ObjectCard;
 import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.Sedatives;
 import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.Silence;
 import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.Spotlight;
@@ -18,9 +20,11 @@ import it.polimi.ingsw.beribinaghi.gameNames.SectorName;
 import it.polimi.ingsw.beribinaghi.gameNames.SideName;
 import it.polimi.ingsw.beribinaghi.mapPackage.Coordinates;
 import it.polimi.ingsw.beribinaghi.mapPackage.Map;
+import it.polimi.ingsw.beribinaghi.mapPackage.StringSyntaxNotOfCoordinatesException;
 import it.polimi.ingsw.beribinaghi.playerPackage.AlienCharacter;
 import it.polimi.ingsw.beribinaghi.playerPackage.Character;
 import it.polimi.ingsw.beribinaghi.playerPackage.HumanCharacter;
+import it.polimi.ingsw.beribinaghi.playerPackage.Player;
 
 import java.io.ObjectInputStream;
 import java.io.PrintWriter;
@@ -141,7 +145,9 @@ public class ClientSocketSession implements GameSessionClientSide {
 				pickedCards.add(new NoiseInYourSector(false));
 			else if (command[1].equals("silence"))
 				pickedCards.add(new Silence(false));
-			if(command.length > 0)
+			else if (command[1].equals("nothing"))
+				pickedCards.add(new NothingToPick());
+			if(command.length > 2)
 				if(command[1].equals("adrenalin"))
 					pickedCards.add(new Adrenalin());
 				else if(command[1].equals("sedatives"))
@@ -158,33 +164,109 @@ public class ClientSocketSession implements GameSessionClientSide {
 	}
 
 	@Override
-	public void teleport() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void adrenalin() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void sedatives() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void attack() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
 	public void endTurn() {
-		// TODO Auto-generated method stub
+		out.println("endTurn");
+		out.flush();		
+	}
+
+	@Override
+	public void noise(Coordinates noiseCoordinates) {
+		String string;
+		if(noiseCoordinates == null)
+			string = "nothing";
+		else
+			string = noiseCoordinates.toString();
+		out.println("noise="+string);
+		out.flush();
+	}
+
+	@Override
+	public void useObjectcard(ArrayList<String> command) {
+		String commandString = new String();
+		for(String string : command)
+			commandString += string+"=";
+		out.println(commandString);
+		out.flush();
+	}
+
+	@Override	
+	public void listenUpdate() {
+		String commandString = in.nextLine();
+		String[] command = commandString.split("=");
+		switch(command[0]){
+		case "noise":
+			Coordinates noiseCoord = null;
+			noiseCoord = Coordinates.stringToCoordinates(command[1]);
+			controller.getGraphicInterface().showNoise(noiseCoord);
+			break;
+		case "escaped":
+			boolean result;
+			if(command[1].equals("true"))
+				result = true;
+			else
+				result = false;
+			Coordinates coord = null;
+			coord = Coordinates.stringToCoordinates(command[2]);
+			controller.getGraphicInterface().showEscapeResult(result, coord);
+			break;
+		case "card":
+			ObjectCard usedCard = ObjectCard.stringToCard(command[1]);
+			Coordinates destinationCoord;
+			destinationCoord = Coordinates.stringToCoordinates(command[2]);
+			controller.getGraphicInterface().showUsedCard(usedCard);
+			break;
+		case "killed":
+			ArrayList<String> killed = new ArrayList<String>();
+			ArrayList<String> survived = new ArrayList<String>();
+			killed = this.selectKilled(command);
+			survived = this.selectSurvived(command);
+			controller.getGraphicInterface().showAttackResult(killed, survived);
+			break;
+		case "turn":
+			listenTurn();
+			break;
+		case "endMatch":
+			// TODO boh.
+			break;
+		case "spotted":
+			for(int i=1; i<command.length; i++){
+				String[] spottedPlayer = command[i].split("&");
+				String username = spottedPlayer[0];
+				Coordinates position = Coordinates.stringToCoordinates(spottedPlayer[1]);
+				controller.getGraphicInterface().showSpottedPlayer(username, position);
+			}
+				
+			
+		}
+		
 		
 	}
+
+	private ArrayList<String> selectSurvived(String[] command) {
+		ArrayList<String> survived = new ArrayList<String>();
+		int i = 1;
+		String string = command[i];
+		while(!string.equals("survived"))
+			i++;
+		i++;
+		while (i < command.length){
+			survived.add(command[i]);
+			i++;
+		}
+		return survived;
+	}
+
+	private ArrayList<String> selectKilled(String[] command) {
+		ArrayList<String> killed = new ArrayList<String>();
+		int i = 1;
+		while(command[i].equals("survived")){
+			killed.add(command[i]);
+			i++;
+		}
+		return killed;
+			
+	}
+
+
 
 }

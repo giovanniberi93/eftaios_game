@@ -4,6 +4,7 @@ import it.polimi.ingsw.beribinaghi.decksPackage.DangerousSectorsDeck;
 import it.polimi.ingsw.beribinaghi.decksPackage.ShallopsDeck;
 import it.polimi.ingsw.beribinaghi.gameNames.SectorName;
 import it.polimi.ingsw.beribinaghi.matchPackage.DeckAssigner;
+import it.polimi.ingsw.beribinaghi.matchPackage.WatcherDeckAssigner;
 
 import java.io.Serializable;
 import java.util.ArrayList;

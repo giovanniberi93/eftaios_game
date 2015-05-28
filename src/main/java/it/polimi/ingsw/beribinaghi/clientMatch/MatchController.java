@@ -5,6 +5,7 @@ package it.polimi.ingsw.beribinaghi.clientMatch;
 
 import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.Card;
 import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.ObjectCard;
+import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.SectorCard;
 import it.polimi.ingsw.beribinaghi.mapPackage.Coordinates;
 import it.polimi.ingsw.beribinaghi.mapPackage.Map;
 import it.polimi.ingsw.beribinaghi.playerPackage.Character;
@@ -20,8 +21,10 @@ import java.util.ArrayList;
 public class MatchController {
 	private GameInterface graphicInterface;
 	private GameSessionClientSide session;
+
 	private String myPlayerName;
 	private Character myCharacter;
+	private String currentPlayer;
 	private Map map;
 	private ArrayList<Player> deadPlayers = new ArrayList<Player>();
 	private ArrayList<Player> escapedPlayers = new ArrayList<Player>();
@@ -46,16 +49,24 @@ public class MatchController {
 	public Map getMap() {
 		return map;
 	}
+	
+	
+	public GameInterface getGraphicInterface() {
+		return graphicInterface;
+	}
 
 	private void turn() {
-		String playerTurn = session.listenTurn(); 
-		if (playerTurn.equals(myPlayerName))
+		String currentPlayer = session.listenTurn(); 
+		this.currentPlayer = currentPlayer;
+		if (currentPlayer.equals(myPlayerName))
 			graphicInterface.managesMyTurn();
 		else
-			graphicInterface.notifyOthersTurn(playerTurn);
+			graphicInterface.notifyOthersTurn(currentPlayer);
+		session.listenUpdate();
 	}
 	
 	public void callMove(Coordinates destinationCoordinates){
+		NoiseCoordinatesSelector noiseCoordinatesSelector = new WatcherNoiseCoordinatesSelector(this);
 		ArrayList<Card> pickedCards = new ArrayList<Card>();
 		try {
 			pickedCards = session.move(destinationCoordinates);
@@ -63,32 +74,15 @@ public class MatchController {
 			System.out.println("Errore nella sintassi della comunicazione");
 			e.printStackTrace();
 		}
-		graphicInterface.manageSectorCard(pickedCards.get(0));
-		if(pickedCards.size()>1){
-			graphicInterface.manageNewObjectCard((ObjectCard) pickedCards.get(1));
+		if(pickedCards.size()>1)
 			this.getMyCharacter().addCardToBag((ObjectCard) pickedCards.get(1));
-		}
+		graphicInterface.showPickedCard(pickedCards);
+		Coordinates noiseCoordinates = noiseCoordinatesSelector.select((SectorCard) pickedCards.get(0));
+		session.noise(noiseCoordinates);
 	}
 
 	public void callObjectCard(ArrayList<String> command) {
-		graphicInterface.manageUsedObjectCard(command);
-		switch(command.get(0)){
-		case "teleport":
-			session.teleport();
-			break;
-		case "adrenalin":
-			session.adrenalin();
-			break;
-		case "sedatives":
-			session.sedatives();
-			break;
-		case "attack":
-			session.attack();
-			break;
-		case "spotlight":
-			
-			break;
-		}
+		session.useObjectcard(command);
 	}
 
 	public void callEndTurn() {
@@ -96,9 +90,8 @@ public class MatchController {
 		turn();
 	}
 
-	public void listenOtherTurn() {
-
-		
+	public String getCurrentPlayer() {
+		return currentPlayer;
 	}
 
 }

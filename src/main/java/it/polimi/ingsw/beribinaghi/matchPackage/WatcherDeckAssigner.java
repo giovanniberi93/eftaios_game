@@ -1,8 +1,14 @@
-package it.polimi.ingsw.beribinaghi.mapPackage;
+package it.polimi.ingsw.beribinaghi.matchPackage;
 
 import it.polimi.ingsw.beribinaghi.decksPackage.DangerousSectorsDeck;
 import it.polimi.ingsw.beribinaghi.decksPackage.ShallopsDeck;
-import it.polimi.ingsw.beribinaghi.matchPackage.DeckAssigner;
+import it.polimi.ingsw.beribinaghi.mapPackage.AlienBase;
+import it.polimi.ingsw.beribinaghi.mapPackage.BlankSector;
+import it.polimi.ingsw.beribinaghi.mapPackage.DangerousSector;
+import it.polimi.ingsw.beribinaghi.mapPackage.HumanBase;
+import it.polimi.ingsw.beribinaghi.mapPackage.SafeSector;
+import it.polimi.ingsw.beribinaghi.mapPackage.Sector;
+import it.polimi.ingsw.beribinaghi.mapPackage.ShallopSector;
 
 public class WatcherDeckAssigner implements DeckAssigner {
 	private DangerousSectorsDeck dangerous;

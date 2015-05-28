@@ -40,6 +40,8 @@ public class ServerSocketSession extends GameSessionServerSide{
 
 	@Override
 	protected void notifyBeginTurn(String turn) {
+		out.println("endTurn");
+		out.flush();
 		String[] command = turn.split("=");
 		out.println(turn);
 		out.flush();
@@ -96,12 +98,8 @@ public class ServerSocketSession extends GameSessionServerSide{
 			match.adrenalin();
 			break;
 		case "spotlight" :
-			Coordinates selectedCoordinates = null;
-			try {
-				selectedCoordinates = Coordinates.stringToCoordinates(command[2]);
-			} catch (StringSyntaxNotOfCoordinatesException e) {
-				System.out.println("Stringa non convertibile in coordinate");
-			}
+			Coordinates selectedCoordinates;
+			selectedCoordinates = Coordinates.stringToCoordinates(command[2]);
 			match.spotlight(selectedCoordinates);
 			break;
 		}
@@ -111,26 +109,17 @@ public class ServerSocketSession extends GameSessionServerSide{
 	private void executeMove(String coordinatesString){
 		ArrayList<Card> pickedCards = new ArrayList<Card>();
 		String pickedCardString = new String("card=");
-		Coordinates destinationCoordinates = null;
-		try {
-			destinationCoordinates = Coordinates.stringToCoordinates(coordinatesString);
-		} catch (StringSyntaxNotOfCoordinatesException e1) {
-			System.out.println("Stringa non convertibile in coordinate");
-		}
+		Coordinates destinationCoordinates;
+		destinationCoordinates = Coordinates.stringToCoordinates(coordinatesString);
 		
 		pickedCards = match.move(destinationCoordinates);
 		for(Card card : pickedCards)
 			pickedCardString += card.toString() + "=";
 		out.println(pickedCardString);
 		out.flush();
-		String[] noise = in.nextLine().split("=");
-		Coordinates noiseCoordinates = null;
-		try {
-			noiseCoordinates = Coordinates.stringToCoordinates(noise[1]);
-		} catch (StringSyntaxNotOfCoordinatesException e) {
-			System.out.println("Stringa non convertibile in coordinate");
-		}
-		match.noise(noiseCoordinates);
+		String[] noise = in.nextLine().split("=");		//aspetto il rumore comunicato dall'altra parte!
+		if(!noise[1].equals("nothing"))
+			match.matchDataUpdate.setNoiseCoordinates(Coordinates.stringToCoordinates(noise[1]));
 	}
 
 	@Override
