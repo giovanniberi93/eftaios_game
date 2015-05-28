@@ -56,7 +56,7 @@ public class SetupSocketSession extends Thread implements SetupSession {
 				printMatchName();
 			else if (choose.equals("new"))
 			{
-				if (createNewMatch(in.nextLine()));
+				if (createNewMatch(in.nextLine()))
 					inRoom = true;
 			}
 			else if (choose.equals("enter"))
@@ -105,9 +105,8 @@ public class SetupSocketSession extends Thread implements SetupSession {
 
 
 	private void printPlayerInRoom(String matchName) throws NotExistingNameException {
-		in.nextLine();
+		String a = in.nextLine();
 		ArrayList<String> playerName = matchController.getPlayer(matchName);
-		in.nextLine();
 		out.println("print name players");
 		out.println(playerName.size());
 		for (String player: playerName)

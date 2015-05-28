@@ -15,7 +15,16 @@ public class SetupController {
 	private SetupSession setupSession;
 	private GraphicInterface graphicInterface;
 	private String playerName;
+	private String matchName;
 	
+	public String getMatchName() {
+		return matchName;
+	}
+	
+	public String getPlayerName() {
+		return playerName;
+	}
+
 	/**
 	 * @param setupSession
 	 * create a Setup Controller that communicates with SetupSession and GraphicsInterface
@@ -24,26 +33,23 @@ public class SetupController {
 		this.graphicInterface = graphicInterface;
 		this.setupSession = setupSession;
 		graphicInterface.setSetupController(this);
-		start();
+		connect();
 	}
-
-	private void start() {
-		boolean retry = true;
-		while (retry && !setupSession.connect())
-			retry = graphicInterface.signalConnessionError();
-		if (!retry)
-			return ;
-		login();
-		while (true)
-		{
-			if (manageMatches())
-				inRoom();
-			else
-				break;
-		}
-	}	
 	
-	private void inRoom() {
+	/**
+	 * Connect to the server
+	 */
+	public void connect(){
+		if (!setupSession.connect())
+			graphicInterface.signalConnessionError();
+		else
+			graphicInterface.signalConnessionSuccess();
+	}
+	
+	/**
+	 * Signal to network that player is in room
+	 */
+	public void inRoom() {
 		while (!setupSession.isStarted(this))
 		{
 		}
@@ -53,31 +59,33 @@ public class SetupController {
 	/**
 	 * prints name match using graphic interface
 	 */
-	public void printMatch()
+	public ArrayList<String> getMatchesName()
 	{
-		graphicInterface.printMatchesName(setupSession.getMatchesName());
+		return setupSession.getMatchesName();
+	}
+	
+	/**
+	 * Close connection with server
+	 */
+	public void closeConnection(){
+		setupSession.close();
 	}
 
-	private Boolean manageMatches() {
-		printMatch();
-		if (!graphicInterface.receiveCommand())
-		{
-			setupSession.close();
-			return false;
-		}
-		return true;
-	}
-
-	private void login() {
-		playerName = graphicInterface.getUserName();
-		setupSession.login(playerName);
+	/**
+	 * send user to the session
+	 */
+	public void login(String user) {
+		playerName = user;
+		setupSession.login(user);
 	}
 
 	public boolean create(String name) {
+		this.matchName = name;
 		return setupSession.createNewMatch(name);
 	}
 
 	public int enter(String matchName) {
+		this.matchName = matchName;
 		return setupSession.enterGame(matchName);
 	}
 
