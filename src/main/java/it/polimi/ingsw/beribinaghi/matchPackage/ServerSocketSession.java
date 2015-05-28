@@ -37,11 +37,9 @@ public class ServerSocketSession extends GameSessionServerSide{
 		out.flush();
 	}
 
-
+ 
 	@Override
 	protected void notifyBeginTurn(String turn) {
-		out.println("endTurn");
-		out.flush();
 		String[] command = turn.split("=");
 		out.println(turn);
 		out.flush();
@@ -118,8 +116,10 @@ public class ServerSocketSession extends GameSessionServerSide{
 		out.println(pickedCardString);
 		out.flush();
 		String[] noise = in.nextLine().split("=");		//aspetto il rumore comunicato dall'altra parte!
-		if(!noise[1].equals("nothing"))
-			match.matchDataUpdate.setNoiseCoordinates(Coordinates.stringToCoordinates(noise[1]));
+		if(!noise[1].equals("nothing")){
+			match.setNoiseCoordinates(Coordinates.stringToCoordinates(noise[1]));
+			match.matchDataUpdate.setNoiseCoordinates();
+		}
 	}
 
 	@Override
@@ -130,34 +130,55 @@ public class ServerSocketSession extends GameSessionServerSide{
 
 
 	@Override
-	protected void notifyCard(String usedCard) {
-		out.println(usedCard);
+	protected void notifyCard() {
+		String usedCard = match.getLastUsedCard().toString();
+		out.println("card="+usedCard);
 		out.flush();
 	}
 
 
 	@Override
-	protected void notifySpotted(String spottedPlayers) {
-		out.println(spottedPlayers);
-	}
-
-
-	@Override
-	protected void notifyNoise(String noisePosition) {
-		out.println(noisePosition);
+	protected void notifySpotted() {
+		ArrayList<Player> spotted = new ArrayList<Player>();
+		String result = "spotlight=";
+		for(Player player : spotted){
+			Coordinates playerCoordinates = player.getCharacter().getCurrentPosition();
+			result += player.getUser() + "&" + playerCoordinates + "=";
+		}
+		out.println(result);
 		out.flush();
 	}
 
 
 	@Override
-	protected void notifyEscape(String escapeResult) {
+	protected void notifyNoise() {
+		Coordinates noiseCoordinates = match.getNoiseCoordinates();
+		String noise = new String("noise="+noiseCoordinates.toString());
+		out.println(noise);
+		out.flush();
+	}
+
+
+	@Override
+	protected void notifyEscape() {
+		Coordinates shallopPosition = match.matchDataUpdate.getCurrentPlayer().getCharacter().getCurrentPosition();
+		String escapeResult = new String("escaped="+match.isSuccessfulEscape()+"="+shallopPosition);
 		out.println(escapeResult);
 		out.flush();
 	}
 
 
 	@Override
-	protected void notifyAttackResult(String attackResult) {
+	protected void notifyAttackResult() {
+		String attackResult;
+		ArrayList<Player> killed = match.getKilled();
+		attackResult = "killed=";
+		for(Player player : killed)
+			attackResult += player.getUser() + "&" + player.getCharacter() + "="; 
+		ArrayList<Player> survived = match.getSurvived();
+		attackResult += "survived=";
+		for(Player player : survived)
+			attackResult += player.getUser() + "&" + player.getCharacter() + "="; 
 		out.println(attackResult);
 		out.flush();
 	}

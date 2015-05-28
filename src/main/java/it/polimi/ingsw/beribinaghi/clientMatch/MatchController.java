@@ -62,7 +62,6 @@ public class MatchController {
 			graphicInterface.managesMyTurn();
 		else
 			graphicInterface.notifyOthersTurn(currentPlayer);
-		session.listenUpdate();
 	}
 	
 	public void callMove(Coordinates destinationCoordinates){
