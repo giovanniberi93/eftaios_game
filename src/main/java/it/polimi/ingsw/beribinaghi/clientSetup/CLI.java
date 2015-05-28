@@ -28,11 +28,12 @@ public class CLI implements GraphicInterface {
 	}
 
 	@Override
-	public boolean signalConnessionError() {
+	public void signalConnessionError() {
 		System.out.println("Connessione al server in corso...");
 		System.out.println("Connessione con il server fallita, riprovare? (Si/No)");
 		String answer = correct(inLine.nextLine());
-		return answer.equals("si");
+		if (answer.equals("si"))
+			setupController.connect();
 	}
 	
 	private static String correct(String string) {
@@ -41,14 +42,15 @@ public class CLI implements GraphicInterface {
 
 
 	@Override
-	public String getUserName() {
-		System.out.println("Connessione al server in corso...");
+	public void signalConnessionSuccess() {
+		System.out.println("Connessione al server in avvenuta con successo");
 		System.out.println("Inserire il tuo nome:");
-		return inLine.nextLine();
+		setupController.login(inLine.nextLine());
+		printMatchesName();
 	}
 
-	@Override
-	public void printMatchesName(ArrayList<String> matchesName) {
+	private void printMatchesName() {
+		ArrayList<String> matchesName = this.setupController.getMatchesName();
 		if (matchesName.size()>0)
 		{
 			System.out.println("I match disponibili sono:");
@@ -56,10 +58,10 @@ public class CLI implements GraphicInterface {
 				System.out.println(matchName);
 		} else
 			System.out.println("Non ci sono match disponibili");
+		this.receiveCommand();
 	}
 
-	@Override
-	public Boolean receiveCommand() {
+	private void receiveCommand() {
 		Boolean inRoom = false;
 		Boolean exitGame = false;
 		do{
@@ -93,17 +95,20 @@ public class CLI implements GraphicInterface {
 				else
 				{
 					System.out.println("Partita già iniziata");
-					setupController.printMatch();
+					this.printMatchesName();
 				}
 			}
 			else if (commandType.length>0 && commandType[0].equals("aggiorna"))
-				setupController.printMatch();
+				this.printMatchesName();
 			else if (commandType.length>0 && commandType[0].equals("esci"))
 				exitGame = true;
 			else
 				System.out.println("Comando non riconosciuto!");
 		}while(!inRoom && !exitGame);
-		return !exitGame;
+		if (!exitGame)
+			setupController.inRoom();
+		else
+			setupController.closeConnection();
 	}
 
 	private void printPlayer(ArrayList<String> playersName) {

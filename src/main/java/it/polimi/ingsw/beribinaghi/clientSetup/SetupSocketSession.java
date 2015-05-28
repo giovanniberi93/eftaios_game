@@ -93,7 +93,7 @@ public class SetupSocketSession implements SetupSession {
 	}
 
 	@Override
-	public ArrayList<String> getPlayer() {
+	public synchronized ArrayList<String> getPlayer() {
 		ArrayList<String> playersName = new ArrayList<String>();
 		out.println("player");
 		out.flush();
