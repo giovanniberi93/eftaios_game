@@ -3,6 +3,7 @@
  */
 package it.polimi.ingsw.beribinaghi.clientSetup;
 
+import it.polimi.ingsw.beribinaghi.clientMatch.GameGUI;
 import it.polimi.ingsw.beribinaghi.clientMatch.GameInterface;
 
 import java.awt.BorderLayout;
@@ -10,6 +11,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Font;
+import java.awt.FontFormatException;
 import java.awt.Graphics;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
@@ -17,6 +19,8 @@ import java.awt.Image;
 import java.awt.Label;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.beans.PropertyVetoException;
@@ -47,7 +51,7 @@ public class GUI extends JFrame implements GraphicInterface {
 	private static final long serialVersionUID = 1L;
 	private static Boolean FULLSCREEN = false;
 	private static final String title = "Fuga dagli alieni nello spazio più profondo";
-	private static String fontName = "Helvetica";
+	private String fontName;
 	private Container cont;
 	private Graphics gra;
 	private GraphicsDevice gd;
@@ -68,9 +72,24 @@ public class GUI extends JFrame implements GraphicInterface {
 	    cont.setBackground(Color.BLACK);
 	    if (GUI.FULLSCREEN)
 	    	gd.setFullScreenWindow(this);
+	    installFont();
 	  //  playVideo();
 	}
 	
+	private void installFont() {
+		try {
+			 GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+			 Font font = Font.createFont(Font.TRUETYPE_FONT, new File("media/introFont.otf"));
+			 this.fontName = font.getFontName();
+			 ge.registerFont(font);
+			} catch (IOException|FontFormatException e) {
+			}
+	}
+	
+	public String getFontName() {
+		return fontName;
+	}
+
 	private void paintComponent(Graphics g) {
 		super.paintComponents(g);
 		setUpInterface();
@@ -151,6 +170,8 @@ public class GUI extends JFrame implements GraphicInterface {
 		errorCont.setBackground(Color.BLACK);
 		JButton bYes = new JButton("Si");
 		JButton bNo = new JButton("No");
+		bYes.setFont(new Font(fontName, Font.BOLD, 16));
+		bNo.setFont(new Font(fontName, Font.BOLD, 16));
 		cont.add(errorFrame);
 		Label trys= new Label(); //adding last element
 		trys.setVisible(false);
@@ -161,8 +182,8 @@ public class GUI extends JFrame implements GraphicInterface {
 		errorCont.add(bNo);
 		errorCont.add(new Label());
 		errorFrame.setBounds(this.getWidth()/2-150, this.getHeight()/2-200, 300, 200);
-		labelErr.setBounds(10, 10, 250, 20);
-		labelRe.setBounds(10, 50, 250, 20);
+		labelErr.setBounds(10, 10, 250, 30);
+		labelRe.setBounds(10, 50, 250, 30);
 		bYes.setBounds(20, 100, 80, 40);
 		bNo.setBounds(200, 100, 80, 40);
 		errorFrame.setBounds(this.getWidth()/2-150, this.getHeight()/2-200, 300, 200);
@@ -176,7 +197,7 @@ public class GUI extends JFrame implements GraphicInterface {
 	}
 
 
-	private class HandlerLogin implements ActionListener {
+	private class HandlerLogin implements ActionListener, KeyListener {
 		private JInternalFrame loginFrame;
 		JTextField tUser;
 		
@@ -191,6 +212,24 @@ public class GUI extends JFrame implements GraphicInterface {
 			loginFrame.dispose();
 			setupController.login(tUser.getText());
 			printMatchesName();
+		}
+
+		@Override
+		public void keyTyped(KeyEvent e) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void keyPressed(KeyEvent e) {
+			if (e.getKeyCode()==KeyEvent.VK_ENTER)
+				this.actionPerformed(null);
+		}
+
+		@Override
+		public void keyReleased(KeyEvent e) {
+			// TODO Auto-generated method stub
+			
 		} 
 		
 	}
@@ -200,12 +239,14 @@ public class GUI extends JFrame implements GraphicInterface {
 		this.paintComponent(this.getGraphics());
 		JInternalFrame loginFrame = createInternal("Login",Color.BLUE);
 		Container loginCont = loginFrame.getContentPane();
-		Label labelRe = new Label("Inserire il tuo nome utente:");
+		Label labelRe = new Label("INSERIRE IL TUO NOME:");
 		labelRe.setFont(new Font(fontName, Font.BOLD, 18));
 		labelRe.setForeground(Color.WHITE);
 		loginCont.setBackground(Color.BLACK);
 		JTextField tUser = new JTextField();
+		tUser.setFont(new Font(fontName, Font.BOLD, 16));
 		JButton bLogin = new JButton("Login");
+		bLogin.setFont(new Font(fontName, Font.BOLD, 16));
 		cont.add(loginFrame);
 		Label trys= new Label(); //adding last element
 		trys.setVisible(false);
@@ -222,13 +263,14 @@ public class GUI extends JFrame implements GraphicInterface {
 		loginFrame.setBounds(this.getWidth()/2-150, this.getHeight()/2-200, 300, 200);
 		HandlerLogin handler = new HandlerLogin(loginFrame,tUser);
 		bLogin.addActionListener(handler);
+		tUser.addKeyListener(handler);
 		try {
 			loginFrame.setSelected(true);
 		} catch (PropertyVetoException e) {
 		}
 	}
 
-	private class HandlerChooser implements ActionListener {
+	private class HandlerChooser implements ActionListener, KeyListener {
 		private JTextField fieldNew;
 		
 		public HandlerChooser(JTextField fieldNew) {
@@ -249,13 +291,37 @@ public class GUI extends JFrame implements GraphicInterface {
 					listModel.addElement("Non ci sono partite disponibili");
 			}
 			else {
-				if (setupController.create(fieldNew.getText())){
-					graphicsInRoom();
-					listPlayer.addElement(setupController.getPlayerName());
-					new inRoomThread(setupController).start();
-				}else
-					signalEnterCreateError("Nome partita già esistente");
+				this.createMatch();
 			}
+		}
+		
+		private void createMatch(){
+			if (setupController.create(fieldNew.getText())){
+				graphicsInRoom();
+				listPlayer.addElement(setupController.getPlayerName());
+				new inRoomThread(setupController).start();
+			}else{
+				signalEnterCreateError("Nome partita già esistente");
+				fieldNew.setText("");
+			}
+		}
+
+		@Override
+		public void keyTyped(KeyEvent e) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void keyPressed(KeyEvent e) {
+			if (e.getKeyCode()==KeyEvent.VK_ENTER)
+				this.createMatch();
+		}
+
+		@Override
+		public void keyReleased(KeyEvent e) {
+			// TODO Auto-generated method stub
+			
 		} 
 		
 	}
@@ -320,12 +386,13 @@ public class GUI extends JFrame implements GraphicInterface {
 		labelErr.setForeground(Color.WHITE);
 		errorCont.setBackground(Color.BLACK);
 		JButton bOk = new JButton("Ok");
+		bOk.setFont(new Font(fontName, Font.BOLD, 16));
 		cont.add(errorFrame);
 		errorCont.add(labelErr);
 		errorCont.add(bOk);
 		errorCont.add(new Label());
 		errorFrame.setBounds(this.getWidth()/2-100, this.getHeight()/2-50, 200, 80);
-		labelErr.setBounds(10, 10, 280, 30);
+		labelErr.setBounds(10, 10, 280, 35);
 		bOk.setBounds(100, 65, 80, 40);
 		errorFrame.setBounds(this.getWidth()/2-140, this.getHeight()/2-100, 280, 150);
 		HandlerError handler = new HandlerError(errorFrame);
@@ -353,8 +420,11 @@ public class GUI extends JFrame implements GraphicInterface {
 		listComp.setForeground(Color.WHITE);
 		listComp.setBorder(new LineBorder(Color.BLUE));
 		JTextField fieldNew = new JTextField();
+		fieldNew.setFont(new Font(fontName, Font.BOLD, 16));
 		JButton btnCreate = new JButton("Crea");
 		JButton btnUpdate = new JButton("Aggiorna");
+		btnCreate.setFont(new Font(fontName, Font.BOLD, 16));
+		btnUpdate.setFont(new Font(fontName, Font.BOLD, 16));
 		Label labelCre = new Label("Crea una nuova partita:");
 		Label labelInf = new Label("Nome:");
 		JScrollPane scroll = new JScrollPane(listComp);
@@ -374,13 +444,13 @@ public class GUI extends JFrame implements GraphicInterface {
 		trys.setVisible(false);
 		cont.add(btnUpdate);
 		cont.add(trys);
-		labelTit.setBounds(this.getWidth()-500, 150, 300, 20);
+		labelTit.setBounds(this.getWidth()-500, 150, 300, 30);
 		listComp.setBounds(this.getWidth()-500, labelTit.getY()+50, 400, 250);
 		btnUpdate.setBounds(listComp.getX()+listComp.getWidth()-80, listComp.getY()-40, 80, 40);
-		labelCre.setBounds(listComp.getX(), listComp.getY()+listComp.getHeight()+20, 400, 20);
-		labelInf.setBounds(labelCre.getX(), labelCre.getY()+40, 70, 20);
-		fieldNew.setBounds(labelInf.getX() + labelInf.getWidth()+10, labelInf.getY()-labelInf.getHeight()/4, 225, 25);
-		btnCreate.setBounds(fieldNew.getX()+fieldNew.getWidth()+10, labelInf.getY()-10, 80, 35);
+		labelCre.setBounds(listComp.getX(), listComp.getY()+listComp.getHeight()+20, 400, 30);
+		labelInf.setBounds(labelCre.getX(), labelCre.getY()+40, 70, 30);
+		fieldNew.setBounds(labelInf.getX() + labelInf.getWidth()+10, labelInf.getY(), 225, 25);
+		btnCreate.setBounds(fieldNew.getX()+fieldNew.getWidth()+10, labelInf.getY()-5, 80, 35);
 		scroll.setBounds(listComp.getBounds());
 		if (matchesName.size()>0)
 			listComp.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -389,7 +459,9 @@ public class GUI extends JFrame implements GraphicInterface {
 		HandlerMouse mouseHandler = new HandlerMouse(listComp);
 		btnUpdate.addActionListener(handlerChooser);
 		btnCreate.addActionListener(handlerChooser);
+		fieldNew.addKeyListener(handlerChooser);
 		listComp.addMouseListener(mouseHandler);
+		fieldNew.requestFocusInWindow();
 		this.paintComponent(gra);
 	}
 	
@@ -416,8 +488,8 @@ public class GUI extends JFrame implements GraphicInterface {
 		Label trys= new Label(); //adding last element
 		trys.setVisible(false);
 		cont.add(trys);
-		labelTit.setBounds(this.getWidth()-500, 150, 300, 20);
-		labelInd.setBounds(this.getWidth()-500, labelTit.getY()+70, 300, 20);
+		labelTit.setBounds(this.getWidth()-500, 150, 300, 30);
+		labelInd.setBounds(this.getWidth()-500, labelTit.getY()+70, 300, 30);
 		listPl.setBounds(this.getWidth()-500, labelTit.getY()+100, 400, 250);
 		scroll.setBounds(listPl.getBounds());
 		listPl.setVisibleRowCount(-1);
@@ -440,13 +512,11 @@ public class GUI extends JFrame implements GraphicInterface {
 
 	}
 
-	/* (non-Javadoc)
-	 * @see it.polimi.ingsw.beribinaghi.clientSetup.GraphicInterface#beginMatch()
-	 */
 	@Override
 	public GameInterface beginMatch() {
-		// TODO Auto-generated method stub
-		return null;
+		cont.removeAll();
+		gra.fillRect(0, 0, this.getWidth(), this.getHeight());
+		return new GameGUI(this);
 	}
 
 	@Override

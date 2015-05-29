@@ -11,7 +11,7 @@ public class App
 	public static int PORTRMI = 2768;
 	public static int MAX_PLAYER = 8;
 	public static int NUMBEROFTURNS = 39;
-	public static final int WAITBEGINMATCH = 1000000;
+	public static final int WAITBEGINMATCH = 2000;
 	
     public static void main( String[] args )
     {
