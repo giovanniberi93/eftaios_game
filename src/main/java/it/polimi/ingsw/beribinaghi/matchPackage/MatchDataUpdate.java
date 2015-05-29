@@ -101,7 +101,7 @@ public class MatchDataUpdate extends Observable {
 	public void start()
 	{
 		this.setChanged();
-		this.notifyObservers("turn=" + currentPlayer.getUser() + "=" + getTurnNumber());
+		this.notifyObservers("turn");
 	}
 
 	/**

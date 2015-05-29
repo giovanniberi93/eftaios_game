@@ -20,9 +20,9 @@ public abstract class GameSessionServerSide implements Observer {
 	
 	@Override
 	public void update(Observable o, Object arg) {
-		String line = (String) arg;		//aggiusta turn, killed, escape
+		String line = (String) arg;	
 		if (line.equals("turn"))
-			this.notifyBeginTurn(line);
+			this.notifyBeginTurn();
 		else if (line.equals("attack")){
 			this.notifyAttackResult();
 		}
@@ -82,9 +82,8 @@ public abstract class GameSessionServerSide implements Observer {
 
 	/**
 	 * Notifies to all players the username of the new current player with the string "turn=newCurrentPlayerUsername=newTurnNumber"
-	 * @param playerName
 	 */
-	protected abstract void notifyBeginTurn(String playerName);
+	protected abstract void notifyBeginTurn();
 
 	/**
 	 * Notifies to every player the received character

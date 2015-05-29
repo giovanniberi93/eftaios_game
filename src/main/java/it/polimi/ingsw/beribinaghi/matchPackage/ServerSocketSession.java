@@ -13,7 +13,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class ServerSocketSession extends GameSessionServerSide{
+public class ServerSocketSession extends GameSessionServerSide implements Runnable{
 	private Socket socket;
 	private Scanner in;
 	private PrintWriter out;
@@ -39,12 +39,14 @@ public class ServerSocketSession extends GameSessionServerSide{
 
  
 	@Override
-	protected void notifyBeginTurn(String turn) {
-		String[] command = turn.split("=");
-		out.println(turn);
+	protected void notifyBeginTurn() {
+		Player currentPlayer = match.matchDataUpdate.getCurrentPlayer();
+		String string = "turn="+currentPlayer.getUser()+"="+match.matchDataUpdate.getTurnNumber();
+		out.println(string);
 		out.flush();
-		if(command[1].equals(this.player.getUser()))
-			this.myTurn();
+		if(currentPlayer.getUser().equals(this.player.getUser())){
+			new Thread(this).start(); 
+		}
 	}
 
 	@Override
@@ -70,13 +72,15 @@ public class ServerSocketSession extends GameSessionServerSide{
 		String line = in.nextLine();
 		String[] command = line.split("=");
 
-		while(!command[0].equals("endTurn")){
+		while(!command[0].equals("end")){
 			if(command[0].equals("move")){
 				executeMove(command[1]);	
 			}
 			else if (command[0].equals("card")){
 				executeCardAction(command);
 			}
+			line = in.nextLine();
+			command = line.split("=");
 		}
 		match.finishTurn();  
 	}
@@ -131,9 +135,11 @@ public class ServerSocketSession extends GameSessionServerSide{
 
 	@Override
 	protected void notifyCard() {
-		String usedCard = match.getLastUsedCard().toString();
-		out.println("card="+usedCard);
-		out.flush();
+		if(!match.matchDataUpdate.getCurrentPlayer().equals(this.player)){
+			String usedCard = match.getLastUsedCard().toString();
+			out.println("card="+usedCard);
+			out.flush();
+		}
 	}
 
 
@@ -152,19 +158,25 @@ public class ServerSocketSession extends GameSessionServerSide{
 
 	@Override
 	protected void notifyNoise() {
-		Coordinates noiseCoordinates = match.getNoiseCoordinates();
-		String noise = new String("noise="+noiseCoordinates.toString());
-		out.println(noise);
-		out.flush();
+		if(!match.matchDataUpdate.getCurrentPlayer().equals(this.player)){
+			Coordinates noiseCoordinates = match.getNoiseCoordinates();
+			String noise = new String("noise="+noiseCoordinates.toString());
+			out.println(noise);
+			out.flush();
+		}
+		
 	}
 
 
 	@Override
 	protected void notifyEscape() {
-		Coordinates shallopPosition = match.matchDataUpdate.getCurrentPlayer().getCharacter().getCurrentPosition();
-		String escapeResult = new String("escaped="+match.isSuccessfulEscape()+"="+shallopPosition);
-		out.println(escapeResult);
-		out.flush();
+		if(!match.matchDataUpdate.getCurrentPlayer().equals(this.player)){
+			Coordinates shallopPosition = match.matchDataUpdate.getCurrentPlayer().getCharacter().getCurrentPosition();
+			String escapeResult = new String("escaped="+match.isSuccessfulEscape()+"="+shallopPosition);
+			out.println(escapeResult);
+			out.flush();
+		}
+		
 	}
 
 
@@ -181,5 +193,10 @@ public class ServerSocketSession extends GameSessionServerSide{
 			attackResult += player.getUser() + "&" + player.getCharacter() + "="; 
 		out.println(attackResult);
 		out.flush();
+	}
+
+	@Override
+	public void run() {
+		this.myTurn();
 	}
 }

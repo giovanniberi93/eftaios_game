@@ -30,10 +30,10 @@ public class ServerRMISession extends GameSessionServerSide implements RemoteGam
 	}
 
 	@Override
-	protected void notifyBeginTurn(String playerName) {
-		String []singleWord = playerName.split("=");
+	protected void notifyBeginTurn() {
+		/*String []singleWord = playerName.split("=");
 		playerTurn = singleWord[1];
-		notificableNewTurn = true;
+		notificableNewTurn = true;*/
 	}
 
 	@Override

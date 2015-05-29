@@ -86,6 +86,8 @@ public final class Coordinates implements Serializable{
 	}
 	
 	public static Coordinates stringToCoordinates(String string){
+		if(string.equals("silence"))
+			return Coordinates.SILENCE;
 		if(string.length() > 3)
 			return null;
 		char letter  = string.charAt(0);

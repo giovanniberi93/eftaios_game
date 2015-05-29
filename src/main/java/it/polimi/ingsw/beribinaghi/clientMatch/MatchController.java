@@ -60,8 +60,10 @@ public class MatchController {
 		this.currentPlayer = currentPlayer;
 		if (currentPlayer.equals(myPlayerName))
 			graphicInterface.managesMyTurn();
-		else
+		else{
 			graphicInterface.notifyOthersTurn(currentPlayer);
+			session.listenUpdate();
+		}
 	}
 	
 	public void callMove(Coordinates destinationCoordinates){

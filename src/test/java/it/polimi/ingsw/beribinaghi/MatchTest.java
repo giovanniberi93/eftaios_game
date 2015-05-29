@@ -39,12 +39,11 @@ public class MatchTest {
 		
 		ArrayList<GameSessionServerSide> gameSessions = new ArrayList<GameSessionServerSide>();
 		match = new Match(gameSessions, players, "testMap", "Galilei", MapModel.GALILEI);
-		assertNotNull(match);
 	}	
 	
 	
 	@Test
-	public void killEveryonettackTest(){
+	public void killEveryoneAttackTest(){
 		Coordinates coord = new Coordinates ('c',5);
 		for(int i = 0; i<4; i++)
 			players.get(i).getCharacter().setCurrentPosition(coord);
@@ -86,9 +85,10 @@ public class MatchTest {
 	@Test 
 	public void sedativesCardEffectTest(){
 		ArrayList<Card> pickedCard =  new ArrayList<Card>();
-		this.match.matchDataUpdate.setUsedObjectCard(new Sedatives());
+		this.match.addToUsedCards(new Sedatives());
 		pickedCard = match.move(new Coordinates('a',2));
 		assertTrue(pickedCard.get(0) == null);
+		
 	}
 	
 	@Test 

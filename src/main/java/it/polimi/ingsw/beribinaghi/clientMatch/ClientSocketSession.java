@@ -147,25 +147,25 @@ public class ClientSocketSession implements GameSessionClientSide {
 				pickedCards.add(new Silence(false));
 			else if (command[1].equals("nothing"))
 				pickedCards.add(new NothingToPick());
-			if(command.length > 2)
-				if(command[1].equals("adrenalin"))
+			if(command.length == 3)
+				if(command[2].equals("adrenalin"))
 					pickedCards.add(new Adrenalin());
-				else if(command[1].equals("sedatives"))
+				else if(command[2].equals("sedatives"))
 				pickedCards.add(new Sedatives());
-				else if(command[1].equals("defense"))
+				else if(command[2].equals("defense"))
 					pickedCards.add(new Defense());
-				else if(command[1].equals("attack"))
+				else if(command[2].equals("attack"))
 					pickedCards.add(new Attack());
-				else if(command[1].equals("spotlight"))
+				else if(command[2].equals("spotlight"))
 					pickedCards.add(new Spotlight());
-				else if(command[1].equals("teleport"))
+				else if(command[2].equals("teleport"))
 					pickedCards.add(new Teleport());
 		return pickedCards;
 	}
 
 	@Override
 	public void endTurn() {
-		out.println("endTurn");
+		out.println("end");
 		out.flush();		
 	}
 
@@ -193,53 +193,51 @@ public class ClientSocketSession implements GameSessionClientSide {
 	public void listenUpdate() {
 		String commandString = in.nextLine();
 		String[] command = commandString.split("=");
-		switch(command[0]){
-		case "noise":
-			Coordinates noiseCoord = null;
-			noiseCoord = Coordinates.stringToCoordinates(command[1]);
-			controller.getGraphicInterface().showNoise(noiseCoord);
-			break;
-		case "escaped":
-			boolean result;
-			if(command[1].equals("true"))
-				result = true;
-			else
-				result = false;
-			Coordinates coord = null;
-			coord = Coordinates.stringToCoordinates(command[2]);
-			controller.getGraphicInterface().showEscapeResult(result, coord);
-			break;
-		case "card":
-			ObjectCard usedCard = ObjectCard.stringToCard(command[1]);
-			Coordinates destinationCoord;
-			destinationCoord = Coordinates.stringToCoordinates(command[2]);
-			controller.getGraphicInterface().showUsedCard(usedCard);
-			break;
-		case "killed":
-			ArrayList<String> killed = new ArrayList<String>();
-			ArrayList<String> survived = new ArrayList<String>();
-			killed = this.selectKilled(command);
-			survived = this.selectSurvived(command);
-			controller.getGraphicInterface().showAttackResult(killed, survived);
-			break;
-		case "turn":
-			listenTurn();
-			break;
-		case "endMatch":
-			// TODO boh.
-			break;
-		case "spotted":
-			for(int i=1; i<command.length; i++){
-				String[] spottedPlayer = command[i].split("&");
-				String username = spottedPlayer[0];
-				Coordinates position = Coordinates.stringToCoordinates(spottedPlayer[1]);
-				controller.getGraphicInterface().showSpottedPlayer(username, position);
+		while(!command[0].equals("turn")){
+			switch(command[0]){
+				case "noise":
+					Coordinates noiseCoord = null;
+					noiseCoord = Coordinates.stringToCoordinates(command[1]);
+					controller.getGraphicInterface().showNoise(noiseCoord);
+					break;
+				case "escaped":
+					boolean result;
+					if(command[1].equals("true"))
+						result = true;
+					else
+						result = false;
+					Coordinates coord = null;
+					coord = Coordinates.stringToCoordinates(command[2]);
+					controller.getGraphicInterface().showEscapeResult(result, coord);
+					break;
+				case "card":
+					ObjectCard usedCard = ObjectCard.stringToCard(command[1]);
+					Coordinates destinationCoord;
+					destinationCoord = Coordinates.stringToCoordinates(command[2]);
+					controller.getGraphicInterface().showUsedCard(usedCard);
+					break;
+				case "killed":
+					ArrayList<String> killed = new ArrayList<String>();
+					ArrayList<String> survived = new ArrayList<String>();
+					killed = this.selectKilled(command);
+					survived = this.selectSurvived(command);
+					controller.getGraphicInterface().showAttackResult(killed, survived);
+					break;
+				case "endMatch":
+					// TODO boh.
+					break;
+				case "spotted":
+					for(int i=1; i<command.length; i++){
+						String[] spottedPlayer = command[i].split("&");
+						String username = spottedPlayer[0];
+						Coordinates position = Coordinates.stringToCoordinates(spottedPlayer[1]);
+						controller.getGraphicInterface().showSpottedPlayer(username, position);
+					}
+					break;
 			}
-				
-			
+		commandString = in.nextLine();
 		}
-		
-		
+	listenTurn();
 	}
 
 	private ArrayList<String> selectSurvived(String[] command) {

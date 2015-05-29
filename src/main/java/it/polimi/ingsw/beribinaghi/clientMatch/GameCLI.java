@@ -57,7 +57,7 @@ public class GameCLI implements GameInterface {
 				chooseObjectCard();
 				break;
 			case "attack":
-				hasAttacked= true;
+				hasAttacked = true;
 				ArrayList<String> command = new ArrayList<String>();
 				command.add("attack");
 				controller.callObjectCard(command);

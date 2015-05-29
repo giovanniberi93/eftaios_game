@@ -184,7 +184,6 @@ public class Match {
 			else
 				successfulEscape = false;
 			matchDataUpdate.setEscaped();
-			
 		}
 		return allCards;
 	}
@@ -225,6 +224,9 @@ public class Match {
 		return map;
 	}
 
+	public void addToUsedCards(ObjectCard card){
+		this.usedCards.add(card);
+	}
 
 	public void noise(Coordinates noiseCoordinates){
 		matchDataUpdate.setNoiseCoordinates();
