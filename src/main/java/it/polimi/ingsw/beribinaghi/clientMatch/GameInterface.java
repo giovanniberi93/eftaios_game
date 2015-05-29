@@ -27,12 +27,28 @@ public interface GameInterface {
 
 	void printMap(Map map, Coordinates myCoordinates);
 
-	void manageSectorCard(Card card);
+	void showPickedCard(ArrayList<Card> pickedCards);
 
 	void manageNewObjectCard(ObjectCard objectCard);
 
-	void showUsedCard(ArrayList<String> command);
+	void showUsedCard(ObjectCard usedCard);
 
 	void manageUsedObjectCard(ArrayList<String> command);
+
+	void chooseObjectCard();
+
+	Coordinates chooseAnyCoordinates();
+
+	void showEscapeResult(boolean result, Coordinates coord);
+
+	void showNoise(Coordinates noiseCoord);
+
+	void showAttackResult(ArrayList<String> killed, ArrayList<String> survived);
+
+	void showSpottedPlayer(String username, Coordinates position);
+
+	void manageSectorCard(Card card);
+
+	void showUsedCard(ArrayList<String> command);
 
 }

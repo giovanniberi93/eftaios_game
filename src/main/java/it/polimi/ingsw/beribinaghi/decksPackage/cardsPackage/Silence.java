@@ -1,5 +1,7 @@
 package it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage;
 
+import it.polimi.ingsw.beribinaghi.clientMatch.NoiseCoordinatesSelector;
+
 public class Silence extends DangerousSectorCard {
 
 	public Silence(boolean containsObject) {
@@ -10,6 +12,9 @@ public class Silence extends DangerousSectorCard {
 		return new String("silence");
 	}
 	
-	
+	@Override
+	public void accept(NoiseCoordinatesSelector noiseAssigner) {
+		noiseAssigner.visit(this);
+	}
 
 }

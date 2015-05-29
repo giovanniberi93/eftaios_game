@@ -3,7 +3,7 @@
  */
 package it.polimi.ingsw.beribinaghi.mapPackage;
 
-import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.Card;
+import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.NothingToPick;
 import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.SectorCard;
 import it.polimi.ingsw.beribinaghi.matchPackage.DeckAssigner;
 
@@ -23,7 +23,7 @@ public class HumanBase extends Sector {
 	
 	@Override
 	public SectorCard pickFromAssociatedDeck(){
-		return null;
+		return new NothingToPick();
 	}
 
 }

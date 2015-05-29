@@ -13,7 +13,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class ServerSocketSession extends GameSessionServerSide{
+public class ServerSocketSession extends GameSessionServerSide implements Runnable{
 	private Socket socket;
 	private Scanner in;
 	private PrintWriter out;
@@ -37,14 +37,16 @@ public class ServerSocketSession extends GameSessionServerSide{
 		out.flush();
 	}
 
-
+ 
 	@Override
-	protected void notifyBeginTurn(String turn) {
-		String[] command = turn.split("=");
-		out.println(turn);
+	protected void notifyBeginTurn() {
+		Player currentPlayer = match.matchDataUpdate.getCurrentPlayer();
+		String string = "turn="+currentPlayer.getUser()+"="+match.matchDataUpdate.getTurnNumber();
+		out.println(string);
 		out.flush();
-		if(command[1].equals(this.player.getUser()))
-			this.myTurn();
+		if(currentPlayer.getUser().equals(this.player.getUser())){
+			new Thread(this).start(); 
+		}
 	}
 
 	@Override
@@ -70,13 +72,15 @@ public class ServerSocketSession extends GameSessionServerSide{
 		String line = in.nextLine();
 		String[] command = line.split("=");
 
-		while(!command[0].equals("endTurn")){
+		while(!command[0].equals("end")){
 			if(command[0].equals("move")){
 				executeMove(command[1]);	
 			}
 			else if (command[0].equals("card")){
 				executeCardAction(command);
 			}
+			line = in.nextLine();
+			command = line.split("=");
 		}
 		match.finishTurn();  
 	}
@@ -96,12 +100,8 @@ public class ServerSocketSession extends GameSessionServerSide{
 			match.adrenalin();
 			break;
 		case "spotlight" :
-			Coordinates selectedCoordinates = null;
-			try {
-				selectedCoordinates = Coordinates.stringToCoordinates(command[2]);
-			} catch (StringSyntaxNotOfCoordinatesException e) {
-				System.out.println("Stringa non convertibile in coordinate");
-			}
+			Coordinates selectedCoordinates;
+			selectedCoordinates = Coordinates.stringToCoordinates(command[2]);
 			match.spotlight(selectedCoordinates);
 			break;
 		}
@@ -111,26 +111,19 @@ public class ServerSocketSession extends GameSessionServerSide{
 	private void executeMove(String coordinatesString){
 		ArrayList<Card> pickedCards = new ArrayList<Card>();
 		String pickedCardString = new String("card=");
-		Coordinates destinationCoordinates = null;
-		try {
-			destinationCoordinates = Coordinates.stringToCoordinates(coordinatesString);
-		} catch (StringSyntaxNotOfCoordinatesException e1) {
-			System.out.println("Stringa non convertibile in coordinate");
-		}
+		Coordinates destinationCoordinates;
+		destinationCoordinates = Coordinates.stringToCoordinates(coordinatesString);
 		
 		pickedCards = match.move(destinationCoordinates);
 		for(Card card : pickedCards)
 			pickedCardString += card.toString() + "=";
 		out.println(pickedCardString);
 		out.flush();
-		String[] noise = in.nextLine().split("=");
-		Coordinates noiseCoordinates = null;
-		try {
-			noiseCoordinates = Coordinates.stringToCoordinates(noise[1]);
-		} catch (StringSyntaxNotOfCoordinatesException e) {
-			System.out.println("Stringa non convertibile in coordinate");
+		String[] noise = in.nextLine().split("=");		//aspetto il rumore comunicato dall'altra parte!
+		if(!noise[1].equals("nothing")){
+			match.setNoiseCoordinates(Coordinates.stringToCoordinates(noise[1]));
+			match.matchDataUpdate.setNoiseCoordinates();
 		}
-		match.noise(noiseCoordinates);
 	}
 
 	@Override
@@ -141,35 +134,69 @@ public class ServerSocketSession extends GameSessionServerSide{
 
 
 	@Override
-	protected void notifyCard(String usedCard) {
-		out.println(usedCard);
+	protected void notifyCard() {
+		if(!match.matchDataUpdate.getCurrentPlayer().equals(this.player)){
+			String usedCard = match.getLastUsedCard().toString();
+			out.println("card="+usedCard);
+			out.flush();
+		}
+	}
+
+
+	@Override
+	protected void notifySpotted() {
+		ArrayList<Player> spotted = new ArrayList<Player>();
+		String result = "spotlight=";
+		for(Player player : spotted){
+			Coordinates playerCoordinates = player.getCharacter().getCurrentPosition();
+			result += player.getUser() + "&" + playerCoordinates + "=";
+		}
+		out.println(result);
 		out.flush();
 	}
 
 
 	@Override
-	protected void notifySpotted(String spottedPlayers) {
-		out.println(spottedPlayers);
+	protected void notifyNoise() {
+		if(!match.matchDataUpdate.getCurrentPlayer().equals(this.player)){
+			Coordinates noiseCoordinates = match.getNoiseCoordinates();
+			String noise = new String("noise="+noiseCoordinates.toString());
+			out.println(noise);
+			out.flush();
+		}
+		
 	}
 
 
 	@Override
-	protected void notifyNoise(String noisePosition) {
-		out.println(noisePosition);
-		out.flush();
+	protected void notifyEscape() {
+		if(!match.matchDataUpdate.getCurrentPlayer().equals(this.player)){
+			Coordinates shallopPosition = match.matchDataUpdate.getCurrentPlayer().getCharacter().getCurrentPosition();
+			String escapeResult = new String("escaped="+match.isSuccessfulEscape()+"="+shallopPosition);
+			out.println(escapeResult);
+			out.flush();
+		}
+		
 	}
 
 
 	@Override
-	protected void notifyEscape(String escapeResult) {
-		out.println(escapeResult);
-		out.flush();
-	}
-
-
-	@Override
-	protected void notifyAttackResult(String attackResult) {
+	protected void notifyAttackResult() {
+		String attackResult;
+		ArrayList<Player> killed = match.getKilled();
+		attackResult = "killed=";
+		for(Player player : killed)
+			attackResult += player.getUser() + "&" + player.getCharacter() + "="; 
+		ArrayList<Player> survived = match.getSurvived();
+		attackResult += "survived=";
+		for(Player player : survived)
+			attackResult += player.getUser() + "&" + player.getCharacter() + "="; 
 		out.println(attackResult);
 		out.flush();
+	}
+
+	@Override
+	public void run() {
+		this.myTurn();
 	}
 }

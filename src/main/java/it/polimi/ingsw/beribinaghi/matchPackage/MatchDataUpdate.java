@@ -26,14 +26,12 @@ public class MatchDataUpdate extends Observable {
 	}
 	
 	/**
-	 * Notifies to all gamesession a card used by the current player; the syntax is "card=usedCard.toString()"
+	 * Notifies to all gamesessions a card used by the current player; the syntax is "card=usedCard.toString()"
 	 * @param objectCard
 	 */
-	public void setUsedObjectCard(ObjectCard objectCard) {
-		String usedCard = new String(objectCard.toString());
-		usedObjectCard.add(objectCard);
+	public void setUsedObjectCard() {
 		this.setChanged();
-		this.notifyObservers("card="+usedCard);
+		this.notifyObservers("card");
 	}
 
 	/**
@@ -41,15 +39,9 @@ public class MatchDataUpdate extends Observable {
 	 * @param killed contains the killed character
 	 * @param survived contains the survived character
 	 */
-	public void setAttackOutcome(ArrayList<Player> killed, ArrayList<Player> survived) {
-		String attackResult = new String("killed=");
-		for(Player player : killed)
-			attackResult = attackResult+player.getUser()+"=";
-		attackResult += "survived=";
-		for(Player player : survived)
-			attackResult += player.getUser()+"=";
+	public void setAttackOutcome() {	//attack
 		this.setChanged();
-		this.notifyObservers(attackResult);
+		this.notifyObservers("attack");
 	}
 	
 	public Player getCurrentPlayer() {
@@ -60,20 +52,18 @@ public class MatchDataUpdate extends Observable {
 	 * Notifies to all gamesession the result of a tempted escape with the string "escaped=booleanValue"
 	 * @param escaped is true if the escaped was successful, false if it has failed
 	 */
-	public void setEscaped(Boolean escaped) {
-		String escapeResult = new String("escaped="+escaped);
+	public void setEscaped() {		//escape
 		this.setChanged();
-		this.notifyObservers(escapeResult);
+		this.notifyObservers("escape");
 	}
 
 	/**
 	 * Notifies to all gamessions the coordinates of the noise signaled by currentPlayer; the syntax is "noise=coordinatesLetter=coordinatesNumber"
 	 * @param noiseCoordinates are the coordinates signaled for the noise
 	 */
-	public void setNoiseCoordinates(Coordinates noiseCoordinates) {
-		String noise = new String("noise="+noiseCoordinates.getLetter()+"="+noiseCoordinates.getNumber());
+	public void setNoiseCoordinates() {			//noise
 		this.setChanged();
-		this.notifyObservers(noise);
+		this.notifyObservers("noise");
 	}
 
 	public int getTurnNumber() {
@@ -92,23 +82,17 @@ public class MatchDataUpdate extends Observable {
 	 * @param isMatchFinished
 	 */
 	public void setMatchFinished() {
-		String end = new String("endMatch");
 		this.setChanged();
-		this.notifyObservers(end);
+		this.notifyObservers("endMatch");
 	}
 
 	/**
 	 * Notifies username and position of spotted players to every the gamesessions; the syntax of the notified string is spotted=username&coordinatesLetter&coordinatesNumber=
 	 * @param caughtPlayer contains the players spotted by the spotllight
 	 */
-	public void setSpottedPlayers(ArrayList<Player> caughtPlayer) {
-		String spotted = new String("spotted=");
-		for(Player player : caughtPlayer){
-			Coordinates position = player.getCharacter().getCurrentPosition();
-			spotted = spotted+player.getUser()+"&"+position.getLetter()+"&"+position.getNumber()+"=";
-		}
+	public void setSpottedPlayers() {		//spotlight
 		this.setChanged();
-		this.notifyObservers(spotted);
+		this.notifyObservers("spotlight");
 	}
 	
 	/**
@@ -117,7 +101,7 @@ public class MatchDataUpdate extends Observable {
 	public void start()
 	{
 		this.setChanged();
-		this.notifyObservers("turn=" + currentPlayer.getUser() + "=" + getTurnNumber());
+		this.notifyObservers("turn");
 	}
 
 	/**
@@ -125,7 +109,8 @@ public class MatchDataUpdate extends Observable {
 	 * @param player is the new currentPlayer
 	 */
 	public void clear(Player player) {
-		this.turnNumber++;
+		
+		this.turnNumber++;			//turn
 		this.currentPlayer = player;
 		usedObjectCard.clear();
 		this.setChanged();

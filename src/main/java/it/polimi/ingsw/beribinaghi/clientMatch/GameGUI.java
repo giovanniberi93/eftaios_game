@@ -257,4 +257,53 @@ public class GameGUI implements GameInterface,MouseListener {
 		
 	}
 
+	@Override
+	public void showPickedCard(ArrayList<Card> pickedCards) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void showUsedCard(ObjectCard usedCard) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void chooseObjectCard() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public Coordinates chooseAnyCoordinates() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void showEscapeResult(boolean result, Coordinates coord) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void showNoise(Coordinates noiseCoord) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void showAttackResult(ArrayList<String> killed,
+			ArrayList<String> survived) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void showSpottedPlayer(String username, Coordinates position) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

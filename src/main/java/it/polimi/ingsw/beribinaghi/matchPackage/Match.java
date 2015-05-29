@@ -38,13 +38,18 @@ public class Match {
 	private String matchName;
 	private ArrayList<Player> players;
 	private int currentPlayerIndex;
-	
 	private ObjectsDeck objectsDeck;
 	private ShallopsDeck shallopsDeck;
 	private DangerousSectorsDeck dangerousSectorsDeck;
 	private CharactersDeck playersDeck;
-	
 	private Map map;
+	
+	private ArrayList<Player> killed = new ArrayList<Player>();
+	private ArrayList<Player> survived = new ArrayList<Player>();
+	private ArrayList<Player> spotted = new ArrayList<Player>();
+	private ArrayList<ObjectCard> usedCards = new ArrayList<ObjectCard>();
+	private Coordinates noiseCoordinates;
+	private boolean successfulEscape;
 	
 	public MatchDataUpdate matchDataUpdate;
 	
@@ -81,7 +86,6 @@ public class Match {
 		}
 	}
 
-
 	/**
 	 * setup of the decks, according to playerNumber
 	 * @param playerNumber
@@ -111,6 +115,17 @@ public class Match {
 		playersDeck.addToDiscardPile(characterCard);
 	}
 
+	
+	public ArrayList<Player> getKilled() {
+		return killed;
+	}
+
+
+	public ArrayList<Player> getSurvived() {
+		return survived;
+	}
+
+
 	/**
 	 * set the initial position of all the existing players; in AlienBase or HumanBase according 
 	 * to the side of the character
@@ -126,6 +141,12 @@ public class Match {
 			}
 	}
 	
+	
+	public boolean isSuccessfulEscape() {
+		return successfulEscape;
+	}
+
+
 	/**
 	 * start match
 	 */
@@ -157,12 +178,12 @@ public class Match {
 		if(pickedCard instanceof ShallopCard){
 			ShallopCard shallopCard = (ShallopCard) pickedCard;
 			if(!(shallopCard.isDamaged())){
-				matchDataUpdate.getCurrentPlayer().getCharacter().setCurrentPosition(null);
-				matchDataUpdate.setEscaped(true);
+				successfulEscape = true;
 				this.finishTurn();
 			}
 			else
-				matchDataUpdate.setEscaped(false);
+				successfulEscape = false;
+			matchDataUpdate.setEscaped();
 		}
 		return allCards;
 	}
@@ -203,9 +224,12 @@ public class Match {
 		return map;
 	}
 
+	public void addToUsedCards(ObjectCard card){
+		this.usedCards.add(card);
+	}
 
 	public void noise(Coordinates noiseCoordinates){
-		matchDataUpdate.setNoiseCoordinates(noiseCoordinates);
+		matchDataUpdate.setNoiseCoordinates();
 	}
 	
 	public void spotlight(Coordinates selectedCoordinates){
@@ -214,9 +238,9 @@ public class Match {
 		for(Coordinates analyzedCoordinates : lightedCoordinates){
 			for(Player analyzedPlayer : players)
 				if(analyzedPlayer.getCharacter().getCurrentPosition().equals(analyzedCoordinates))
-					spottedPlayers.add(analyzedPlayer);
+					this.spotted.add(analyzedPlayer);
 		}
-		matchDataUpdate.setSpottedPlayers(spottedPlayers);
+		matchDataUpdate.setSpottedPlayers();
 	}
 	
 	public void discard(ObjectCard discardedCard){
@@ -225,62 +249,77 @@ public class Match {
 	
 	public void attack(){
 		Player analyzedPlayer;
-		ArrayList<Player> killed = new ArrayList<Player>();
-		ArrayList<Player> survived = new ArrayList<Player>();
-
+	
 		Player currentPlayer = matchDataUpdate.getCurrentPlayer();
 		for(int i = 0; i < players.size(); i++){
 			if(i != this.currentPlayerIndex){
 				analyzedPlayer = players.get(i);
 				if(analyzedPlayer.getCharacter().getCurrentPosition().equals(currentPlayer.getCharacter().getCurrentPosition())){
 					if(analyzedPlayer.getCharacter().getSide() == SideName.HUMAN && (analyzedPlayer.getCharacter().removeCardFromBag(new Defense())))
-						survived.add(analyzedPlayer);
+						this.survived.add(analyzedPlayer);
 					else{
-						killed.add(analyzedPlayer);
+						this.killed.add(analyzedPlayer);
 						analyzedPlayer.getCharacter().setAlive(false);
 						analyzedPlayer.getCharacter().setCurrentPosition(null);
 					}	
 				}
 			}
 		}
-		if(currentPlayer.getCharacter().getSide() == SideName.HUMAN){
-			ObjectCard usedCard = new Attack();
-			currentPlayer.getCharacter().removeCardFromBag(usedCard);
-		}
-		matchDataUpdate.setAttackOutcome(killed, survived);
+		if(currentPlayer.getCharacter().getSide() == SideName.HUMAN)
+			matchDataUpdate.setUsedObjectCard();
+		matchDataUpdate.setAttackOutcome();
 	}
 	
 	public void teleport(){
 		Coordinates baseCoordinates;
 		ObjectCard usedCard = new Teleport();		//crea carta dello stesso tipo usato		
 		Player currentPlayer = players.get(currentPlayerIndex);
-		
-		matchDataUpdate.setUsedObjectCard(usedCard);		//update MatchDataUpdate con la carta usata
+
 		baseCoordinates = map.getHumanBaseCoordinates();
 		move(baseCoordinates);
-	
 		currentPlayer.getCharacter().removeCardFromBag(usedCard);		//toglie la carta usata dal bag del currentPlayer
+		usedCards.add(new Teleport());
+		matchDataUpdate.setUsedObjectCard();	
 	}
 	
 	public void adrenalin(){
 		ObjectCard usedCard = new Adrenalin();
 		Player currentPlayer = players.get(currentPlayerIndex);
-		
-		matchDataUpdate.setUsedObjectCard(usedCard);
+
 		currentPlayer.getCharacter().removeCardFromBag(usedCard);		//toglie la carta usata dal bag del currentPlayer
+		usedCards.add(new Adrenalin());
+		matchDataUpdate.setUsedObjectCard();	
 	}
 	
 	public void sedatives(){
 		ObjectCard usedCard = new Sedatives();
 		Player currentPlayer = matchDataUpdate.getCurrentPlayer();
-		matchDataUpdate.setUsedObjectCard(usedCard);
-		currentPlayer.getCharacter().removeCardFromBag(usedCard);		//toglie la carta usata dal bag del currentPlayer
+		
+		currentPlayer.getCharacter().removeCardFromBag(usedCard);
+		usedCards.add(new Sedatives());
+		matchDataUpdate.setUsedObjectCard();	
 	}
 
 
 	public String getMatchName() {
 		return matchName;
 	}
+
+
+	public ObjectCard getLastUsedCard() {
+		return usedCards.get(usedCards.size()-1);
+	}
+
+
+	public Coordinates getNoiseCoordinates() {
+		return noiseCoordinates;
+	}
+
+
+	public void setNoiseCoordinates(Coordinates noiseCoordinates) {
+		this.noiseCoordinates = noiseCoordinates;
+	}
+
 	
 	
 	

@@ -73,31 +73,25 @@ public class RMISession implements GameSessionClientSide {
 	}
 
 	@Override
-	public void teleport() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void adrenalin() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void sedatives() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void attack() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
 	public void endTurn() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void noise(Coordinates noiseCoordinates) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void useObjectcard(ArrayList<String> command) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void listenUpdate() {
 		// TODO Auto-generated method stub
 		
 	}

@@ -73,9 +73,9 @@ public abstract class Character implements Serializable{
 	
 	public boolean removeCardFromBag(ObjectCard searchedCard){
 		ObjectCard temporaryCard;
-		for(int i = 0; i<3; i++){		//TODO constant
+		for(int i = 0; i< bag.size() ; i++){		//TODO constant
 			temporaryCard = getCardFromBag(i);
-			if(temporaryCard.getClass() == searchedCard.getClass()){
+			if(temporaryCard.getClass().equals(searchedCard.getClass())){
 				searchedCard = temporaryCard;
 				bag.remove(i);
 				return true;

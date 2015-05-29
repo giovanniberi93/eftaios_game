@@ -7,6 +7,7 @@ import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.Card;
 import it.polimi.ingsw.beribinaghi.mapPackage.Coordinates;
 import it.polimi.ingsw.beribinaghi.mapPackage.Map;
 import it.polimi.ingsw.beribinaghi.playerPackage.Character;
+import it.polimi.ingsw.beribinaghi.playerPackage.Player;
 
 import java.util.ArrayList;
 
@@ -17,7 +18,7 @@ import java.util.ArrayList;
  */
 public interface GameSessionClientSide {
 
-	void setController(MatchController matchController);
+	public void setController(MatchController matchController);
 
 	public Character getCharacter();
 
@@ -27,14 +28,11 @@ public interface GameSessionClientSide {
 	
 	public ArrayList<Card> move(Coordinates destinationCoord) throws WrongSyntaxException;
 
-	public void teleport();
-
-	public void adrenalin();
-
-	public void sedatives();
-
-	public void attack();
+	public void noise(Coordinates noiseCoordinates);
+	
+	public void useObjectcard(ArrayList<String> command);
 
 	public void endTurn();
-	
+
+	public void listenUpdate();
 }
