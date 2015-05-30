@@ -12,8 +12,8 @@ import java.util.HashMap;
 
 public class Map implements Serializable {
 	private static final long serialVersionUID = 1L;
-	final static int HEIGHT = 14;		//TODO aggiungi costanti
-	final static int WIDTH = 23;
+	public final static int HEIGHT = 14;		//TODO aggiungi costanti
+	public final static int WIDTH = 23;
 	private String mapName;
 	private HashMap <String, Sector> map = new HashMap<String, Sector>();
 	private Coordinates AlienBaseCoordinates;

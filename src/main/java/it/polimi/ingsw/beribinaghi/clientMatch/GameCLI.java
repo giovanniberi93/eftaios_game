@@ -252,4 +252,16 @@ public class GameCLI implements GameInterface {
 		System.out.println("Spotlight!");
 		System.out.println(username + " si trova in " + position);	
 	}
+
+	@Override
+	public void manageSectorCard(Card card) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void showUsedCard(ArrayList<String> command) {
+		// TODO Auto-generated method stub
+		
+	}
 }

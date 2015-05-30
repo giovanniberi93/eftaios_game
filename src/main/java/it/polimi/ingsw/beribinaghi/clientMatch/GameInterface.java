@@ -47,4 +47,8 @@ public interface GameInterface {
 
 	void showSpottedPlayer(String username, Coordinates position);
 
+	void manageSectorCard(Card card);
+
+	void showUsedCard(ArrayList<String> command);
+
 }
