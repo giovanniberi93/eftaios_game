@@ -41,5 +41,7 @@ public interface GraphicInterface {
 
 	public void signalConnessionSuccess();
 
+	public void start();
+
 
 }

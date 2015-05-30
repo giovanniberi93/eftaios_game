@@ -33,6 +33,7 @@ public class SetupController {
 		this.graphicInterface = graphicInterface;
 		this.setupSession = setupSession;
 		graphicInterface.setSetupController(this);
+		graphicInterface.start();
 		connect();
 	}
 	

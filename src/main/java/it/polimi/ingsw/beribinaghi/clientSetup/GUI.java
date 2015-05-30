@@ -73,9 +73,108 @@ public class GUI extends JFrame implements GraphicInterface {
 	    if (GUI.FULLSCREEN)
 	    	gd.setFullScreenWindow(this);
 	    installFont();
-	  //  playVideo();
 	}
 	
+	@Override
+
+	public void start() {
+		 new VideoHandler();
+	}
+
+
+	private class VideoHandler implements ControllerListener, KeyListener{
+		private Player mediaPlayer;
+		Component video;
+		public VideoHandler(){
+			try {
+				URL mediaURL = new File("media/introvideo.mov").toURI().toURL();
+				mediaPlayer = Manager.createRealizedPlayer( mediaURL );
+				video = mediaPlayer.getVisualComponent();	
+				cont.add( video, BorderLayout.CENTER);
+				mediaPlayer.start();
+				mediaPlayer.addControllerListener(this);
+				video.addKeyListener(this);
+				video.setFocusable(true);
+				cont.requestFocus();
+				video.requestFocusInWindow();
+			} catch (MalformedURLException e) {
+			} catch (NoPlayerException e) {
+			} catch (CannotRealizeException e) {
+			} catch (IOException e) {
+			}
+		}
+
+		@Override
+		public void controllerUpdate(ControllerEvent e) {
+			if (e instanceof EndOfMediaEvent)
+				endVideo();
+		}
+
+		private void endVideo() {
+			cont.remove(video);
+			playMusic();
+			cont.removeKeyListener(this);
+		}
+
+		@Override
+		public void keyTyped(KeyEvent e) {
+			
+		}
+
+		@Override
+		public void keyPressed(KeyEvent e) {
+			if (e.getKeyCode()==KeyEvent.VK_ESCAPE)
+			{
+				mediaPlayer.stop();
+				this.endVideo();
+			}
+		}
+
+		@Override
+		public void keyReleased(KeyEvent e) {
+			
+		}
+	}
+	
+	private class PlayerHandler implements ControllerListener{
+		private Player playerMusic;
+		private MediaLocator mediaLocator;
+		
+		public PlayerHandler(MediaLocator mediaLocator){
+			try {
+				playerMusic = Manager.createPlayer(mediaLocator);
+				this.mediaLocator = mediaLocator;
+				playerMusic.start();
+				playerMusic.addControllerListener(this);
+			} catch (NoPlayerException | IOException e) {
+			}
+
+		}
+
+		@Override
+		public void controllerUpdate(ControllerEvent e) {
+			 if (e instanceof EndOfMediaEvent)
+	         {
+				 try {
+					playerMusic = Manager.createPlayer(mediaLocator);
+					 playerMusic.start();
+					 playerMusic.addControllerListener(this);
+				} catch (NoPlayerException | IOException e1) {
+				}
+	         }
+	     }
+
+		
+	}
+	
+	private void playMusic() {
+		try{
+			MediaLocator mediaLocator = new MediaLocator(new File("media/sottofondo.wav").toURI().toURL());     
+			new PlayerHandler(mediaLocator);
+		}catch(java.net.MalformedURLException e){
+		}
+	}
+
 	private void installFont() {
 		try {
 			 GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
@@ -102,21 +201,6 @@ public class GUI extends JFrame implements GraphicInterface {
 			gra.drawImage(img, 0,0, null);
 			img = ImageIO.read(new File("media/logo.jpg").toURI().toURL());
 			gra.drawImage(img, this.getWidth()/2 - img.getWidth(null)/2,0, null);
-		} catch (IOException e) {
-		}
-	}
-
-	private void playVideo() {
-		URL mediaURL;
-		try {
-			mediaURL = new File("media/introvideo.mov").toURI().toURL();
-			Player mediaPlayer = Manager.createRealizedPlayer( mediaURL );
-			Component video = mediaPlayer.getVisualComponent();
-			this.add( video, BorderLayout.CENTER);
-			mediaPlayer.start();
-		} catch (MalformedURLException e) {
-		} catch (NoPlayerException e) {
-		} catch (CannotRealizeException e) {
 		} catch (IOException e) {
 		}
 	}
@@ -523,5 +607,6 @@ public class GUI extends JFrame implements GraphicInterface {
 	public void notifyNewPlayer(String namePlayer) {
 		listPlayer.addElement(namePlayer);
 	}
+
 
 }

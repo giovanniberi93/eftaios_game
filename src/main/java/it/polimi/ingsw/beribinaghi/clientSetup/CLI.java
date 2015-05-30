@@ -147,4 +147,8 @@ public class CLI implements GraphicInterface {
 		
 	}
 
+	@Override
+	public void start() {
+	}
+
 }
