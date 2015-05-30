@@ -55,7 +55,7 @@ public class MatchController {
 		return graphicInterface;
 	}
 
-	private void turn() {
+	public void turn() {
 		String currentPlayer = session.listenTurn(); 
 		this.currentPlayer = currentPlayer;
 		if (currentPlayer.equals(myPlayerName))

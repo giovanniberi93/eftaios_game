@@ -18,11 +18,13 @@ public class MatchDataUpdate extends Observable {
 	private ArrayList<ObjectCard> usedObjectCard = new ArrayList<ObjectCard>();
 	
 	private int turnNumber;
-	private Player currentPlayer;	
+	private Player currentPlayer;
+	private Player oldCurrentPlayer;
 	
 	public MatchDataUpdate (Player successiveCurrentPlayer, int turnNumber){
 		this.turnNumber = turnNumber;
 		this.currentPlayer = successiveCurrentPlayer;
+		oldCurrentPlayer = null;
 	}
 	
 	/**
@@ -114,7 +116,15 @@ public class MatchDataUpdate extends Observable {
 		this.currentPlayer = player;
 		usedObjectCard.clear();
 		this.setChanged();
-		this.notifyObservers("turn=" + player.getUser()+"="+getTurnNumber());
+		this.notifyObservers("turn");
+	}
+
+	public Player getOldCurrentPlayer() {
+		return oldCurrentPlayer;
+	}
+
+	public void setOldCurrentPlayer(Player oldCurrentPlayer) {
+		this.oldCurrentPlayer = oldCurrentPlayer;
 	}
 
 }
