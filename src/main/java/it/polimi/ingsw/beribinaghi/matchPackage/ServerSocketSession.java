@@ -41,12 +41,18 @@ public class ServerSocketSession extends GameSessionServerSide implements Runnab
 	@Override
 	protected void notifyBeginTurn() {
 		Player currentPlayer = match.matchDataUpdate.getCurrentPlayer();
+		Player oldCurrentPlayer = match.matchDataUpdate.getOldCurrentPlayer();
+		if(!(oldCurrentPlayer == null) && !(this.player.getUser().equals(oldCurrentPlayer.getUser()))){
+			out.println("end");
+			out.flush();
+		}
 		String string = "turn="+currentPlayer.getUser()+"="+match.matchDataUpdate.getTurnNumber();
 		out.println(string);
 		out.flush();
 		if(currentPlayer.getUser().equals(this.player.getUser())){
 			new Thread(this).start(); 
 		}
+
 	}
 
 	@Override
@@ -82,6 +88,7 @@ public class ServerSocketSession extends GameSessionServerSide implements Runnab
 			line = in.nextLine();
 			command = line.split("=");
 		}
+		match.matchDataUpdate.setOldCurrentPlayer(this.player);
 		match.finishTurn();  
 	}
 	

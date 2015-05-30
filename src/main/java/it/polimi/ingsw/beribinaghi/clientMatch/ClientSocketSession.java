@@ -193,7 +193,7 @@ public class ClientSocketSession implements GameSessionClientSide {
 	public void listenUpdate() {
 		String commandString = in.nextLine();
 		String[] command = commandString.split("=");
-		while(!command[0].equals("turn")){
+		while(!command[0].equals("end")){
 			switch(command[0]){
 				case "noise":
 					Coordinates noiseCoord = null;
@@ -236,8 +236,9 @@ public class ClientSocketSession implements GameSessionClientSide {
 					break;
 			}
 		commandString = in.nextLine();
+		command = commandString.split("=");
 		}
-	listenTurn();
+		controller.turn();
 	}
 
 	private ArrayList<String> selectSurvived(String[] command) {
