@@ -58,6 +58,7 @@ public class GUI extends JFrame implements GraphicInterface {
 	private SetupController setupController;
 	private DefaultListModel<String> listModel = null;
 	private DefaultListModel<String> listPlayer;
+	private PlayerHandler playerHandler;
 
 	public GUI(){
 		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
@@ -114,6 +115,8 @@ public class GUI extends JFrame implements GraphicInterface {
 			cont.remove(video);
 			playMusic();
 			cont.removeKeyListener(this);
+			mediaPlayer.stop();
+			mediaPlayer.close();
 		}
 
 		@Override
@@ -164,13 +167,19 @@ public class GUI extends JFrame implements GraphicInterface {
 	         }
 	     }
 
+		public void stop() {
+			playerMusic.stop();
+			playerMusic.close();
+			playerMusic.deallocate();
+		}
+
 		
 	}
 	
 	private void playMusic() {
 		try{
 			MediaLocator mediaLocator = new MediaLocator(new File("media/sottofondo.wav").toURI().toURL());     
-			new PlayerHandler(mediaLocator);
+			playerHandler = new PlayerHandler(mediaLocator);
 		}catch(java.net.MalformedURLException e){
 		}
 	}
@@ -227,6 +236,7 @@ public class GUI extends JFrame implements GraphicInterface {
 					gd.setFullScreenWindow(null);
 				gui.setVisible(false);
 				gui.dispose();
+				playerHandler.stop();
 			}
 		} 
 		

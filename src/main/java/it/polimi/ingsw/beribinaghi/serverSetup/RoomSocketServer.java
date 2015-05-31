@@ -76,7 +76,6 @@ public class RoomSocketServer extends RoomServer {
 					socket = server.accept();
 					(new SetupSocketSession(socket,RoomServer.getControllerMatch())).start();
 				} catch (IOException e) {
-					
 				}
 			}
 			if (!end)

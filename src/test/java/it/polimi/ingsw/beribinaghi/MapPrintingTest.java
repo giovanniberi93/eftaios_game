@@ -23,7 +23,7 @@ public class MapPrintingTest {
 	public synchronized void setup(){
 		gui = new GUI();
 		game = (GameGUI) gui.beginMatch();
-		game.printMap(new Map("sas",MapModel.GALILEI), new Coordinates('a', 0));
+		//game.printMap(new Map("sas",MapModel.GALILEI), new Coordinates('a', 0));
 		try {
 			this.wait();
 		} catch (InterruptedException e) {

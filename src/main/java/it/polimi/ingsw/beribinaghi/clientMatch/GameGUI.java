@@ -7,29 +7,34 @@ import it.polimi.ingsw.beribinaghi.clientSetup.GUI;
 import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.Card;
 import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.ObjectCard;
 import it.polimi.ingsw.beribinaghi.gameNames.SectorName;
-import it.polimi.ingsw.beribinaghi.gameNames.SideName;
+import it.polimi.ingsw.beribinaghi.gameNames.CharacterName;
 import it.polimi.ingsw.beribinaghi.mapPackage.Coordinates;
 import it.polimi.ingsw.beribinaghi.mapPackage.Map;
+import it.polimi.ingsw.beribinaghi.playerPackage.Character;
 
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import javax.imageio.ImageIO;
 import javax.swing.JOptionPane;
+import javax.swing.Timer;
 
 /**
  * This class manages the gui in match
  *
  */
 public class GameGUI implements GameInterface,MouseListener {
-
+	private MatchController controller;
 	private GUI frame;
 	private Graphics g;
 	private int mapWidth;
@@ -37,13 +42,10 @@ public class GameGUI implements GameInterface,MouseListener {
 	private int mapMarginWidth;
 	private int mapMarginHeight;
 	private Map map;
+	private Timer timer;
 	private int lw,lh;
-	private Image imgDangerous;
-	private Image imgSafe;
-	private Image imgHuman;
-	private Image imgAlien;
-	private Image imgShallop;
-	private Image imgBlank;
+	private HashMap<SectorName,Image> hashSector = new HashMap<SectorName,Image>();
+	private HashMap<String,Image> hashCharacter = new HashMap<String,Image>();
 	private ArrayList<Coordinates> posShallop = new ArrayList<Coordinates>();
 	
 	
@@ -63,12 +65,20 @@ public class GameGUI implements GameInterface,MouseListener {
 		mapMarginWidth = (frame.getWidth()-mapWidth)/2;
 		mapMarginHeight = (frame.getHeight()-mapHeight)/2;
 		try {
-			imgDangerous = ImageIO.read(new File("media/dangerousSector.png").toURI().toURL());
-			imgSafe = ImageIO.read(new File("media/safeSector.png").toURI().toURL());
-			imgHuman = ImageIO.read(new File("media/humanBase.png").toURI().toURL());;
-			imgAlien = ImageIO.read(new File("media/alienBase.png").toURI().toURL());;
-			imgShallop = ImageIO.read(new File("media/shallopSector.png").toURI().toURL());;
-			imgBlank = ImageIO.read(new File("media/blankSector.png").toURI().toURL());;
+			hashSector.put(SectorName.DANGEROUS, ImageIO.read(new File("media/sector/dangerousSector.png").toURI().toURL()));
+			hashSector.put(SectorName.SAFE, ImageIO.read(new File("media/sector/safeSector.png").toURI().toURL()));
+			hashSector.put(SectorName.HUMANBASE, ImageIO.read(new File("media/sector/humanBase.png").toURI().toURL()));
+			hashSector.put(SectorName.ALIENBASE, ImageIO.read(new File("media/sector/alienBase.png").toURI().toURL()));
+			hashSector.put(SectorName.SHALLOP, ImageIO.read(new File("media/sector/shallopSector.png").toURI().toURL()));
+			hashSector.put(SectorName.BLANK, ImageIO.read(new File("media/sector/blankSector.png").toURI().toURL()));
+			hashCharacter.put(CharacterName.CAPTAIN.getPersonalName(), ImageIO.read(new File("media/character/soldier.png").toURI().toURL()));
+			hashCharacter.put(CharacterName.PILOT.getPersonalName(), ImageIO.read(new File("media/character/soldier.png").toURI().toURL()));
+			hashCharacter.put(CharacterName.PSYCHOLOGIST.getPersonalName(), ImageIO.read(new File("media/character/soldier.png").toURI().toURL()));
+			hashCharacter.put(CharacterName.SOLDIER.getPersonalName(), ImageIO.read(new File("media/character/soldier.png").toURI().toURL()));
+			hashCharacter.put(CharacterName.FIRSTALIEN.getPersonalName(), ImageIO.read(new File("media/character/alien1.png").toURI().toURL()));
+			hashCharacter.put(CharacterName.SECONDALIEN.getPersonalName(), ImageIO.read(new File("media/character/alien1.png").toURI().toURL()));
+			hashCharacter.put(CharacterName.THIRDALIEN.getPersonalName(), ImageIO.read(new File("media/character/alien1.png").toURI().toURL()));
+			hashCharacter.put(CharacterName.FOURTHALIEN.getPersonalName(), ImageIO.read(new File("media/character/alien1.png").toURI().toURL()));
 		} catch (IOException e) {
 		}
 	}
@@ -78,17 +88,56 @@ public class GameGUI implements GameInterface,MouseListener {
 	 */
 	@Override
 	public void setController(MatchController matchController) {
-		// TODO Auto-generated method stub
+		controller = matchController;
+	}
+	
+	private class TimerHandler implements ActionListener{
+		private Boolean trans;
+		private Image img;
+		private int y;
+		private String finalString;
+		private static final int diff = 1;
+		
+		public TimerHandler(Image img,String finalString) {
+			this.img = img;
+			this.finalString = finalString;
+			y=frame.getHeight();
+			trans = true;
+		}
 
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			if (trans){
+				if (y>(frame.getHeight()-img.getHeight(null))/2){
+					y-=diff;
+					g.fillRect((frame.getWidth()-img.getWidth(null))/2, y+img.getHeight(null), img.getWidth(null), diff);
+					g.drawImage(img,(frame.getWidth()-img.getWidth(null))/2,y,null);
+				} else {
+					trans = false;
+					g.setColor(Color.WHITE);
+					g.setFont(new Font(frame.getFontName(), Font.BOLD, 18));
+					g.drawString(finalString,(frame.getWidth()-img.getWidth(null))/2-170,(frame.getHeight()+img.getHeight(null))/2+40);
+					finishTransiction(this);
+				}
+			} else {
+				printMap(controller.getMap(),controller.getMyPosition());
+			}
+		}	
 	}
 
-	/* (non-Javadoc)
-	 * @see it.polimi.ingsw.beribinaghi.clientMatch.GameInterface#printCharacter(java.lang.String, java.lang.String, it.polimi.ingsw.beribinaghi.gameNames.SideName)
-	 */
-	@Override
-	public void printCharacter(String name, String role, SideName side) {
-		// TODO Auto-generated method stub
 
+	private void printCharacter(Character character) {
+		TimerHandler timerHandler = new TimerHandler(hashCharacter.get(character.getName()), "Ti chiami " + character.getName() + ", sei " + character.getRole() + " e sei un " + character.getSide());
+		timer = new Timer(1, timerHandler);
+		timer.setRepeats(true);
+		timer.start();
+	}
+
+	private void finishTransiction(TimerHandler timerHandler) {
+		timer.stop();
+		timer.setInitialDelay(4000);
+		timer.setRepeats(false);
+		timer.start();
 	}
 
 	/* (non-Javadoc)
@@ -108,12 +157,8 @@ public class GameGUI implements GameInterface,MouseListener {
 		// TODO Auto-generated method stub
 
 	}
-
 	
-	
-	
-	@Override
-	public void printMap(Map map, Coordinates myCoordinates) {
+	private void printMap(Map map, Coordinates myCoordinates) {
 		int j;
 		this.map = map;
 		g.setColor(Color.WHITE);
@@ -127,33 +172,9 @@ public class GameGUI implements GameInterface,MouseListener {
 	}
 
 	private void printSector(int i, int j, SectorName sectorName) {
-		Image img;
-		Boolean letter = false;
-		Boolean shallop = false;
-		if (sectorName.equals(SectorName.DANGEROUS))
-		{
-			img = imgDangerous;
-			letter = true;
-		}
-		else if (sectorName.equals(SectorName.SAFE))
-		{
-			img = imgSafe;
-			letter = true;
-		}
-		else if (sectorName.equals(SectorName.ALIENBASE))
-			img = imgAlien;
-		else if (sectorName.equals(SectorName.HUMANBASE))
-			img = imgHuman;
-		else if (sectorName.equals(SectorName.SHALLOP))
-		{
-			this.posShallop.add(new Coordinates(Coordinates.getLetterFromNumber(i),j+1));
-			img = imgShallop;
-			shallop = true;
-		}
-		else 
-			img = imgBlank;
+		Image img = hashSector.get(sectorName);
 		g.drawImage(img, mapMarginWidth+j*3*lw, mapMarginHeight+lh*(i*2+j%2), 4*lw, 2*lh, null);
-		if (letter){
+		if (sectorName.equals(SectorName.DANGEROUS) || sectorName.equals(SectorName.SAFE)){
 			String num = String.valueOf(i+1);
 			if (num.length()==1)
 				num = "0"+num;
@@ -161,7 +182,8 @@ public class GameGUI implements GameInterface,MouseListener {
 			g.setFont(new Font(frame.getFontName(), Font.BOLD, 14));
 			g.setFont(frame.getFont());
 			g.drawString((Coordinates.getLetterFromNumber(j)+"" + num).toUpperCase(),mapMarginWidth+j*3*lw+2*lw-12 , mapMarginHeight+lh*(i*2+j%2)+lh+5);
-		} else if (shallop){
+		} else if (sectorName.equals(SectorName.SHALLOP)){
+			posShallop.add(new Coordinates(Coordinates.getLetterFromNumber(i),j+1));
 			g.setColor(Color.WHITE);
 			g.setFont(new Font(frame.getFontName(), Font.BOLD, 18));
 			g.drawString(""+this.posShallop.size(),mapMarginWidth+j*3*lw+2*lw-3 , mapMarginHeight+lh*(i*2+j%2)+lh+5);
@@ -211,19 +233,19 @@ public class GameGUI implements GameInterface,MouseListener {
 		int y = e.getY()-this.mapMarginHeight;
 	    int q = (int) (x/lw)/3;
 	    int r = (int) (y/lh-q%2)/2;
-	    if (x>0 && x<mapWidth && y>0 && y<mapHeight)
+	    if (x>0 && x<mapWidth && y>0 && y<mapHeight+lh)
 	    {
 	    	if ((x/lw)%3==0) 
 	    		if (((y/lh)%2==1 && q%2==0) || ((y/lh)%2==0 && q%2==1))
 	    		{
-	    			if ((float)(y%lh)/(x%lw)>Math.sqrt(3))
+	    			if (x%lw==0 || (float)(y%lh)/(x%lw)>Math.sqrt(3))
 	    			{
 	    				q--;
 	    				r+=1-q%2;
 	    			}
 	    		}
 	    		else{
-	    			if ((float)(y%lh)/(x%lw)>Math.sqrt(3))
+	    			if (x%lw==0 || (float)(-y%lh+lh)/(x%lw)>Math.sqrt(3))
 	    			{
 	    				q--;
 	    				r-=q%2;
@@ -304,6 +326,11 @@ public class GameGUI implements GameInterface,MouseListener {
 	public void showSpottedPlayer(String username, Coordinates position) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public void start() {
+		this.printCharacter(controller.getMyCharacter());
 	}
 
 }
