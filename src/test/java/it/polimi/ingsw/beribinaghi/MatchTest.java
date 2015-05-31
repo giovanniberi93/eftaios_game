@@ -87,7 +87,7 @@ public class MatchTest {
 		ArrayList<Card> pickedCard =  new ArrayList<Card>();
 		this.match.addToUsedCards(new Sedatives());
 		pickedCard = match.move(new Coordinates('a',2));
-		assertTrue(pickedCard.get(0) == null);
+		assertTrue(pickedCard.get(0) instanceof NothingToPick);
 		
 	}
 	
@@ -112,6 +112,15 @@ public class MatchTest {
 			player.getCharacter().setCurrentPosition(coord);
 		match.teleport();
 		assertTrue(match.matchDataUpdate.getCurrentPlayer().getCharacter().getCurrentPosition().equals(match.getMap().getHumanBaseCoordinates()));		
+	}
+	
+	@Test
+	public void spotlightTest(){
+		Coordinates coord = new Coordinates ('c',5);
+		for(int i = 0; i<4; i++)
+			players.get(i).getCharacter().setCurrentPosition(coord);
+		match.spotlight(new Coordinates('b',5));
+		assertTrue(match.getSpotted().size() == 4);
 	}
 
 	

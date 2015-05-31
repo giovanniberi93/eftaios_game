@@ -58,8 +58,10 @@ public class MatchController {
 	public void turn() {
 		String currentPlayer = session.listenTurn(); 
 		this.currentPlayer = currentPlayer;
-		if (currentPlayer.equals(myPlayerName))
+		if (currentPlayer.equals(myPlayerName)){
+			graphicInterface.printMap(map, myCharacter.getCurrentPosition());
 			graphicInterface.managesMyTurn();
+		}
 		else{
 			graphicInterface.notifyOthersTurn(currentPlayer);
 			session.listenUpdate();
@@ -75,15 +77,22 @@ public class MatchController {
 			System.out.println("Errore nella sintassi della comunicazione");
 			e.printStackTrace();
 		}
+		myCharacter.setCurrentPosition(destinationCoordinates);
 		if(pickedCards.size()>1)
 			this.getMyCharacter().addCardToBag((ObjectCard) pickedCards.get(1));
-		graphicInterface.showPickedCard(pickedCards);
+		graphicInterface.showPickedCards(pickedCards);
 		Coordinates noiseCoordinates = noiseCoordinatesSelector.select((SectorCard) pickedCards.get(0));
 		session.noise(noiseCoordinates);
 	}
 
 	public void callObjectCard(ArrayList<String> command) {
 		session.useObjectcard(command);
+		if(command.get(0).equals("adrenalin"))
+			myCharacter.setHasAdrenalin(true);
+		if(command.get(0).equals("teleport"))
+			myCharacter.setCurrentPosition(map.getHumanBaseCoordinates());
+		ObjectCard usedCard = ObjectCard.stringToCard(command.get(0));
+		myCharacter.removeCardFromBag(usedCard);
 	}
 
 	public void callEndTurn() {

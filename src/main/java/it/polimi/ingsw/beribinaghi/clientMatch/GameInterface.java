@@ -27,11 +27,9 @@ public interface GameInterface {
 
 	void printMap(Map map, Coordinates myCoordinates);
 
-	void showPickedCard(ArrayList<Card> pickedCards);
+	void showPickedCards(ArrayList<Card> pickedCards);
 
-	void manageNewObjectCard(ObjectCard objectCard);
-
-	void showUsedCard(ObjectCard usedCard);
+	void showUsedCard(ObjectCard usedCard, Coordinates destinationCoord);
 
 	void manageUsedObjectCard(ArrayList<String> command);
 
@@ -43,12 +41,9 @@ public interface GameInterface {
 
 	void showNoise(Coordinates noiseCoord);
 
-	void showAttackResult(ArrayList<String> killed, ArrayList<String> survived);
+	void showAttackResult(Coordinates attackCoordinates, ArrayList<String> killed, ArrayList<String> survived);
 
 	void showSpottedPlayer(String username, Coordinates position);
 
 	void manageSectorCard(Card card);
-
-	void showUsedCard(ArrayList<String> command);
-
 }

@@ -52,6 +52,10 @@ public class Map implements Serializable {
 				Coordinates actualCoordinates = new Coordinates (Coordinates.getLetterFromNumber(j),i+1);
 				Sector actualSector = (Sector) (graphicMap[i][j].getSector()).clone();
 				map.put(actualCoordinates.toString(), actualSector);
+				if(actualSector instanceof AlienBase)
+					setAlienBaseCoordinates(actualCoordinates);
+				if(actualSector instanceof HumanBase)
+					setHumanBaseCoordinates(actualCoordinates);
 			}
 	}
 

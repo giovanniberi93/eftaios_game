@@ -94,7 +94,6 @@ public class GameCLI implements GameInterface {
 				availableCards.add(cardName);
 				System.out.println(cardName);
 			}
-			
 		}
 		System.out.println("Scegli la carta che vuoi utilizzare");
 		String chosenCard = in.nextLine();
@@ -122,12 +121,6 @@ public class GameCLI implements GameInterface {
 			command.add(stringDestination);
 		}
 		controller.callObjectCard(command);	
-	}
-
-	@Override
-	public void showUsedCard(ObjectCard card) {
-		System.out.println("Il giocatore corrente ha usato la carta "+ card.toString());
-		
 	}
 
 	private Coordinates chooseAdiacentCoordinates(Coordinates currentPosition, int percorrableDistance) {
@@ -176,6 +169,14 @@ public class GameCLI implements GameInterface {
 	}
 
 	@Override
+	public void showUsedCard(ObjectCard card, Coordinates coord) {
+		System.out.println("Il giocatore corrente ha usato la carta "+ card.toString());
+		if(coord !=  null)
+			System.out.print(" alla coordinata " + coord);
+		
+	}
+
+	@Override
 	public void notifyOthersTurn(String playerTurn) {
 		System.out.println("E' il turno di " + playerTurn);
 	}
@@ -199,17 +200,16 @@ public class GameCLI implements GameInterface {
 	}
 
 	@Override
-	public void showPickedCard(ArrayList<Card> pickedCards) {
-		if(pickedCards.size() == 2)
-			System.out.println("Hai trovato un oggetto di tipo " + pickedCards.get(1).toString() + ", fanne buon uso!");
+	public void showPickedCards(ArrayList<Card> pickedCards) {
+		if(pickedCards.size() == 2){
+			System.out.println("Hai trovato un oggetto di tipo: " + pickedCards.get(1));
+			if(controller.getMyCharacter().getSide() == SideName.ALIEN)
+				System.out.print(", ma sei un alieno e non potrai usarlo.");
+		}
 		if(!(pickedCards.get(0) instanceof NothingToPick))
 			System.out.println("Hai pescato una carta rumore di tipo "+pickedCards.get(0));	
 	}
 
-	@Override
-	public void manageNewObjectCard(ObjectCard card) {
-		System.out.println("Hai trovato un oggetto di tip: "+card.toString()+"! Fanne buon uso");
-	}
 
 	@Override
 	public void manageUsedObjectCard(ArrayList<String> command) {
@@ -233,15 +233,16 @@ public class GameCLI implements GameInterface {
 	public void showNoise(Coordinates noiseCoord) {
 		if(noiseCoord.equals(Coordinates.SILENCE))
 			System.out.println("SILENZIO");
-		System.out.print("Rumore in "+noiseCoord.toString());	
+		else
+			System.out.print("Rumore in "+noiseCoord.toString());	
 	}
 
 	@Override
-	public void showAttackResult(ArrayList<String> killed, ArrayList<String> survived) {
-		System.out.println("E' stato effettuato un attacco!");
+	public void showAttackResult(Coordinates attackCoordinates, ArrayList<String> killed, ArrayList<String> survived) {
+		System.out.println("E' stato effettuato un attacco in " + attackCoordinates + "!");
 		for(String kills : killed)
 			System.out.print(kills);
-		System.out.print(" sono stati uccisi");
+		System.out.println(" sono stati uccisi,");
 		for(String surv : survived)
 			System.out.print(surv);
 		System.out.print(" sono riusciti a difendersi");		
@@ -259,9 +260,5 @@ public class GameCLI implements GameInterface {
 		
 	}
 
-	@Override
-	public void showUsedCard(ArrayList<String> command) {
-		// TODO Auto-generated method stub
-		
-	}
+
 }

@@ -14,10 +14,12 @@ import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.Attack;
 import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.Card;
 import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.CharacterCard;
 import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.Defense;
+import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.NothingToPick;
 import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.ObjectCard;
 import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.SectorCard;
 import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.Sedatives;
 import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.ShallopCard;
+import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.Spotlight;
 import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.Teleport;
 import it.polimi.ingsw.beribinaghi.gameNames.SectorName;
 import it.polimi.ingsw.beribinaghi.gameNames.SideName;
@@ -50,6 +52,7 @@ public class Match {
 	private ArrayList<ObjectCard> usedCards = new ArrayList<ObjectCard>();
 	private Coordinates noiseCoordinates;
 	private boolean successfulEscape;
+	private Coordinates spotlightCoordinates;
 	
 	public MatchDataUpdate matchDataUpdate;
 	
@@ -147,6 +150,11 @@ public class Match {
 	}
 
 
+	public Coordinates getSpotlightCoordinates() {
+		return spotlightCoordinates;
+	}
+
+
 	/**
 	 * start match
 	 */
@@ -164,27 +172,30 @@ public class Match {
 		ArrayList<Card> allCards = new ArrayList<Card>();
 		
 		currentPlayer.getCharacter().setCurrentPosition(destinationCoordinates);
-		if(matchDataUpdate.searchUsedObjectCard(new Sedatives())){
-			allCards.add(null);
+		if(searchUsedObjectCard(new Sedatives())){
+			allCards.add(new NothingToPick());
+		}
+		else{
+			SectorCard pickedCard = map.getSector(destinationCoordinates).pickFromAssociatedDeck();
+			allCards.add(pickedCard);
+			if(pickedCard.containsObject() && !objectsDeck.isEmpty()){
+				ObjectCard objectCard = this.objectsDeck.pickCard();
+				if(objectCard instanceof Defense)
+					currentPlayer.getCharacter().addCardToBag(objectCard);
+				allCards.add(objectCard);
+			}
+			if(pickedCard instanceof ShallopCard){
+				ShallopCard shallopCard = (ShallopCard) pickedCard;
+				if(!(shallopCard.isDamaged())){
+					successfulEscape = true;
+					this.finishTurn();			//TODO sicuri?
+				}
+				else
+					successfulEscape = false;
+				matchDataUpdate.setEscaped();
+			}
 		}
 		
-		SectorCard pickedCard = map.getSector(destinationCoordinates).pickFromAssociatedDeck();
-		allCards.add(pickedCard);
-		if(pickedCard.containsObject() && !objectsDeck.isEmpty()){
-			ObjectCard objectCard = this.objectsDeck.pickCard();
-			currentPlayer.getCharacter().addCardToBag(objectCard);
-			allCards.add(objectCard);
-		}
-		if(pickedCard instanceof ShallopCard){
-			ShallopCard shallopCard = (ShallopCard) pickedCard;
-			if(!(shallopCard.isDamaged())){
-				successfulEscape = true;
-				this.finishTurn();
-			}
-			else
-				successfulEscape = false;
-			matchDataUpdate.setEscaped();
-		}
 		return allCards;
 	}
 		
@@ -227,24 +238,39 @@ public class Match {
 	public void addToUsedCards(ObjectCard card){
 		this.usedCards.add(card);
 	}
+	
+	
+
+	public ArrayList<Player> getSpotted() {
+		return spotted;
+	}
+
 
 	public void noise(Coordinates noiseCoordinates){
 		matchDataUpdate.setNoiseCoordinates();
 	}
 	
 	public void spotlight(Coordinates selectedCoordinates){
-		ArrayList<Player> spottedPlayers = new ArrayList<Player>();
 		ArrayList<Coordinates> lightedCoordinates = map.adiacentCoordinates(selectedCoordinates);
 		for(Coordinates analyzedCoordinates : lightedCoordinates){
 			for(Player analyzedPlayer : players)
 				if(analyzedPlayer.getCharacter().getCurrentPosition().equals(analyzedCoordinates))
 					this.spotted.add(analyzedPlayer);
 		}
+		spotlightCoordinates = selectedCoordinates;
+		useAndSignalObjectCard(new Spotlight());
 		matchDataUpdate.setSpottedPlayers();
 	}
 	
 	public void discard(ObjectCard discardedCard){
 		// TODO boh? devo anche aggiustare addCardToBag del character, non sto gestendo la carta in più
+	}
+	
+	public boolean searchUsedObjectCard(ObjectCard searchedCard) {
+		for(ObjectCard card : usedCards)
+			if(searchedCard.getClass().equals(card.getClass()))
+				return true;
+		return false;
 	}
 	
 	public void attack(){
@@ -265,41 +291,35 @@ public class Match {
 				}
 			}
 		}
-		if(currentPlayer.getCharacter().getSide() == SideName.HUMAN)
-			matchDataUpdate.setUsedObjectCard();
+		if(currentPlayer.getCharacter().getSide() == SideName.HUMAN){
+			useAndSignalObjectCard(new Attack());
+
+		}
 		matchDataUpdate.setAttackOutcome();
 	}
 	
 	public void teleport(){
 		Coordinates baseCoordinates;
-		ObjectCard usedCard = new Teleport();		//crea carta dello stesso tipo usato		
-		Player currentPlayer = players.get(currentPlayerIndex);
 
 		baseCoordinates = map.getHumanBaseCoordinates();
 		move(baseCoordinates);
-		currentPlayer.getCharacter().removeCardFromBag(usedCard);		//toglie la carta usata dal bag del currentPlayer
-		usedCards.add(new Teleport());
-		matchDataUpdate.setUsedObjectCard();	
+		useAndSignalObjectCard(new Teleport());
+
 	}
 	
 	public void adrenalin(){
-		ObjectCard usedCard = new Adrenalin();
-		Player currentPlayer = players.get(currentPlayerIndex);
-
-		currentPlayer.getCharacter().removeCardFromBag(usedCard);		//toglie la carta usata dal bag del currentPlayer
-		usedCards.add(new Adrenalin());
-		matchDataUpdate.setUsedObjectCard();	
+		useAndSignalObjectCard(new Adrenalin());
 	}
 	
 	public void sedatives(){
-		ObjectCard usedCard = new Sedatives();
-		Player currentPlayer = matchDataUpdate.getCurrentPlayer();
-		
-		currentPlayer.getCharacter().removeCardFromBag(usedCard);
-		usedCards.add(new Sedatives());
-		matchDataUpdate.setUsedObjectCard();	
+		useAndSignalObjectCard(new Sedatives());
 	}
 
+	private void useAndSignalObjectCard(ObjectCard card){
+		usedCards.add(card);
+		objectsDeck.addToDiscardPile(card);
+		matchDataUpdate.setUsedObjectCard();
+	}
 
 	public String getMatchName() {
 		return matchName;
@@ -324,14 +344,5 @@ public class Match {
 	
 	
 }
-
-
-
-
-
-
-
-
-
 
 

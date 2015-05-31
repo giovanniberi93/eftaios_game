@@ -1,11 +1,18 @@
 package it.polimi.ingsw.beribinaghi.playerPackage;
 
+import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.Adrenalin;
+import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.Attack;
+import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.Defense;
+import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.ObjectCard;
+import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.Sedatives;
+import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.Spotlight;
+import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.Teleport;
+import it.polimi.ingsw.beribinaghi.gameNames.CharacterName;
+import it.polimi.ingsw.beribinaghi.gameNames.SideName;
+import it.polimi.ingsw.beribinaghi.mapPackage.Coordinates;
+
 import java.io.Serializable;
 import java.util.ArrayList;
-
-import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.ObjectCard;
-import it.polimi.ingsw.beribinaghi.mapPackage.Coordinates;
-import it.polimi.ingsw.beribinaghi.gameNames.*;
 
 
 public abstract class Character implements Serializable{
@@ -16,6 +23,7 @@ public abstract class Character implements Serializable{
 	private Coordinates currentPosition;
 	private ArrayList<ObjectCard> bag = new ArrayList<ObjectCard>();
 	private boolean isAlive;
+	private boolean hasAdrenalin;
 
 	protected int percorrableDistance;
 
@@ -29,10 +37,27 @@ public abstract class Character implements Serializable{
 		this.setSide(character.getSide());
 		this.setAlive(true);
 		isAlive = true;
+		bag.add(new Teleport());		//TODO poi toglile
+		bag.add(new Sedatives());
+		bag.add(new Spotlight());
+		bag.add(new Defense());
+		bag.add(new Adrenalin());
+		bag.add(new Attack());
 	}
 
 	
+	
+	public void setHasAdrenalin(boolean hasAdrenalin) {
+		this.hasAdrenalin = hasAdrenalin;
+	}
+
+
+
 	public int getPercorrableDistance() {
+		if(hasAdrenalin == true){
+			hasAdrenalin = false;
+			return percorrableDistance+1;
+		}
 		return percorrableDistance;
 	}
 
@@ -46,6 +71,11 @@ public abstract class Character implements Serializable{
 		}
 
 	
+	public void setPercorrableDistance(int percorrableDistance) {
+		this.percorrableDistance = percorrableDistance;
+	}
+
+
 	public void setSide(SideName side) {
 		this.side = side;
 	}

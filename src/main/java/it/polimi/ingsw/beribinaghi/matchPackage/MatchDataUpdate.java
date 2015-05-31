@@ -72,12 +72,6 @@ public class MatchDataUpdate extends Observable {
 		return turnNumber;
 	}
 	
-	public boolean searchUsedObjectCard(ObjectCard searchedCard) {
-		for(ObjectCard card : usedObjectCard)
-			if(searchedCard.getClass().equals(card.getClass()))
-				return true;
-		return false;
-	}
 
 	/**
 	 * Notifies to all gamesessions the end of the game; the notified string is "endMatch"

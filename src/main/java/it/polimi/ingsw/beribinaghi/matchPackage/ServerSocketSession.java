@@ -79,12 +79,10 @@ public class ServerSocketSession extends GameSessionServerSide implements Runnab
 		String[] command = line.split("=");
 
 		while(!command[0].equals("end")){
-			if(command[0].equals("move")){
+			if(command[0].equals("move"))
 				executeMove(command[1]);	
-			}
-			else if (command[0].equals("card")){
+			else 
 				executeCardAction(command);
-			}
 			line = in.nextLine();
 			command = line.split("=");
 		}
@@ -93,7 +91,7 @@ public class ServerSocketSession extends GameSessionServerSide implements Runnab
 	}
 	
 	private void executeCardAction(String[] command) {
-		switch(command[1]){
+		switch(command[0]){
 		case "teleport" : 
 			match.teleport();
 			break;
@@ -108,7 +106,7 @@ public class ServerSocketSession extends GameSessionServerSide implements Runnab
 			break;
 		case "spotlight" :
 			Coordinates selectedCoordinates;
-			selectedCoordinates = Coordinates.stringToCoordinates(command[2]);
+			selectedCoordinates = Coordinates.stringToCoordinates(command[1]);
 			match.spotlight(selectedCoordinates);
 			break;
 		}
@@ -146,13 +144,17 @@ public class ServerSocketSession extends GameSessionServerSide implements Runnab
 			String usedCard = match.getLastUsedCard().toString();
 			out.println("card="+usedCard);
 			out.flush();
+			if(usedCard.equals("spotlight")){
+				out.println(match.getSpotlightCoordinates());
+				out.flush();
+			}
 		}
 	}
 
 
 	@Override
 	protected void notifySpotted() {
-		ArrayList<Player> spotted = new ArrayList<Player>();
+		ArrayList<Player> spotted = match.getSpotted();
 		String result = "spotlight=";
 		for(Player player : spotted){
 			Coordinates playerCoordinates = player.getCharacter().getCurrentPosition();
@@ -191,7 +193,9 @@ public class ServerSocketSession extends GameSessionServerSide implements Runnab
 	protected void notifyAttackResult() {
 		String attackResult;
 		ArrayList<Player> killed = match.getKilled();
-		attackResult = "killed=";
+		Coordinates attackPosition = match.matchDataUpdate.getCurrentPlayer().getCharacter().getCurrentPosition();
+		attackResult = "attack=" + attackPosition+ "=";
+		attackResult += "killed=";		
 		for(Player player : killed)
 			attackResult += player.getUser() + "&" + player.getCharacter() + "="; 
 		ArrayList<Player> survived = match.getSurvived();

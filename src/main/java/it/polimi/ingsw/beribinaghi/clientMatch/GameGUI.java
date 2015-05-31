@@ -178,23 +178,6 @@ public class GameGUI implements GameInterface,MouseListener {
 
 	}
 
-	/* (non-Javadoc)
-	 * @see it.polimi.ingsw.beribinaghi.clientMatch.GameInterface#manageNewObjectCard(it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.ObjectCard)
-	 */
-	@Override
-	public void manageNewObjectCard(ObjectCard objectCard) {
-		// TODO Auto-generated method stub
-
-	}
-
-	/* (non-Javadoc)
-	 * @see it.polimi.ingsw.beribinaghi.clientMatch.GameInterface#showUsedCard(java.util.ArrayList)
-	 */
-	@Override
-	public void showUsedCard(ArrayList<String> command) {
-		// TODO Auto-generated method stub
-
-	}
 
 	/* (non-Javadoc)
 	 * @see it.polimi.ingsw.beribinaghi.clientMatch.GameInterface#manageUsedObjectCard(java.util.ArrayList)
@@ -258,16 +241,11 @@ public class GameGUI implements GameInterface,MouseListener {
 	}
 
 	@Override
-	public void showPickedCard(ArrayList<Card> pickedCards) {
+	public void showPickedCards(ArrayList<Card> pickedCards) {
 		// TODO Auto-generated method stub
 		
 	}
 
-	@Override
-	public void showUsedCard(ObjectCard usedCard) {
-		// TODO Auto-generated method stub
-		
-	}
 
 	@Override
 	public void chooseObjectCard() {
@@ -294,14 +272,19 @@ public class GameGUI implements GameInterface,MouseListener {
 	}
 
 	@Override
-	public void showAttackResult(ArrayList<String> killed,
-			ArrayList<String> survived) {
+	public void showAttackResult(Coordinates attackCoordinates, ArrayList<String> killed, ArrayList<String> survived) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void showSpottedPlayer(String username, Coordinates position) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void showUsedCard(ObjectCard usedCard, Coordinates destinationCoord) {
 		// TODO Auto-generated method stub
 		
 	}
