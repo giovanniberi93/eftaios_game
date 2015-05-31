@@ -7,7 +7,6 @@ import java.util.ArrayList;
 
 import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.Card;
 import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.ObjectCard;
-import it.polimi.ingsw.beribinaghi.gameNames.SideName;
 import it.polimi.ingsw.beribinaghi.mapPackage.Coordinates;
 import it.polimi.ingsw.beribinaghi.mapPackage.Map;
 
@@ -17,19 +16,27 @@ import it.polimi.ingsw.beribinaghi.mapPackage.Map;
  */
 public interface GameInterface {
 	
+	/**
+	 * @param matchController
+	 * it sets the match controller
+	 * the interface use the controller for something operation
+	 */
 	void setController(MatchController matchController);
 
-	void printCharacter(String name, String role, SideName side);
-
+	/**
+	 * communicate to user that is his turn and it gives to him something action
+	 */
 	void managesMyTurn();
 
+	/**
+	 * @param playerTurn
+	 * it notifies to user that is turn of playerTurn 
+	 */
 	void notifyOthersTurn(String playerTurn);
 
 	void printMap(Map map, Coordinates myCoordinates);
 
 	void showPickedCards(ArrayList<Card> pickedCards);
-
-	void showUsedCard(ObjectCard usedCard, Coordinates destinationCoord);
 
 	void manageUsedObjectCard(ArrayList<String> command);
 
@@ -46,4 +53,9 @@ public interface GameInterface {
 	void showSpottedPlayer(String username, Coordinates position);
 
 	void manageSectorCard(Card card);
+
+	void start();
+
+	void showUsedCard(ObjectCard card, Coordinates coord);
+
 }

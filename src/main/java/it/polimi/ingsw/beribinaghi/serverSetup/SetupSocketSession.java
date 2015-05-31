@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 /**
@@ -28,6 +29,7 @@ public class SetupSocketSession extends Thread implements SetupSession {
 	private String matchName;
 	private Boolean active;
 	private ServerSocketSession socketSession;
+	private Boolean inRoom = false;
 	
 	public SetupSocketSession(Socket socket,MatchController matchController) throws IOException{
 		this.matchController = matchController;
@@ -40,15 +42,18 @@ public class SetupSocketSession extends Thread implements SetupSession {
 	
 	
 	public void run(){
-		login();
-		if (in.nextLine().equals("update"))
-			printMatchName();
-		choose();
+		try{
+			login();
+			if (in.nextLine().equals("update"))
+				printMatchName();
+			choose();
+		} catch (NoSuchElementException e){
+			this.closeSession();
+		}
 	}
 
-	private void choose() {
+	private void choose() throws NoSuchElementException {
 		Object choose;
-		Boolean inRoom = false;
 		Boolean exitPre = false;
 		do{
 			choose = in.nextLine();
@@ -74,7 +79,10 @@ public class SetupSocketSession extends Thread implements SetupSession {
 	}
 
 
-	public void closeSession() {
+	/**
+	 *  close session with client
+	 */
+	public void closeSession() throws NoSuchElementException {
 		try {
 			socket.close();
 		} catch (IOException e) {
@@ -82,7 +90,7 @@ public class SetupSocketSession extends Thread implements SetupSession {
 	}
 
 
-	private boolean enterMatch(String matchName) {
+	private boolean enterMatch(String matchName) throws NoSuchElementException {
 		try {
 			matchController.addPlayer(matchName, player);
 			out.println("player enter in room");
@@ -115,7 +123,7 @@ public class SetupSocketSession extends Thread implements SetupSession {
 	}
 
 
-	private boolean createNewMatch(String matchName) {
+	private boolean createNewMatch(String matchName) throws NoSuchElementException {
 		try {
 			matchController.createNewMatch(matchName,player);
 			out.println("player enter in room");
@@ -149,7 +157,7 @@ public class SetupSocketSession extends Thread implements SetupSession {
 
 
 
-	private void printMatchName() {
+	private void printMatchName() throws NoSuchElementException {
 		ArrayList<String> nameList = matchController.getMatchesName();
 		out.println("print match name");
 		out.println(nameList.size());
@@ -159,7 +167,7 @@ public class SetupSocketSession extends Thread implements SetupSession {
 		out.flush();
 	}
 
-	private void login() {
+	private void login() throws NoSuchElementException {
 		out.println("login");
 		out.flush();
 		String user = in.nextLine();
@@ -179,9 +187,17 @@ public class SetupSocketSession extends Thread implements SetupSession {
 
 	@Override
 	public void notifyNewPlayer(String namePlayer) {
+		if (socket.isConnected()){
 		out.println("new player");
 		out.println(namePlayer);
 		out.flush();
+		} else {
+			try {
+				matchController.exitPlayer(namePlayer, player);
+			} catch (NotExistingNameException e) {
+			}
+			this.closeSession();
+		}
 	}
 
 	@Override
@@ -192,7 +208,6 @@ public class SetupSocketSession extends Thread implements SetupSession {
 			socketSession = new ServerSocketSession(socket,in,out,player);
 			return socketSession;
 		} catch (IOException e) {
-
 		}
 		return null;
 	}
@@ -200,5 +215,20 @@ public class SetupSocketSession extends Thread implements SetupSession {
 	@Override
 	public String getMatchName() {
 		return matchName;
+	}
+
+
+	@Override
+	public Boolean isConnected() {
+		if (!socket.isConnected())
+		{
+			try {
+				matchController.exitPlayer(matchName, player);
+			} catch (NotExistingNameException e) {
+			}
+			this.closeSession();
+			return false;
+		}
+		return true;
 	}
 }

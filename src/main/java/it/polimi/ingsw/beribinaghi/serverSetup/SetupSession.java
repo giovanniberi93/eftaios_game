@@ -32,4 +32,9 @@ public interface SetupSession {
 	 */
 	public GameSessionServerSide getGameSession();
 	
+	/**
+	 * @return the state of connection
+	 */
+	public Boolean isConnected();
+	
 }

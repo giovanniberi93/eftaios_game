@@ -106,6 +106,10 @@ public class SetupController {
 		setupSession.exitRoom();
 	}
 
+	/**
+	 * @param nextLine
+	 * notify to setup controller and to interface that there is a new player in room
+	 */
 	public void notifyNewPlayer(String nextLine) {
 		graphicInterface.notifyNewPlayer(nextLine);
 	}

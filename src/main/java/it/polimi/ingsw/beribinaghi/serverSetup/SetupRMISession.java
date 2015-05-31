@@ -154,5 +154,11 @@ public class SetupRMISession implements SetupSession,RemoteSetupSession {
 		return nameStubGame;
 	}
 
+	@Override
+	public Boolean isConnected() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 
 }

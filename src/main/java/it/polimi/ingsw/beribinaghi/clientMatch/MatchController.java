@@ -41,13 +41,16 @@ public class MatchController {
 		this.myPlayerName = playerName;
 		map = session.getMap();
 		myCharacter = session.getCharacter();
-		graphicInterface.printMap(map,myCharacter.getCurrentPosition());
-		graphicInterface.printCharacter(myCharacter.getName(),myCharacter.getRole(),myCharacter.getSide());
+		graphicInterface.start();
 		turn();
 	}
 
 	public Map getMap() {
 		return map;
+	}
+	
+	public Coordinates getMyPosition() {
+		return myCharacter.getCurrentPosition();
 	}
 	
 	

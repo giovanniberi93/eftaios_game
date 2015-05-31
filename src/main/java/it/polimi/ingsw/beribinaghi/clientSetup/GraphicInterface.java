@@ -39,8 +39,14 @@ public interface GraphicInterface {
 	 */
 	public void notifyNewPlayer(String namePlayer);
 
+	/**
+	 * signal to user that the connection is successful made
+	 */
 	public void signalConnessionSuccess();
 
+	/**
+	 * start with the presentation to user pre match. It can contains intro video or something else
+	 */
 	public void start();
 
 

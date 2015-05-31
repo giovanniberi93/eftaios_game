@@ -9,7 +9,6 @@ import it.polimi.ingsw.beribinaghi.gameNames.SectorName;
 import it.polimi.ingsw.beribinaghi.gameNames.SideName;
 import it.polimi.ingsw.beribinaghi.mapPackage.Coordinates;
 import it.polimi.ingsw.beribinaghi.mapPackage.Map;
-import it.polimi.ingsw.beribinaghi.playerPackage.Player;
 
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -28,8 +27,7 @@ public class GameCLI implements GameInterface {
 		
 	}
 
-	@Override
-	public void printCharacter(String name, String role, SideName side) {
+	private void printCharacter(String name, String role, SideName side) {
 		String sideName;
 		if (side == SideName.ALIEN)
 			sideName = "Alieno";
@@ -181,7 +179,6 @@ public class GameCLI implements GameInterface {
 		System.out.println("E' il turno di " + playerTurn);
 	}
 
-	@Override
 	public void printMap(Map map,Coordinates myCoordinates) {
 		int j;
 		
@@ -261,4 +258,10 @@ public class GameCLI implements GameInterface {
 	}
 
 
+	@Override
+	public void start() {
+		this.printMap(controller.getMap(), controller.getMyPosition());
+		this.printCharacter(controller.getMyCharacter().getName(), controller.getMyCharacter().getRole(), controller.getMyCharacter().getSide());
+	}
 }
+
