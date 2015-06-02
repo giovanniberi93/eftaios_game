@@ -2,6 +2,10 @@ package it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage;
 
 import it.polimi.ingsw.beribinaghi.clientMatch.NoiseCoordinatesSelector;
 
+/**
+ * Class representing a Silence card
+ *
+ */
 public class Silence extends DangerousSectorCard {
 
 	public Silence(boolean containsObject) {

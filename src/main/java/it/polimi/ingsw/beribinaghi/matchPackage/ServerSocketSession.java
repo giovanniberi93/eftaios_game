@@ -46,7 +46,7 @@ public class ServerSocketSession extends GameSessionServerSide implements Runnab
 			out.println("end");
 			out.flush();
 		}
-		String string = "turn="+currentPlayer.getUser()+"="+match.matchDataUpdate.getTurnNumber();
+		String string = "turn="+currentPlayer.getUser()+"="+match.getTurnNumber();
 		out.println(string);
 		out.flush();
 		if(currentPlayer.getUser().equals(this.player.getUser())){

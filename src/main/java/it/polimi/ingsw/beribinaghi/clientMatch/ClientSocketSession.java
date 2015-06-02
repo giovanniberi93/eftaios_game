@@ -92,10 +92,13 @@ public class ClientSocketSession implements GameSessionClientSide {
 
 	@Override
 	public String listenTurn() {
+		int turnNumber;
 		String line = in.nextLine();
 		String command[] = line.split("=");
 		if (command[0].equals("turn"))
 		{
+			turnNumber = Integer.parseInt(command[2]);
+			controller.setTurnNumber(turnNumber);
 			return command[1];
 		}
 		return null;

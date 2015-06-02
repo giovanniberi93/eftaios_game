@@ -1,10 +1,10 @@
 package it.polimi.ingsw.beribinaghi;
 
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.Card;
 import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.DangerousSectorCard;
+import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.Defense;
 import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.NothingToPick;
 import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.Sedatives;
 import it.polimi.ingsw.beribinaghi.gameNames.SideName;
@@ -55,6 +55,22 @@ public class MatchTest {
 		assertTrue(survived == 1);
 	}
 
+	@Test
+	public void attackWithDefense(){
+		int killedHumans = 0;
+		for(int i = 0; i<4; i++){
+			players.get(i).getCharacter().setCurrentPosition(new Coordinates('a',1));
+			players.get(i).getCharacter().addCardToBag(new Defense());
+		}
+		match.attack();
+		for(int i = 0; i<4; i++){
+			if(players.get(i).getCharacter().getSide() == SideName.HUMAN && !players.get(i).getCharacter().isAlive())
+				killedHumans++;
+		}
+		assertTrue(killedHumans == 0);
+	}
+	
+	
 	@Test
 	public void charactersNotNull(){
 		boolean unassignedCharacter = false;

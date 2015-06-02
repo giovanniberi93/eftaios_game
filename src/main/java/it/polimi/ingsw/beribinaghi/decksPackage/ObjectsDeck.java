@@ -12,6 +12,10 @@ import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.Teleport;
  * Class representing the objects deck
  *
  */
+/**
+ * Constructs the objects deck with the standard number of adrenalin, attack, defense, spotlight, teleport and sedatives cards
+ *
+ */
 public class ObjectsDeck extends Deck {
 	
 	private final static int ADRENALINNUMBER = 2;

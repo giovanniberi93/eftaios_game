@@ -3,6 +3,10 @@ package it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage;
 import it.polimi.ingsw.beribinaghi.clientMatch.NoiseCoordinatesSelector;
 
 
+/**
+ * Class representing a Adrenalin card
+ *
+ */
 public class ShallopCard extends SectorCard {
 	private boolean isDamaged;
 	

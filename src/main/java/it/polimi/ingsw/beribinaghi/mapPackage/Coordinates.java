@@ -3,8 +3,7 @@ package it.polimi.ingsw.beribinaghi.mapPackage;
 import java.io.Serializable;
 
 /**
- * Immutable class.
- * It conteins a cordinate of the map
+ * It contains a coordinate of the map
  *	
  */
 public final class Coordinates implements Serializable{
@@ -40,6 +39,10 @@ public final class Coordinates implements Serializable{
 		this.number = number;
 	}
 	
+	/**
+	 * controls if the coordinate contains accetable values of letter and number
+	 * @return true if the coordinates are valid
+	 */
 	public boolean isValid(){
 		int number = this.getNumber();
 		int letterNumber = getNumberFromLetter(this.getLetter());
@@ -85,6 +88,11 @@ public final class Coordinates implements Serializable{
 		return (char) ('a' + num);
 	}
 	
+	/**
+	 * 
+	 * @param string
+	 * @return the calculated Coordinates, or null if the string is not compatible with a coordinate
+	 */
 	public static Coordinates stringToCoordinates(String string){
 		if(string.equals("silence"))
 			return Coordinates.SILENCE;
@@ -95,6 +103,10 @@ public final class Coordinates implements Serializable{
 		return new Coordinates(letter,number);
 	}
 	
+	/**
+	 * @param letter
+	 * @return the position, in the alphabetical order, of the passed letter
+	 */
 	public static int getNumberFromLetter(char letter){
 		return (int) (letter - 'a');
 	}

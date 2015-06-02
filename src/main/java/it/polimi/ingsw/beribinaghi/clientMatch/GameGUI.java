@@ -192,24 +192,6 @@ public class GameGUI implements GameInterface,MouseListener {
 			
 	}
 
-	/* (non-Javadoc)
-	 * @see it.polimi.ingsw.beribinaghi.clientMatch.GameInterface#manageSectorCard(it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.Card)
-	 */
-	@Override
-	public void manageSectorCard(Card card) {
-		// TODO Auto-generated method stub
-
-	}
-
-
-	/* (non-Javadoc)
-	 * @see it.polimi.ingsw.beribinaghi.clientMatch.GameInterface#manageUsedObjectCard(java.util.ArrayList)
-	 */
-	@Override
-	public void manageUsedObjectCard(ArrayList<String> command) {
-		// TODO Auto-generated method stub
-
-	}
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
@@ -312,6 +294,12 @@ public class GameGUI implements GameInterface,MouseListener {
 
 	@Override
 	public void showUsedCard(ObjectCard card, Coordinates coord) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void printTurnNumber(int turnNumber) {
 		// TODO Auto-generated method stub
 		
 	}

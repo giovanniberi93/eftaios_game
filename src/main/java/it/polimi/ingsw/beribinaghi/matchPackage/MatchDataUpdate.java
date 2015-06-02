@@ -17,12 +17,10 @@ import java.util.Observable;
 public class MatchDataUpdate extends Observable {
 	private ArrayList<ObjectCard> usedObjectCard = new ArrayList<ObjectCard>();
 	
-	private int turnNumber;
 	private Player currentPlayer;
 	private Player oldCurrentPlayer;
 	
-	public MatchDataUpdate (Player successiveCurrentPlayer, int turnNumber){
-		this.turnNumber = turnNumber;
+	public MatchDataUpdate (Player successiveCurrentPlayer){
 		this.currentPlayer = successiveCurrentPlayer;
 		oldCurrentPlayer = null;
 	}
@@ -68,9 +66,6 @@ public class MatchDataUpdate extends Observable {
 		this.notifyObservers("noise");
 	}
 
-	public int getTurnNumber() {
-		return turnNumber;
-	}
 	
 
 	/**
@@ -105,8 +100,6 @@ public class MatchDataUpdate extends Observable {
 	 * @param player is the new currentPlayer
 	 */
 	public void clear(Player player) {
-		
-		this.turnNumber++;			//turn
 		this.currentPlayer = player;
 		usedObjectCard.clear();
 		this.setChanged();

@@ -45,6 +45,8 @@ public class Match {
 	private DangerousSectorsDeck dangerousSectorsDeck;
 	private CharactersDeck playersDeck;
 	private Map map;
+	private int firstPlayerIndex;
+	private int turnNumber;
 	
 	private ArrayList<Player> killed = new ArrayList<Player>();
 	private ArrayList<Player> survived = new ArrayList<Player>();
@@ -71,8 +73,9 @@ public class Match {
 		this.map = new Map (mapName, graphicMap, dangerousSectorsDeck, shallopsDeck);
 		Collections.shuffle(players);
 		currentPlayerIndex = 0;
-		
-		matchDataUpdate = new MatchDataUpdate(players.get(currentPlayerIndex), 1);
+		firstPlayerIndex = 0;
+		turnNumber = 0;
+		matchDataUpdate = new MatchDataUpdate(players.get(currentPlayerIndex));
 		for (GameSessionServerSide gameSession: sessions)
 			matchDataUpdate.addObserver(gameSession);
 		sendMap();
@@ -187,6 +190,10 @@ public class Match {
 			if(pickedCard instanceof ShallopCard){
 				ShallopCard shallopCard = (ShallopCard) pickedCard;
 				if(!(shallopCard.isDamaged())){
+					if(players.get(firstPlayerIndex).getUser().equals(currentPlayer.getUser())){
+						firstPlayerIndex++;
+						turnNumber--;
+					}
 					successfulEscape = true;
 					this.finishTurn();			//TODO sicuri?
 				}
@@ -207,7 +214,7 @@ public class Match {
 		int remainingHumans = 0;
 		HumanCharacter human;
 		
-		if(matchDataUpdate.getTurnNumber() >= App.NUMBEROFTURNS)
+		if(turnNumber >= App.NUMBEROFTURNS)
 			return false;
 		for(Player player: players)
 			if(player.getCharacter().getSide() == SideName.HUMAN){
@@ -225,8 +232,13 @@ public class Match {
 		if(currentPlayerIndex == players.size()-1)
 			currentPlayerIndex = 0;
 		else currentPlayerIndex++;	
-		if(!isFinished())
+		if(!isFinished()){
+			if(currentPlayerIndex == firstPlayerIndex)
+				turnNumber++;
 			matchDataUpdate.clear(players.get(currentPlayerIndex));
+		}
+			
+		
 		else
 			matchDataUpdate.setMatchFinished();
 	}
@@ -285,6 +297,8 @@ public class Match {
 						this.survived.add(analyzedPlayer);
 					else{
 						this.killed.add(analyzedPlayer);
+						if(i == firstPlayerIndex)
+							firstPlayerIndex++;
 						analyzedPlayer.getCharacter().setAlive(false);
 						analyzedPlayer.getCharacter().setCurrentPosition(null);
 					}	
@@ -323,6 +337,11 @@ public class Match {
 
 	public String getMatchName() {
 		return matchName;
+	}
+	
+	
+	public int getTurnNumber() {
+		return turnNumber;
 	}
 
 

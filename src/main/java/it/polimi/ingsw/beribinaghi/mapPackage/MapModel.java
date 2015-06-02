@@ -2,6 +2,9 @@ package it.polimi.ingsw.beribinaghi.mapPackage;
 
 import it.polimi.ingsw.beribinaghi.gameNames.SectorName;
 
+/**
+ *	is the representation of a map, through a matrix of sector names
+ */
 public class MapModel {
 	private static SectorName B = SectorName.BLANK;
 	private static SectorName AB = SectorName.ALIENBASE;

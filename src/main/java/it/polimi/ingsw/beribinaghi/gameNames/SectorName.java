@@ -8,6 +8,10 @@ import it.polimi.ingsw.beribinaghi.mapPackage.SafeSector;
 import it.polimi.ingsw.beribinaghi.mapPackage.Sector;
 import it.polimi.ingsw.beribinaghi.mapPackage.ShallopSector;
 
+/**
+ * Class containing the different types of sector existing in the map: blank (fake sector), safe, dangerous, alien base, human base, shallop
+ *
+ */
 public enum SectorName {
 	    BLANK(new BlankSector(),"B"),
 	    SAFE(new SafeSector(),"S"), 

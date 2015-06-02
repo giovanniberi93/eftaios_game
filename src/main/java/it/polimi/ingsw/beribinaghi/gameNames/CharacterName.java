@@ -1,6 +1,10 @@
  package it.polimi.ingsw.beribinaghi.gameNames;
 
 
+/**
+ * Class containing the 8 different characters of the game with name, role and side 
+ *
+ */
 public enum CharacterName {
 	CAPTAIN("The captain","Ennio Maria Dominoni",SideName.HUMAN),
 	PILOT("The pilot","Julia Niguloti",SideName.HUMAN),
@@ -27,6 +31,12 @@ public enum CharacterName {
 		return side;
 	}
 
+	/**
+	 * Construct a character from the role, the name and the side
+	 * @param role
+	 * @param personalName
+	 * @param side
+	 */
 	private CharacterName(String role,String personalName,SideName side) {
          this.roleName = role;
          this.personalName = personalName;

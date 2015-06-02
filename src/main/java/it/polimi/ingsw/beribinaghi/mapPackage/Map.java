@@ -21,8 +21,9 @@ public class Map implements Serializable {
 	private SectorName[][] graphicMap;
 	
 	/**
-	 * @param mapName is a map model, where all sectors types are defined
-	 * 	Generate a new Map with name mapName and graphics map.
+	 * Generate a new Map with name mapName and graphics map, and sets the alienBaseCoordinates and the HumanBaseCoordinates;
+	 * it also assign the right deck to every sector
+	 * @param mapName is a map model, where all sectors types are defined	
 	 */
 	public Map (String mapName, SectorName[][] graphicMap, DangerousSectorsDeck dangerousDeck, ShallopsDeck shallopsDeck){
 		
@@ -44,6 +45,11 @@ public class Map implements Serializable {
 			}
 		}
 
+	/**
+	 * Generate a new Map with name mapName and graphics map, and sets the alienBaseCoordinates and the HumanBaseCoordinates;
+	 * @param mapName is a map model, where all sectors types are defined
+	 * @param graphicMap
+	 */
 	public Map(String mapName, SectorName[][] graphicMap) {
 		this.setMapName(mapName);
 		this.graphicMap = graphicMap;
@@ -59,6 +65,11 @@ public class Map implements Serializable {
 			}
 	}
 
+	/**
+	 * 
+	 * @param centralCoordinates
+	 * @return the valid coordinates at distance 1 from the central coordinates
+	 */
 	public ArrayList<Coordinates> adiacentCoordinates (Coordinates centralCoordinates){
 		int otherNumber;
 		char currentLetter;							//non tiene conto dell'effettiva dimensione della mappa

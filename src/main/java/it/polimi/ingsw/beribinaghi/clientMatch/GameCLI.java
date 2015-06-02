@@ -42,6 +42,7 @@ public class GameCLI implements GameInterface {
 		boolean hasMoved = false;
 		boolean hasAttacked = false;
 		boolean isHuman = controller.getMyCharacter().getSide().equals(SideName.HUMAN);
+		System.out.println("");
 		System.out.println("E' il tuo turno!");
 		do{
 			choose = chooseAction(hasMoved,isHuman, hasAttacked); 
@@ -176,6 +177,7 @@ public class GameCLI implements GameInterface {
 
 	@Override
 	public void notifyOthersTurn(String playerTurn) {
+		System.out.println("");
 		System.out.println("E' il turno di " + playerTurn);
 	}
 
@@ -201,19 +203,12 @@ public class GameCLI implements GameInterface {
 		if(pickedCards.size() == 2){
 			System.out.println("Hai trovato un oggetto di tipo: " + pickedCards.get(1));
 			if(controller.getMyCharacter().getSide() == SideName.ALIEN)
-				System.out.print(", ma sei un alieno e non potrai usarlo.");
+				System.out.println("Ma sei un alieno e non potrai usarlo.");
 		}
 		if(!(pickedCards.get(0) instanceof NothingToPick))
 			System.out.println("Hai pescato una carta rumore di tipo "+pickedCards.get(0));	
 	}
 
-
-	@Override
-	public void manageUsedObjectCard(ArrayList<String> command) {
-		System.out.println("Hai usato la carta "+command.get(0).toString());
-		if(command.size() > 0)
-			System.out.println("nella coordinata "+command.get(1));
-	}
 
 
 	@Override
@@ -231,18 +226,28 @@ public class GameCLI implements GameInterface {
 		if(noiseCoord.equals(Coordinates.SILENCE))
 			System.out.println("SILENZIO");
 		else
-			System.out.print("Rumore in "+noiseCoord.toString());	
+			System.out.print("Hai sentito un rumore dal settore "+noiseCoord.toString());	
 	}
 
 	@Override
 	public void showAttackResult(Coordinates attackCoordinates, ArrayList<String> killed, ArrayList<String> survived) {
-		System.out.println("E' stato effettuato un attacco in " + attackCoordinates + "!");
-		for(String kills : killed)
-			System.out.print(kills);
-		System.out.println(" sono stati uccisi,");
-		for(String surv : survived)
-			System.out.print(surv);
-		System.out.print(" sono riusciti a difendersi");		
+		System.out.println("");
+		System.out.println("E' stato effettuato un attacco in " + attackCoordinates);
+		if(killed.size() == 0 && survived.size() == 0){
+			System.out.println("Nessuno è stato colpito");
+		}
+		else{
+			if(killed.size() != 0){
+				for(String kills : killed)
+					System.out.print(kills);
+				System.out.println(" sono stati uccisi,");
+			}
+			if(survived.size() != 0){
+				for(String surv : survived)
+					System.out.print(surv);
+				System.out.print(" sono riusciti a difendersi");
+			}	
+		}
 	}
 
 	@Override
@@ -251,17 +256,17 @@ public class GameCLI implements GameInterface {
 		System.out.println(username + " si trova in " + position);	
 	}
 
-	@Override
-	public void manageSectorCard(Card card) {
-		// TODO Auto-generated method stub
-		
-	}
 
 
 	@Override
 	public void start() {
 		this.printMap(controller.getMap(), controller.getMyPosition());
 		this.printCharacter(controller.getMyCharacter().getName(), controller.getMyCharacter().getRole(), controller.getMyCharacter().getSide());
+	}
+
+	@Override
+	public void printTurnNumber(int turnNumber) {
+		System.out.println("turno numero " + turnNumber);
 	}
 }
 
