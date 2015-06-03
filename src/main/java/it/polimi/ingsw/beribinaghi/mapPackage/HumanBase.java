@@ -11,6 +11,7 @@ import it.polimi.ingsw.beribinaghi.matchPackage.DeckAssigner;
  * Class rapresenting the human base sector
  */
 public class HumanBase extends Sector {
+	private static final long serialVersionUID = 1L;
 
 	public HumanBase() {
 		super();

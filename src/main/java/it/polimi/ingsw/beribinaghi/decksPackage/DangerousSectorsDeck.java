@@ -1,7 +1,6 @@
 package it.polimi.ingsw.beribinaghi.decksPackage;
 
 import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.Card;
-import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.DangerousSectorCard;
 import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.NoiseInAnySector;
 import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.NoiseInYourSector;
 import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.Silence;

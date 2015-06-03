@@ -4,8 +4,12 @@
 package it.polimi.ingsw.beribinaghi.matchPackage;
 
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 
 import it.polimi.ingsw.beribinaghi.RMIInterface.RemoteGameSession;
+import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.Card;
+import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.ObjectCard;
+import it.polimi.ingsw.beribinaghi.mapPackage.Coordinates;
 import it.polimi.ingsw.beribinaghi.mapPackage.Map;
 import it.polimi.ingsw.beribinaghi.playerPackage.Character;
 import it.polimi.ingsw.beribinaghi.playerPackage.Player;
@@ -19,21 +23,28 @@ public class ServerRMISession extends GameSessionServerSide implements RemoteGam
 	private Boolean notificableMap;
 	private Boolean notificableCharacter;
 	private Boolean notificableNewTurn;
+	private ArrayList<String> update = new ArrayList<String>();
 	private String playerTurn;
 
-	public ServerRMISession(Match match, Player player) {
-		this.match = match;
+	public ServerRMISession(Player player) {
 		this.player = player;
 		notificableMap = false;
 		notificableCharacter = false;
 		notificableNewTurn = false;
 	}
+	
+	public void setMatch(Match match){
+		this.match = match;
+	}
 
 	@Override
 	protected void notifyBeginTurn() {
-		/*String []singleWord = playerName.split("=");
-		playerTurn = singleWord[1];
-		notificableNewTurn = true;*/
+		notificableNewTurn = true;
+		playerTurn = match.matchDataUpdate.getCurrentPlayer().getUser();
+		Player oldCurrentPlayer = match.matchDataUpdate.getOldCurrentPlayer();
+		if(!(oldCurrentPlayer == null) && !(this.player.getUser().equals(oldCurrentPlayer.getUser()))){
+			//TODO end
+		}
 	}
 
 	@Override
@@ -78,6 +89,135 @@ public class ServerRMISession extends GameSessionServerSide implements RemoteGam
 	public String getPlayerTurn() throws RemoteException {
 		this.notificableNewTurn = false;
 		return this.playerTurn;
+	}
+
+	@Override
+	public ArrayList<Card> move(Coordinates coordinates) throws RemoteException {
+		return match.move(coordinates);
+	}
+
+	@Override
+	public void noise(Coordinates coordinates) throws RemoteException {
+		match.setNoiseCoordinates(coordinates);
+		match.matchDataUpdate.setNoiseCoordinates();
+	}
+
+	@Override
+	public void executeCardAction(ObjectCard card,Coordinates coordinates) throws RemoteException {
+		String cardType = card.toString();
+		switch(cardType){
+		case "teleport" : 
+			match.teleport();
+			break;
+		case "attack" :
+			match.attack();
+			break;
+		case "sedatives" :
+			match.sedatives();
+			break;
+		case "adrenalin" :
+			match.adrenalin();
+			break;
+		case "spotlight" :
+			match.spotlight(coordinates);
+			break;
+		}
+	}
+
+	@Override
+	protected void notifyEndMatch() {
+		update.add("endMatch");
+	}
+
+	@Override
+	protected void notifyCard() {
+		update.add("card");
+	}
+
+	@Override
+	protected void notifySpotted() {
+		update.add("spotted");
+	}
+
+	@Override
+	protected void notifyNoise() {
+		if(!match.matchDataUpdate.getCurrentPlayer().equals(this.player)){
+			update.add("noise");
+		}
+	}
+
+	@Override
+	protected void notifyEscape() {
+		if(!match.matchDataUpdate.getCurrentPlayer().equals(this.player)){
+			update.add("escape");
+		}
+	}
+
+	@Override
+	protected void notifyAttackResult() {
+		update.add("attack");
+	}
+
+	@Override
+	public ArrayList<String> getUpdate() throws RemoteException {
+		return this.update;
+	}
+
+	@Override
+	public Coordinates getNoiseCoordinates() throws RemoteException {
+		if (update.remove("noise"))
+			return match.getNoiseCoordinates();
+		return null;
+	}
+
+	@Override
+	public void finishTurn() throws RemoteException {
+		match.matchDataUpdate.setOldCurrentPlayer(this.player);
+		match.finishTurn(); 
+	}
+
+	@Override
+	public Card getUsedCard() throws RemoteException {
+		if (update.remove("card"))
+			return match.getLastUsedCard();
+		return null;
+	}
+
+	@Override
+	public ArrayList<String> getSpottedPlayer() throws RemoteException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ArrayList<String> getEscapeResult() throws RemoteException {
+		ArrayList<String> escapeResult = new ArrayList<String>();
+		if (update.remove("escape")){
+			Coordinates shallopPosition = match.matchDataUpdate.getCurrentPlayer().getCharacter().getCurrentPosition();
+			escapeResult.add(""+match.isSuccessfulEscape());
+			escapeResult.add(shallopPosition.toString());
+		}
+		return escapeResult;
+	}
+
+	@Override
+	public ArrayList<String> getAttackResult() throws RemoteException {
+		ArrayList<String> attackResult = new ArrayList<String>();
+		if (update.remove("attack")){
+			ArrayList<Player> killed = match.getKilled();
+			attackResult.add("killed=");
+			for(Player player : killed){
+				attackResult.add(player.getUser());
+				attackResult.add(player.getCharacter().toString());
+			}
+			ArrayList<Player> survived = match.getSurvived();
+			attackResult.add("survived=");
+			for(Player player : survived){
+				attackResult.add(player.getUser());
+				attackResult.add(player.getCharacter().toString());
+			}
+		}
+		return attackResult;
 	}
 
 }

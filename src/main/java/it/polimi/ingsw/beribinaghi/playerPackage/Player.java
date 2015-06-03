@@ -3,15 +3,15 @@
  */
 package it.polimi.ingsw.beribinaghi.playerPackage;
 
-import it.polimi.ingsw.beribinaghi.mapPackage.Coordinates;
+import java.io.Serializable;
 
 
 /**
  * Class that manage a physical player
  *
  */
-public class Player {
-	
+public class Player implements Serializable{
+	private static final long serialVersionUID = 1L;
 	private String userName;
 	private Character character;
 	

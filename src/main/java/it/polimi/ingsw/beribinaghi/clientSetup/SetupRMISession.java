@@ -7,7 +7,7 @@ import it.polimi.ingsw.beribinaghi.RMIInterface.RemoteConnectionManager;
 import it.polimi.ingsw.beribinaghi.RMIInterface.RemoteGameSession;
 import it.polimi.ingsw.beribinaghi.RMIInterface.RemoteSetupSession;
 import it.polimi.ingsw.beribinaghi.clientMatch.GameSessionClientSide;
-import it.polimi.ingsw.beribinaghi.clientMatch.RMISession;
+import it.polimi.ingsw.beribinaghi.clientMatch.ClientRMISession;
 
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
@@ -124,7 +124,7 @@ public class SetupRMISession implements SetupSession {
 		try {
 			registry = LocateRegistry.getRegistry(EscapeFromTheAliensInOuterSpace.RMIPORT);
 			RemoteGameSession remoteGameSession = (RemoteGameSession) registry.lookup(session.getStringBind());
-			return new RMISession(remoteGameSession);
+			return new ClientRMISession(remoteGameSession);
 		} catch (RemoteException e) {
 		} catch (NotBoundException e) {
 		}

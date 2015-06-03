@@ -59,6 +59,7 @@ public class GUI extends JFrame implements GraphicInterface {
 	private DefaultListModel<String> listModel = null;
 	private DefaultListModel<String> listPlayer;
 	private PlayerHandler playerHandler;
+	private JTextField tUser = null;
 
 	public GUI(){
 		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
@@ -117,6 +118,11 @@ public class GUI extends JFrame implements GraphicInterface {
 			cont.removeKeyListener(this);
 			mediaPlayer.stop();
 			mediaPlayer.close();
+			if (tUser!=null)
+			{
+				tUser.requestFocus();
+				tUser.requestFocusInWindow();
+			}
 		}
 
 		@Override
@@ -284,10 +290,6 @@ public class GUI extends JFrame implements GraphicInterface {
 		HandlerConnessionErrorButton handler = new HandlerConnessionErrorButton(errorFrame,this);
 		bNo.addActionListener(handler);
 		bYes.addActionListener(handler);
-		try {
-			errorFrame.setSelected(true);
-		} catch (PropertyVetoException e) {
-		}
 	}
 
 
@@ -337,7 +339,7 @@ public class GUI extends JFrame implements GraphicInterface {
 		labelRe.setFont(new Font(fontName, Font.BOLD, 18));
 		labelRe.setForeground(Color.WHITE);
 		loginCont.setBackground(Color.BLACK);
-		JTextField tUser = new JTextField();
+		tUser = new JTextField();
 		tUser.setFont(new Font(fontName, Font.BOLD, 16));
 		JButton bLogin = new JButton("Login");
 		bLogin.setFont(new Font(fontName, Font.BOLD, 16));
@@ -353,15 +355,10 @@ public class GUI extends JFrame implements GraphicInterface {
 		labelRe.setBounds(10, 30, 250, 20);
 		tUser.setBounds(25, 70, 250, 25);
 		bLogin.setBounds(110, 110, 80, 40);
-		tUser.requestFocusInWindow();
 		loginFrame.setBounds(this.getWidth()/2-150, this.getHeight()/2-200, 300, 200);
 		HandlerLogin handler = new HandlerLogin(loginFrame,tUser);
 		bLogin.addActionListener(handler);
 		tUser.addKeyListener(handler);
-		try {
-			loginFrame.setSelected(true);
-		} catch (PropertyVetoException e) {
-		}
 	}
 
 	private class HandlerChooser implements ActionListener, KeyListener {

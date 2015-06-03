@@ -4,7 +4,6 @@
 package it.polimi.ingsw.beribinaghi.matchPackage;
 
 import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.ObjectCard;
-import it.polimi.ingsw.beribinaghi.mapPackage.Coordinates;
 import it.polimi.ingsw.beribinaghi.playerPackage.Player;
 
 import java.util.ArrayList;

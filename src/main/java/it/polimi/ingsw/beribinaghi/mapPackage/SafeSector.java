@@ -8,6 +8,7 @@ import it.polimi.ingsw.beribinaghi.matchPackage.DeckAssigner;
  * Class representing a safe sector
  */
 public class SafeSector extends Sector{
+	private static final long serialVersionUID = 1L;
 
 	public SafeSector() {
 		super();

@@ -138,7 +138,6 @@ public class MatchTest {
 		match.spotlight(new Coordinates('b',5));
 		assertTrue(match.getSpotted().size() == 4);
 	}
-
 	
 }
 

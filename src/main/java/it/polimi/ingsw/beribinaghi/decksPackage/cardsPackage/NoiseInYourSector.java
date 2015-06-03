@@ -7,6 +7,7 @@ import it.polimi.ingsw.beribinaghi.clientMatch.NoiseCoordinatesSelector;
  *
  */
 public class NoiseInYourSector extends DangerousSectorCard {
+	private static final long serialVersionUID = 1L;
 
 	public NoiseInYourSector(boolean containsObject) {
 		super(containsObject);

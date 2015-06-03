@@ -32,9 +32,10 @@ public class SetupRMISession implements SetupSession,RemoteSetupSession {
 	private String nameStubGame;
 	private ArrayList<String> playerNotNotify;
 	private Registry registry;
+	private ServerRMISession rmiSession;
 
-	public SetupRMISession(MatchController matchController, String myName,Registry registry) {
-		this.matchController = matchController;
+	public SetupRMISession(MatchController controller,String myName,Registry registry) {
+		this.matchController = controller;
 	    this.matchController.registerSession(this);
 	    this.myName = myName;
 	    this.registry = registry;
@@ -46,6 +47,10 @@ public class SetupRMISession implements SetupSession,RemoteSetupSession {
 	@Override
 	public void startMatch() {
 		active = true;
+		try {
+			rmiSession.setMatch((matchController.getMatch(this.matchName)).getMatch());
+		} catch (NotExistingNameException e) {
+		}
 	}
 
 	@Override
@@ -63,13 +68,11 @@ public class SetupRMISession implements SetupSession,RemoteSetupSession {
 	public GameSessionServerSide getGameSession() {
 		try {
 			nameStubGame = "game" + myName.substring(7, myName.length()); //game e il numero di stub
-			ServerRMISession rmiSession = new ServerRMISession((matchController.getMatch(this.matchName)).getMatch(),player);
+			rmiSession = new ServerRMISession(player);
 			RemoteGameSession stub = (RemoteGameSession) UnicastRemoteObject.exportObject(rmiSession, 0); 
 			registry.bind(nameStubGame, stub);
 			return rmiSession;
-		} catch (NotExistingNameException e) {
 		} catch (RemoteException e) {
-			System.out.println(e.getMessage());
 		} catch (AlreadyBoundException e) {
 		}
 		return null;

@@ -24,11 +24,6 @@ public interface GameInterface {
 	void setController(MatchController matchController);
 
 	/**
-	 * communicate to user that is his turn and it gives to him something action
-	 */
-	void managesMyTurn();
-
-	/**
 	 * @param playerTurn
 	 * it notifies to user that is turn of playerTurn 
 	 */
@@ -38,6 +33,7 @@ public interface GameInterface {
 	 * shows in the graphicInterface the map of the match, showing also the position of the player who invokes it 
 	 * @param map is the map of the match
 	 * @param myCoordinates are the coordinates of the player who invokes the method
+>>>>>>> branch 'master' of https://dam930@bitbucket.org/dam930/beribinaghi.git
 	 */
 	void printMap(Map map, Coordinates myCoordinates);
 
@@ -88,6 +84,9 @@ public interface GameInterface {
 	 */
 	void showSpottedPlayer(String username, Coordinates position);
 	
+	/**
+	 * start with showing to user character, map and first turn's player
+	 */
 	void start();
 
 	/**
