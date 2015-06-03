@@ -1,10 +1,10 @@
 package it.polimi.ingsw.beribinaghi;
 
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.Card;
 import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.DangerousSectorCard;
+import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.Defense;
 import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.NothingToPick;
 import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.Sedatives;
 import it.polimi.ingsw.beribinaghi.gameNames.SideName;
@@ -56,6 +56,22 @@ public class MatchTest {
 	}
 
 	@Test
+	public void attackWithDefense(){
+		int killedHumans = 0;
+		for(int i = 0; i<4; i++){
+			players.get(i).getCharacter().setCurrentPosition(new Coordinates('a',1));
+			players.get(i).getCharacter().addCardToBag(new Defense());
+		}
+		match.attack();
+		for(int i = 0; i<4; i++){
+			if(players.get(i).getCharacter().getSide() == SideName.HUMAN && !players.get(i).getCharacter().isAlive())
+				killedHumans++;
+		}
+		assertTrue(killedHumans == 0);
+	}
+	
+	
+	@Test
 	public void charactersNotNull(){
 		boolean unassignedCharacter = false;
 		for(Player analyzedPlayer : players){
@@ -87,7 +103,7 @@ public class MatchTest {
 		ArrayList<Card> pickedCard =  new ArrayList<Card>();
 		this.match.addToUsedCards(new Sedatives());
 		pickedCard = match.move(new Coordinates('a',2));
-		assertTrue(pickedCard.get(0) == null);
+		assertTrue(pickedCard.get(0) instanceof NothingToPick);
 		
 	}
 	
@@ -112,6 +128,15 @@ public class MatchTest {
 			player.getCharacter().setCurrentPosition(coord);
 		match.teleport();
 		assertTrue(match.matchDataUpdate.getCurrentPlayer().getCharacter().getCurrentPosition().equals(match.getMap().getHumanBaseCoordinates()));		
+	}
+	
+	@Test
+	public void spotlightTest(){
+		Coordinates coord = new Coordinates ('c',5);
+		for(int i = 0; i<4; i++)
+			players.get(i).getCharacter().setCurrentPosition(coord);
+		match.spotlight(new Coordinates('b',5));
+		assertTrue(match.getSpotted().size() == 4);
 	}
 
 	

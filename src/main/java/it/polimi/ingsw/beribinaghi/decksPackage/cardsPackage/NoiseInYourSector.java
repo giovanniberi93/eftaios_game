@@ -2,6 +2,10 @@ package it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage;
 
 import it.polimi.ingsw.beribinaghi.clientMatch.NoiseCoordinatesSelector;
 
+/**
+ * Class representing a NoiseInYourSector card
+ *
+ */
 public class NoiseInYourSector extends DangerousSectorCard {
 	private static final long serialVersionUID = 1L;
 

@@ -1,5 +1,9 @@
 package it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage;
 
-public interface Card{
+/**
+ * Class representing a generic card
+ *
+ */
+public interface Card {
 	
 }

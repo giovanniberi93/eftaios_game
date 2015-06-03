@@ -156,7 +156,8 @@ public class GameGUI implements GameInterface,MouseListener {
 		g.drawString("Turno di " + playerTurn, frame.getWidth()/2-105,30);
 	}
 	
-	private void printMap(Map map, Coordinates myCoordinates) {
+	@Override
+	public void printMap(Map map, Coordinates myCoordinates) {
 		int j;
 		this.map = map;
 		g.setColor(Color.WHITE);
@@ -189,41 +190,6 @@ public class GameGUI implements GameInterface,MouseListener {
 			
 	}
 
-	/* (non-Javadoc)
-	 * @see it.polimi.ingsw.beribinaghi.clientMatch.GameInterface#manageSectorCard(it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.Card)
-	 */
-	@Override
-	public void manageSectorCard(Card card) {
-		// TODO Auto-generated method stub
-
-	}
-
-	/* (non-Javadoc)
-	 * @see it.polimi.ingsw.beribinaghi.clientMatch.GameInterface#manageNewObjectCard(it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.ObjectCard)
-	 */
-	@Override
-	public void manageNewObjectCard(ObjectCard objectCard) {
-		// TODO Auto-generated method stub
-
-	}
-
-	/* (non-Javadoc)
-	 * @see it.polimi.ingsw.beribinaghi.clientMatch.GameInterface#showUsedCard(java.util.ArrayList)
-	 */
-	@Override
-	public void showUsedCard(ArrayList<String> command) {
-		// TODO Auto-generated method stub
-
-	}
-
-	/* (non-Javadoc)
-	 * @see it.polimi.ingsw.beribinaghi.clientMatch.GameInterface#manageUsedObjectCard(java.util.ArrayList)
-	 */
-	@Override
-	public void manageUsedObjectCard(ArrayList<String> command) {
-		// TODO Auto-generated method stub
-
-	}
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
@@ -278,16 +244,11 @@ public class GameGUI implements GameInterface,MouseListener {
 	}
 
 	@Override
-	public void showPickedCard(ArrayList<Card> pickedCards) {
+	public void showPickedCards(ArrayList<Card> pickedCards) {
 		// TODO Auto-generated method stub
 		
 	}
 
-	@Override
-	public void showUsedCard(ObjectCard usedCard) {
-		// TODO Auto-generated method stub
-		
-	}
 
 	@Override
 	public void chooseObjectCard() {
@@ -314,8 +275,7 @@ public class GameGUI implements GameInterface,MouseListener {
 	}
 
 	@Override
-	public void showAttackResult(ArrayList<String> killed,
-			ArrayList<String> survived) {
+	public void showAttackResult(Coordinates attackCoordinates, ArrayList<String> killed, ArrayList<String> survived) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -326,9 +286,21 @@ public class GameGUI implements GameInterface,MouseListener {
 		
 	}
 
-	@Override
 	public void start() {
 		this.printCharacter(controller.getMyCharacter());
 	}
+
+	@Override
+	public void showUsedCard(ObjectCard card, Coordinates coord) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void printTurnNumber(int turnNumber) {
+		// TODO Auto-generated method stub
+		
+	}
+
 
 }

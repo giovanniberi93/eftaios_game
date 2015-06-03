@@ -16,12 +16,10 @@ import java.util.Observable;
 public class MatchDataUpdate extends Observable {
 	private ArrayList<ObjectCard> usedObjectCard = new ArrayList<ObjectCard>();
 	
-	private int turnNumber;
 	private Player currentPlayer;
 	private Player oldCurrentPlayer;
 	
-	public MatchDataUpdate (Player successiveCurrentPlayer, int turnNumber){
-		this.turnNumber = turnNumber;
+	public MatchDataUpdate (Player successiveCurrentPlayer){
 		this.currentPlayer = successiveCurrentPlayer;
 		oldCurrentPlayer = null;
 	}
@@ -67,16 +65,7 @@ public class MatchDataUpdate extends Observable {
 		this.notifyObservers("noise");
 	}
 
-	public int getTurnNumber() {
-		return turnNumber;
-	}
 	
-	public boolean searchUsedObjectCard(ObjectCard searchedCard) {
-		for(ObjectCard card : usedObjectCard)
-			if(searchedCard.getClass().equals(card.getClass()))
-				return true;
-		return false;
-	}
 
 	/**
 	 * Notifies to all gamesessions the end of the game; the notified string is "endMatch"
@@ -110,8 +99,6 @@ public class MatchDataUpdate extends Observable {
 	 * @param player is the new currentPlayer
 	 */
 	public void clear(Player player) {
-		
-		this.turnNumber++;			//turn
 		this.currentPlayer = player;
 		usedObjectCard.clear();
 		this.setChanged();

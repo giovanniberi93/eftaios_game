@@ -41,6 +41,7 @@ public class GameCLI implements GameInterface {
 		boolean hasMoved = false;
 		boolean hasAttacked = false;
 		boolean isHuman = controller.getMyCharacter().getSide().equals(SideName.HUMAN);
+		System.out.println("");
 		System.out.println("E' il tuo turno!");
 		do{
 			choose = chooseAction(hasMoved,isHuman, hasAttacked); 
@@ -91,7 +92,6 @@ public class GameCLI implements GameInterface {
 				availableCards.add(cardName);
 				System.out.println(cardName);
 			}
-			
 		}
 		System.out.println("Scegli la carta che vuoi utilizzare");
 		String chosenCard = in.nextLine();
@@ -119,12 +119,6 @@ public class GameCLI implements GameInterface {
 			command.add(stringDestination);
 		}
 		controller.callObjectCard(command);	
-	}
-
-	@Override
-	public void showUsedCard(ObjectCard card) {
-		System.out.println("Il giocatore corrente ha usato la carta "+ card.toString());
-		
 	}
 
 	private Coordinates chooseAdiacentCoordinates(Coordinates currentPosition, int percorrableDistance) {
@@ -172,11 +166,21 @@ public class GameCLI implements GameInterface {
 		return command;
 	}
 
-	private void notifyOthersTurn(String playerTurn) {
+	@Override
+	public void showUsedCard(ObjectCard card, Coordinates coord) {
+		System.out.println("Il giocatore corrente ha usato la carta "+ card.toString());
+		if(coord !=  null)
+			System.out.print(" alla coordinata " + coord);
+		
+	}
+
+	@Override
+	public void notifyOthersTurn(String playerTurn) {
+		System.out.println("");
 		System.out.println("E' il turno di " + playerTurn);
 	}
 
-	private void printMap(Map map,Coordinates myCoordinates) {
+	public void printMap(Map map,Coordinates myCoordinates) {
 		int j;
 		
 		System.out.println("La tua posizione è indicata con mappa è:");
@@ -194,24 +198,16 @@ public class GameCLI implements GameInterface {
 	}
 
 	@Override
-	public void showPickedCard(ArrayList<Card> pickedCards) {
-		if(pickedCards.size() == 2)
-			System.out.println("Hai trovato un oggetto di tipo " + pickedCards.get(1).toString() + ", fanne buon uso!");
+	public void showPickedCards(ArrayList<Card> pickedCards) {
+		if(pickedCards.size() == 2){
+			System.out.println("Hai trovato un oggetto di tipo: " + pickedCards.get(1));
+			if(controller.getMyCharacter().getSide() == SideName.ALIEN)
+				System.out.println("Ma sei un alieno e non potrai usarlo.");
+		}
 		if(!(pickedCards.get(0) instanceof NothingToPick))
 			System.out.println("Hai pescato una carta rumore di tipo "+pickedCards.get(0));	
 	}
 
-	@Override
-	public void manageNewObjectCard(ObjectCard card) {
-		System.out.println("Hai trovato un oggetto di tip: "+card.toString()+"! Fanne buon uso");
-	}
-
-	@Override
-	public void manageUsedObjectCard(ArrayList<String> command) {
-		System.out.println("Hai usato la carta "+command.get(0).toString());
-		if(command.size() > 0)
-			System.out.println("nella coordinata "+command.get(1));
-	}
 
 
 	@Override
@@ -228,18 +224,29 @@ public class GameCLI implements GameInterface {
 	public void showNoise(Coordinates noiseCoord) {
 		if(noiseCoord.equals(Coordinates.SILENCE))
 			System.out.println("SILENZIO");
-		System.out.print("Rumore in "+noiseCoord.toString());	
+		else
+			System.out.print("Hai sentito un rumore dal settore "+noiseCoord.toString());	
 	}
 
 	@Override
-	public void showAttackResult(ArrayList<String> killed, ArrayList<String> survived) {
-		System.out.println("E' stato effettuato un attacco!");
-		for(String kills : killed)
-			System.out.print(kills);
-		System.out.print(" sono stati uccisi");
-		for(String surv : survived)
-			System.out.print(surv);
-		System.out.print(" sono riusciti a difendersi");		
+	public void showAttackResult(Coordinates attackCoordinates, ArrayList<String> killed, ArrayList<String> survived) {
+		System.out.println("");
+		System.out.println("E' stato effettuato un attacco in " + attackCoordinates);
+		if(killed.size() == 0 && survived.size() == 0){
+			System.out.println("Nessuno è stato colpito");
+		}
+		else{
+			if(killed.size() != 0){
+				for(String kills : killed)
+					System.out.print(kills);
+				System.out.println(" sono stati uccisi,");
+			}
+			if(survived.size() != 0){
+				for(String surv : survived)
+					System.out.print(surv);
+				System.out.print(" sono riusciti a difendersi");
+			}	
+		}
 	}
 
 	@Override
@@ -248,17 +255,7 @@ public class GameCLI implements GameInterface {
 		System.out.println(username + " si trova in " + position);	
 	}
 
-	@Override
-	public void manageSectorCard(Card card) {
-		// TODO Auto-generated method stub
-		
-	}
 
-	@Override
-	public void showUsedCard(ArrayList<String> command) {
-		// TODO Auto-generated method stub
-		
-	}
 
 	@Override
 	public void start() {
@@ -269,4 +266,10 @@ public class GameCLI implements GameInterface {
 		else
 			this.notifyOthersTurn(controller.getCurrentPlayer());
 	}
+
+	@Override
+	public void printTurnNumber(int turnNumber) {
+		System.out.println("turno numero " + turnNumber);
+	}
 }
+

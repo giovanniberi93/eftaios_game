@@ -92,10 +92,13 @@ public class ClientSocketSession implements GameSessionClientSide {
 
 	@Override
 	public String listenTurn() {
+		int turnNumber;
 		String line = in.nextLine();
 		String command[] = line.split("=");
 		if (command[0].equals("turn"))
 		{
+			turnNumber = Integer.parseInt(command[2]);
+			controller.setTurnNumber(turnNumber);
 			return command[1];
 		}
 		return null;
@@ -187,6 +190,36 @@ public class ClientSocketSession implements GameSessionClientSide {
 			commandString += string+"=";
 		out.println(commandString);
 		out.flush();
+		if(command.get(0).equals("attack")){
+			String[] attackResult = in.nextLine().split("=");
+			analyzeAndShowAttack(attackResult);
+		}
+		else 
+			if (command.get(0).equals("spotlight")){
+				String[] spotlightResult = in.nextLine().split("=");
+				analyzeAndShowSpotlight(spotlightResult);
+			}
+				
+			
+	}
+
+
+	private void analyzeAndShowSpotlight(String[] spotlightResult) {
+		for(int i=1; i<spotlightResult.length; i++){
+			String[] spottedPlayer = spotlightResult[i].split("&");
+			String username = spottedPlayer[0];
+			Coordinates position = Coordinates.stringToCoordinates(spottedPlayer[1]);
+			controller.getGraphicInterface().showSpottedPlayer(username, position);
+		}
+	}
+
+	public void analyzeAndShowAttack(String[] attackResult) {
+		ArrayList<String> killed = new ArrayList<String>();
+		ArrayList<String> survived = new ArrayList<String>();
+		Coordinates attackCoordinates = Coordinates.stringToCoordinates(attackResult[1]);
+		killed = this.selectKilled(attackResult);
+		survived = this.selectSurvived(attackResult);
+		controller.getGraphicInterface().showAttackResult(attackCoordinates, killed, survived);
 	}
 
 	@Override	
@@ -212,27 +245,19 @@ public class ClientSocketSession implements GameSessionClientSide {
 					break;
 				case "card":
 					ObjectCard usedCard = ObjectCard.stringToCard(command[1]);
-					Coordinates destinationCoord;
-					destinationCoord = Coordinates.stringToCoordinates(command[2]);
-					controller.getGraphicInterface().showUsedCard(usedCard);
+					Coordinates destinationCoord = null;
+					if(command[1].equals("spotlight"))
+						destinationCoord = Coordinates.stringToCoordinates(in.nextLine());
+					controller.getGraphicInterface().showUsedCard(usedCard, destinationCoord);
 					break;
-				case "killed":
-					ArrayList<String> killed = new ArrayList<String>();
-					ArrayList<String> survived = new ArrayList<String>();
-					killed = this.selectKilled(command);
-					survived = this.selectSurvived(command);
-					controller.getGraphicInterface().showAttackResult(killed, survived);
+				case "attack":
+					analyzeAndShowAttack(command);
 					break;
 				case "endMatch":
 					// TODO boh.
 					break;
-				case "spotted":
-					for(int i=1; i<command.length; i++){
-						String[] spottedPlayer = command[i].split("&");
-						String username = spottedPlayer[0];
-						Coordinates position = Coordinates.stringToCoordinates(spottedPlayer[1]);
-						controller.getGraphicInterface().showSpottedPlayer(username, position);
-					}
+				case "spotlight":
+					analyzeAndShowSpotlight(command);
 					break;
 			}
 		commandString = in.nextLine();
@@ -243,10 +268,12 @@ public class ClientSocketSession implements GameSessionClientSide {
 
 	private ArrayList<String> selectSurvived(String[] command) {
 		ArrayList<String> survived = new ArrayList<String>();
-		int i = 1;
+		int i = 0;
 		String string = command[i];
-		while(!string.equals("survived"))
+		while(!string.equals("survived")){
 			i++;
+			string = command[i];
+		}
 		i++;
 		while (i < command.length){
 			survived.add(command[i]);
@@ -257,8 +284,8 @@ public class ClientSocketSession implements GameSessionClientSide {
 
 	private ArrayList<String> selectKilled(String[] command) {
 		ArrayList<String> killed = new ArrayList<String>();
-		int i = 1;
-		while(command[i].equals("survived")){
+		int i = 3;
+		while(!command[i].equals("survived")){
 			killed.add(command[i]);
 			i++;
 		}

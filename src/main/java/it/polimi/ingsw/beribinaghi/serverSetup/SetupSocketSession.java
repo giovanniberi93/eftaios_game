@@ -1,6 +1,4 @@
-/**
- * 
- */
+
 package it.polimi.ingsw.beribinaghi.serverSetup;
 
 import it.polimi.ingsw.beribinaghi.matchPackage.GameSessionServerSide;
