@@ -7,6 +7,7 @@ import it.polimi.ingsw.beribinaghi.matchPackage.DeckAssigner;
  * Class representing a shallop sector
  */
 public class ShallopSector extends Sector{
+	private static final long serialVersionUID = 1L;
 	private boolean isAlreadyUsed = false;
 	
 	public boolean isAlreadyUsed() {

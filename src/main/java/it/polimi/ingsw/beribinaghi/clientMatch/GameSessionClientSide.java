@@ -7,7 +7,6 @@ import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.Card;
 import it.polimi.ingsw.beribinaghi.mapPackage.Coordinates;
 import it.polimi.ingsw.beribinaghi.mapPackage.Map;
 import it.polimi.ingsw.beribinaghi.playerPackage.Character;
-import it.polimi.ingsw.beribinaghi.playerPackage.Player;
 
 import java.util.ArrayList;
 

@@ -9,7 +9,8 @@ import it.polimi.ingsw.beribinaghi.gameNames.CharacterName;
  * be useful in the turn management
  */
 public class AlienCharacter extends Character {
-	
+	private static final long serialVersionUID = 1L;
+
 	public AlienCharacter(CharacterName character) {
 		super(character);
 		super.percorrableDistance = 2;	//TODO add constant; where?

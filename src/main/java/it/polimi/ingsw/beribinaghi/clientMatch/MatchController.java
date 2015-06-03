@@ -28,6 +28,7 @@ public class MatchController {
 	private Map map;
 	private ArrayList<Player> deadPlayers = new ArrayList<Player>();
 	private ArrayList<Player> escapedPlayers = new ArrayList<Player>();
+	private boolean myTurn;
 
 	public Character getMyCharacter() {
 		return myCharacter;
@@ -41,8 +42,10 @@ public class MatchController {
 		this.myPlayerName = playerName;
 		map = session.getMap();
 		myCharacter = session.getCharacter();
-		graphicInterface.start();
 		turn();
+		graphicInterface.start();
+		if (!this.isMyTurn())
+			session.listenUpdate();
 	}
 
 	public Map getMap() {
@@ -62,10 +65,9 @@ public class MatchController {
 		String currentPlayer = session.listenTurn(); 
 		this.currentPlayer = currentPlayer;
 		if (currentPlayer.equals(myPlayerName))
-			graphicInterface.managesMyTurn();
+			this.myTurn = true;
 		else{
-			graphicInterface.notifyOthersTurn(currentPlayer);
-			session.listenUpdate();
+			this.myTurn = false;
 		}
 	}
 	
@@ -96,6 +98,13 @@ public class MatchController {
 
 	public String getCurrentPlayer() {
 		return currentPlayer;
+	}
+
+	/**
+	 * @return the myTurn
+	 */
+	public boolean isMyTurn() {
+		return myTurn;
 	}
 
 }

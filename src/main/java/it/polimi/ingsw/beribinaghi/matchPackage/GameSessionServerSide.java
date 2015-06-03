@@ -48,37 +48,37 @@ public abstract class GameSessionServerSide implements Observer {
 	/**
 	 * Notifies to all players the end of the running match with the String "endMatch"
 	 */
-	protected void notifyEndMatch() {}
+	protected abstract void notifyEndMatch();
 
 	/**
 	 * Notifies to all players an object used by current player with the string "card=usedCard.toString()"
 	 * @param string is usedCard.toString(); represent the used card 
 	 */
-	protected void notifyCard() {}
+	protected abstract void notifyCard();
 	
 	/**
 	 * Notifies to all players the position of the players spotted by a spotlight with the string "spotted=username&coordinatesLetter&coordinatesNumber="
 	 * @param spottedPlayers contains the usernames of the spotted players and the coordinates of their position;
 	 */
-	protected void notifySpotted(){}
+	protected abstract void notifySpotted();
 
 	/**
 	 * Notifies to all players the position of the noise signaled by the current player with the string "noise=coordinatesLetter=coordinatesNumber"
 	 * @param string contains a string representing the coordinates in which the noise is declared
 	 */
-	protected void notifyNoise(){}
+	protected abstract void notifyNoise();
 
 	/**
 	 * Notifies to all players the escape from the aliens of a the current player with the string "escaped=booleanValue"
 	 * @param escapeResult 
 	 */
-	protected void notifyEscape(){}
+	protected abstract void notifyEscape();
 	
 	/**
 	 * Notifies to all players the result of an attack of the current player with the string "killed=killedCharacter1=killedCharacter2=Survived=survivedCharacter1=survivedCharacter2"
 	 * @param attackResult the "survived" string divides the killed characters usernames from the survived characters usernames; all useranames are divided by the character "="
 	 */
-	protected void notifyAttackResult(){}
+	protected abstract void notifyAttackResult();
 
 	/**
 	 * Notifies to all players the username of the new current player with the string "turn=newCurrentPlayerUsername=newTurnNumber"

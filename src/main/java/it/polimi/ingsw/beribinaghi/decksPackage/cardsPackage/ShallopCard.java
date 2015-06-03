@@ -4,6 +4,7 @@ import it.polimi.ingsw.beribinaghi.clientMatch.NoiseCoordinatesSelector;
 
 
 public class ShallopCard extends SectorCard {
+	private static final long serialVersionUID = 1L;
 	private boolean isDamaged;
 	
 	public ShallopCard (boolean isDamaged){

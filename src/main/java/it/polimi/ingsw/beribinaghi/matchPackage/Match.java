@@ -10,7 +10,6 @@ import it.polimi.ingsw.beribinaghi.decksPackage.ObjectsDeck;
 import it.polimi.ingsw.beribinaghi.decksPackage.ShallopsDeck;
 import it.polimi.ingsw.beribinaghi.decksPackage.WrongCardTypeException;
 import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.Adrenalin;
-import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.Attack;
 import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.Card;
 import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.CharacterCard;
 import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.Defense;
@@ -232,7 +231,7 @@ public class Match {
 		matchDataUpdate.setNoiseCoordinates();
 	}
 	
-	public void spotlight(Coordinates selectedCoordinates){
+	public void spotlight(Coordinates selectedCoordinates){ //TODO Qua la cosa di spootlight
 		ArrayList<Player> spottedPlayers = new ArrayList<Player>();
 		ArrayList<Coordinates> lightedCoordinates = map.adiacentCoordinates(selectedCoordinates);
 		for(Coordinates analyzedCoordinates : lightedCoordinates){

@@ -3,6 +3,7 @@ package it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage;
 import it.polimi.ingsw.beribinaghi.clientMatch.NoiseCoordinatesSelector;
 
 public class NoiseInAnySector extends DangerousSectorCard {
+	private static final long serialVersionUID = 1L;
 
 	public NoiseInAnySector(boolean containsObject) {
 		super(containsObject);

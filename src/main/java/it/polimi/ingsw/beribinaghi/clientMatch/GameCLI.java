@@ -36,8 +36,7 @@ public class GameCLI implements GameInterface {
 		System.out.println("Ti chiami " + name + ", sei " + role + " e sei un " + sideName);
 	}
 
-	@Override
-	public void managesMyTurn() {
+	private void managesMyTurn() {
 		String choose;
 		boolean hasMoved = false;
 		boolean hasAttacked = false;
@@ -173,8 +172,7 @@ public class GameCLI implements GameInterface {
 		return command;
 	}
 
-	@Override
-	public void notifyOthersTurn(String playerTurn) {
+	private void notifyOthersTurn(String playerTurn) {
 		System.out.println("E' il turno di " + playerTurn);
 	}
 
@@ -266,5 +264,9 @@ public class GameCLI implements GameInterface {
 	public void start() {
 		this.printMap(controller.getMap(), controller.getMyPosition());
 		this.printCharacter(controller.getMyCharacter().getName(), controller.getMyCharacter().getRole(), controller.getMyCharacter().getSide());
+		if (controller.isMyTurn())
+			this.managesMyTurn();
+		else
+			this.notifyOthersTurn(controller.getCurrentPlayer());
 	}
 }

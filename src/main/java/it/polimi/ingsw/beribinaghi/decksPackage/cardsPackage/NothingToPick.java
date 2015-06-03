@@ -4,6 +4,8 @@ import it.polimi.ingsw.beribinaghi.clientMatch.NoiseCoordinatesSelector;
 
 public class NothingToPick extends SectorCard {
 
+	private static final long serialVersionUID = 1L;
+
 	public NothingToPick(){
 		super.containsObject = false;
 	}

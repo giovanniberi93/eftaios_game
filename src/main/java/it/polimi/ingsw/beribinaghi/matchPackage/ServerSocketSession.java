@@ -4,7 +4,6 @@ import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.Card;
 import it.polimi.ingsw.beribinaghi.gameNames.SectorName;
 import it.polimi.ingsw.beribinaghi.mapPackage.Coordinates;
 import it.polimi.ingsw.beribinaghi.mapPackage.Map;
-import it.polimi.ingsw.beribinaghi.mapPackage.StringSyntaxNotOfCoordinatesException;
 import it.polimi.ingsw.beribinaghi.playerPackage.Player;
 
 import java.io.IOException;
@@ -150,7 +149,7 @@ public class ServerSocketSession extends GameSessionServerSide implements Runnab
 	}
 
 
-	@Override
+	@Override //TODO Secondo me è sbagliato
 	protected void notifySpotted() {
 		ArrayList<Player> spotted = new ArrayList<Player>();
 		String result = "spotlight=";
@@ -182,8 +181,7 @@ public class ServerSocketSession extends GameSessionServerSide implements Runnab
 			String escapeResult = new String("escaped="+match.isSuccessfulEscape()+"="+shallopPosition);
 			out.println(escapeResult);
 			out.flush();
-		}
-		
+		}	
 	}
 
 

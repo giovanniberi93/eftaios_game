@@ -121,6 +121,10 @@ public class GameGUI implements GameInterface,MouseListener {
 				}
 			} else {
 				printMap(controller.getMap(),controller.getMyPosition());
+				if (controller.isMyTurn())
+					managesMyTurn();
+				else
+					notifyOthersTurn(controller.getCurrentPlayer());
 			}
 		}	
 	}
@@ -140,22 +144,16 @@ public class GameGUI implements GameInterface,MouseListener {
 		timer.start();
 	}
 
-	/* (non-Javadoc)
-	 * @see it.polimi.ingsw.beribinaghi.clientMatch.GameInterface#managesMyTurn()
-	 */
-	@Override
-	public void managesMyTurn() {
-		// TODO Auto-generated method stub
-
+	private void managesMyTurn() {
+		g.setColor(Color.WHITE);
+		g.setFont(new Font(frame.getFontName(), Font.BOLD, 24));
+		g.drawString("E' il tuo turno", frame.getWidth()/2-100,30);
 	}
 
-	/* (non-Javadoc)
-	 * @see it.polimi.ingsw.beribinaghi.clientMatch.GameInterface#notifyOthersTurn(java.lang.String)
-	 */
-	@Override
 	public void notifyOthersTurn(String playerTurn) {
-		// TODO Auto-generated method stub
-
+		g.setColor(Color.WHITE);
+		g.setFont(new Font(frame.getFontName(), Font.BOLD, 24));
+		g.drawString("Turno di " + playerTurn, frame.getWidth()/2-105,30);
 	}
 	
 	private void printMap(Map map, Coordinates myCoordinates) {

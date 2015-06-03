@@ -8,6 +8,8 @@ import java.util.ArrayList;
 
 import it.polimi.ingsw.beribinaghi.RMIInterface.RemoteGameSession;
 import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.Card;
+import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.NothingToPick;
+import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.ObjectCard;
 import it.polimi.ingsw.beribinaghi.mapPackage.Coordinates;
 import it.polimi.ingsw.beribinaghi.mapPackage.Map;
 import it.polimi.ingsw.beribinaghi.playerPackage.Character;
@@ -16,12 +18,12 @@ import it.polimi.ingsw.beribinaghi.playerPackage.Character;
  * @author damianobinaghi
  *
  */
-public class RMISession implements GameSessionClientSide {
+public class ClientRMISession implements GameSessionClientSide {
 	private RemoteGameSession session;
 	private MatchController controller;
 	private long whaitNewNotify = 100;
 
-	public RMISession(RemoteGameSession remoteGameSession) {
+	public ClientRMISession(RemoteGameSession remoteGameSession) {
 		this.session = remoteGameSession;
 	}
 
@@ -68,26 +70,42 @@ public class RMISession implements GameSessionClientSide {
 
 	@Override
 	public ArrayList<Card> move(Coordinates destinationCoord) {
-		// TODO Auto-generated method stub
+		try {
+			ArrayList<Card> cardsPicked = session.move(destinationCoord);
+			if (cardsPicked.isEmpty())
+				cardsPicked.add(new NothingToPick());
+			return cardsPicked;
+		} catch (RemoteException e) {
+			System.out.println(e.getMessage());
+		}
 		return null;
 	}
 
 	@Override
 	public void endTurn() {
-		// TODO Auto-generated method stub
-		
+		try {
+			session.finishTurn();
+		} catch (RemoteException e) {
+		}
 	}
 
 	@Override
 	public void noise(Coordinates noiseCoordinates) {
-		// TODO Auto-generated method stub
-		
+		try {
+			session.noise(noiseCoordinates);
+		} catch (RemoteException e) {
+		}
 	}
 
 	@Override
 	public void useObjectcard(ArrayList<String> command) {
-		// TODO Auto-generated method stub
-		
+		try {
+			if (command.size()>1)
+				session.executeCardAction(ObjectCard.stringToCard(command.get(0)), Coordinates.stringToCoordinates(command.get(1)));
+			else
+				session.executeCardAction(ObjectCard.stringToCard(command.get(0)),null);
+		} catch (RemoteException e) {
+		}
 	}
 
 	@Override

@@ -23,17 +23,6 @@ public interface GameInterface {
 	void setController(MatchController matchController);
 
 	/**
-	 * communicate to user that is his turn and it gives to him something action
-	 */
-	void managesMyTurn();
-
-	/**
-	 * @param playerTurn
-	 * it notifies to user that is turn of playerTurn 
-	 */
-	void notifyOthersTurn(String playerTurn);
-
-	/**
 	 * @param pickedCards
 	 * show to user a generic card picked
 	 */
