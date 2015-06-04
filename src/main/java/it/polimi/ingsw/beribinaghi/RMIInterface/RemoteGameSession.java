@@ -86,7 +86,7 @@ public interface RemoteGameSession extends Remote {
 	 * @throws RemoteException
 	 * get the used card
 	 */
-	public Card getUsedCard() throws RemoteException;
+	public ObjectCard getUsedCard() throws RemoteException;
 	
 	/**
 	 * @throws RemoteException
@@ -105,9 +105,15 @@ public interface RemoteGameSession extends Remote {
 	/**
 	 * @throws RemoteException
 	 * get attack result
-	 * arrayList contains "killed=" follow by the user name and the character name of player killed
+	 * arrayList contains in fort position the coordinates of attack, after "killed=" follow by the user name
+	 * and the character name of player killed
 	 * after that contains "survived=" follow by the user name and the character name of player survived
 	 */
 	public ArrayList<String> getAttackResult() throws RemoteException;
-	
+
+	/**
+	 * @throws RemoteException
+	 * if last used card is spotted, this function get the coordinates of spotted result
+	 */
+	public Coordinates getSpottedCoordinates() throws RemoteException;
 }

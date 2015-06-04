@@ -20,11 +20,9 @@ import it.polimi.ingsw.beribinaghi.gameNames.SectorName;
 import it.polimi.ingsw.beribinaghi.gameNames.SideName;
 import it.polimi.ingsw.beribinaghi.mapPackage.Coordinates;
 import it.polimi.ingsw.beribinaghi.mapPackage.Map;
-import it.polimi.ingsw.beribinaghi.mapPackage.StringSyntaxNotOfCoordinatesException;
 import it.polimi.ingsw.beribinaghi.playerPackage.AlienCharacter;
 import it.polimi.ingsw.beribinaghi.playerPackage.Character;
 import it.polimi.ingsw.beribinaghi.playerPackage.HumanCharacter;
-import it.polimi.ingsw.beribinaghi.playerPackage.Player;
 
 import java.io.ObjectInputStream;
 import java.io.PrintWriter;
@@ -33,7 +31,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 /**
- * class that manages all communication with server during the game
+ * class that manages all communication with server during the game using socket
  *
  */
 public class ClientSocketSession implements GameSessionClientSide {
@@ -221,8 +219,8 @@ public class ClientSocketSession implements GameSessionClientSide {
 	}
 
 	public void analyzeAndShowAttack(String[] attackResult) {
-		ArrayList<String> killed = new ArrayList<String>();
-		ArrayList<String> survived = new ArrayList<String>();
+		ArrayList<String> killed;
+		ArrayList<String> survived;
 		Coordinates attackCoordinates = Coordinates.stringToCoordinates(attackResult[1]);
 		killed = this.selectKilled(attackResult);
 		survived = this.selectSurvived(attackResult);
@@ -272,7 +270,7 @@ public class ClientSocketSession implements GameSessionClientSide {
 		commandString = in.nextLine();
 		command = commandString.split("=");
 		}
-		controller.turn();
+		controller.turn(true);
 	}
 
 	private ArrayList<String> selectSurvived(String[] command) {
