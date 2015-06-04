@@ -261,15 +261,20 @@ public class GameCLI implements GameInterface {
 	public void start() {
 		this.printMap(controller.getMap(), controller.getMyPosition());
 		this.printCharacter(controller.getMyCharacter().getName(), controller.getMyCharacter().getRole(), controller.getMyCharacter().getSide());
-		if (controller.isMyTurn())
-			this.managesMyTurn();
-		else
-			this.notifyOthersTurn(controller.getCurrentPlayer());
+		this.changedTurn();
 	}
 
 	@Override
 	public void printTurnNumber(int turnNumber) {
 		System.out.println("turno numero " + turnNumber);
+	}
+
+	@Override
+	public void changedTurn() {
+		if (controller.isMyTurn())
+			this.managesMyTurn();
+		else
+			this.notifyOthersTurn(controller.getCurrentPlayer());
 	}
 }
 

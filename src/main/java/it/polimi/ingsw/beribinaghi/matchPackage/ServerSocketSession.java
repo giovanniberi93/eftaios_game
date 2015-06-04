@@ -12,6 +12,10 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+/**
+ * This class manage all communication with client during the game using Socket
+ *
+ */
 public class ServerSocketSession extends GameSessionServerSide implements Runnable{
 	private Socket socket;
 	private Scanner in;
@@ -151,7 +155,7 @@ public class ServerSocketSession extends GameSessionServerSide implements Runnab
 	}
 
 
-	@Override //TODO Secondo me è sbagliato
+	@Override 
 	protected void notifySpotted() {
 		ArrayList<Player> spotted = match.getSpotted();
 		String result = "spotlight=";

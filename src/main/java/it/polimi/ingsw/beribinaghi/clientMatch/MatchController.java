@@ -49,7 +49,7 @@ public class MatchController {
 		this.myPlayerName = playerName;
 		map = session.getMap();
 		myCharacter = session.getCharacter();
-		turn();
+		turn(false);
 		graphicInterface.start();
 		if (!this.isMyTurn())
 			session.listenUpdate();
@@ -72,13 +72,15 @@ public class MatchController {
 	 * Listens from the session the message assigning the current player; if the player is in his turn, the method managesMyTurn is invoked and the map printed, otherwise the session start listening the updates
 	 * 
 	 */
-	public void turn() {
+	public void turn(Boolean type) {
 		String currentPlayer = session.listenTurn(); 
 		this.currentPlayer = currentPlayer;
 		if (currentPlayer.equals(myPlayerName))
 			this.myTurn = true;
 		else
 			this.myTurn = false;
+		if (type)
+			graphicInterface.changedTurn();
 	}
 	
 	/**
@@ -121,7 +123,7 @@ public class MatchController {
 	 */
 	public void callEndTurn() {
 		session.endTurn();
-		turn();
+		turn(true);
 	}
 
 	public String getCurrentPlayer() {

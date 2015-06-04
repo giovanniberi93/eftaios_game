@@ -45,8 +45,12 @@ public class GameGUI implements GameInterface,MouseListener {
 	private Timer timer;
 	private int lw,lh;
 	private HashMap<SectorName,Image> hashSector = new HashMap<SectorName,Image>();
+	private HashMap<SectorName,Image> hashSelectedSector = new HashMap<SectorName,Image>();
+	private HashMap<SectorName,Image> hashMySector = new HashMap<SectorName,Image>();
 	private HashMap<String,Image> hashCharacter = new HashMap<String,Image>();
+	private HashMap<String,Image> hashCard = new HashMap<String,Image>();
 	private ArrayList<Coordinates> posShallop = new ArrayList<Coordinates>();
+	private boolean hasMoved;
 	
 	
 	public GameGUI(GUI frame) {
@@ -79,13 +83,26 @@ public class GameGUI implements GameInterface,MouseListener {
 			hashCharacter.put(CharacterName.SECONDALIEN.getPersonalName(), ImageIO.read(new File("media/character/alien1.png").toURI().toURL()));
 			hashCharacter.put(CharacterName.THIRDALIEN.getPersonalName(), ImageIO.read(new File("media/character/alien1.png").toURI().toURL()));
 			hashCharacter.put(CharacterName.FOURTHALIEN.getPersonalName(), ImageIO.read(new File("media/character/alien1.png").toURI().toURL()));
+			hashSelectedSector.put(SectorName.DANGEROUS, ImageIO.read(new File("media/sector/dangerousSectorSelected.png").toURI().toURL()));
+			hashSelectedSector.put(SectorName.SAFE, ImageIO.read(new File("media/sector/safeSectorSelected.png").toURI().toURL()));
+			hashSelectedSector.put(SectorName.HUMANBASE, ImageIO.read(new File("media/sector/humanBaseSelected.png").toURI().toURL()));
+			hashSelectedSector.put(SectorName.ALIENBASE, ImageIO.read(new File("media/sector/alienBaseSelected.png").toURI().toURL()));
+			hashSelectedSector.put(SectorName.SHALLOP, ImageIO.read(new File("media/sector/shallopSectorSelected.png").toURI().toURL()));
+			hashMySector.put(SectorName.DANGEROUS, ImageIO.read(new File("media/sector/dangerousSectorMy.png").toURI().toURL()));
+			hashMySector.put(SectorName.SAFE, ImageIO.read(new File("media/sector/safeSectorMy.png").toURI().toURL()));
+			hashMySector.put(SectorName.HUMANBASE, ImageIO.read(new File("media/sector/humanBaseMy.png").toURI().toURL()));
+			hashMySector.put(SectorName.ALIENBASE, ImageIO.read(new File("media/sector/alienBaseMy.png").toURI().toURL()));
+			hashMySector.put(SectorName.SHALLOP, ImageIO.read(new File("media/sector/shallopSectorMy.png").toURI().toURL()));
+			hashCard.put("attack", ImageIO.read(new File("media/character/soldier.png").toURI().toURL()));
+			hashCard.put("teleport", ImageIO.read(new File("media/character/soldier.png").toURI().toURL()));
+			hashCard.put("sedatives", ImageIO.read(new File("media/character/soldier.png").toURI().toURL()));
+			hashCard.put("spotlight", ImageIO.read(new File("media/character/soldier.png").toURI().toURL()));
+			hashCard.put("defense", ImageIO.read(new File("media/character/alien1.png").toURI().toURL()));
+			hashCard.put("adrenaline", ImageIO.read(new File("media/character/alien1.png").toURI().toURL()));
 		} catch (IOException e) {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see it.polimi.ingsw.beribinaghi.clientMatch.GameInterface#setController(it.polimi.ingsw.beribinaghi.clientMatch.MatchController)
-	 */
 	@Override
 	public void setController(MatchController matchController) {
 		controller = matchController;
@@ -121,10 +138,7 @@ public class GameGUI implements GameInterface,MouseListener {
 				}
 			} else {
 				printMap(controller.getMap(),controller.getMyPosition());
-				if (controller.isMyTurn())
-					managesMyTurn();
-				else
-					notifyOthersTurn(controller.getCurrentPlayer());
+				changedTurn();
 			}
 		}	
 	}
@@ -145,9 +159,81 @@ public class GameGUI implements GameInterface,MouseListener {
 	}
 
 	private void managesMyTurn() {
+		this.hasMoved = false;
 		g.setColor(Color.WHITE);
 		g.setFont(new Font(frame.getFontName(), Font.BOLD, 24));
 		g.drawString("E' il tuo turno", frame.getWidth()/2-100,30);
+		this.printCards();
+		this.printSelectableCoordinates(this.controller.getMyCharacter().getCurrentPosition(),controller.getMyCharacter().getPercorrableDistance());
+	}
+	
+	private void printSelectableCoordinates(Coordinates currentPosition, int percorrableDistance) {
+		ArrayList<Coordinates> selectableCoordinates = controller.getMap().getReachableCoordinates(currentPosition, percorrableDistance);
+		SectorName[][] graphicMap = map.getGraphicMap();
+		for (Coordinates coordinates:selectableCoordinates){	
+			int i = coordinates.getNumber()-1;
+			int j = Coordinates.getNumberFromLetter(coordinates.getLetter());
+			this.printSector(i,j,graphicMap[i][j],1);
+		}
+	}
+	
+	private void chooseMove(Coordinates coordinatesSelected) {
+		ArrayList<Coordinates> selectableCoordinates = controller.getMap().getReachableCoordinates(controller.getMyPosition(), controller.getMyCharacter().getPercorrableDistance());
+		if (selectableCoordinates.contains(coordinatesSelected)){
+			hasMoved  = true;
+			SectorName[][] graphicMap = map.getGraphicMap();
+			Coordinates myOldCoordinates = controller.getMyPosition();
+			this.printSector(myOldCoordinates.getNumber()-1,Coordinates.getNumberFromLetter(myOldCoordinates.getLetter()),graphicMap[myOldCoordinates.getNumber()-1][Coordinates.getNumberFromLetter(myOldCoordinates.getLetter())],0);
+			for (Coordinates coordinates:selectableCoordinates){	
+				int i = coordinates.getNumber()-1;
+				int j = Coordinates.getNumberFromLetter(coordinates.getLetter());
+				if (coordinates.equals(coordinatesSelected))
+					this.printSector(i,j,graphicMap[i][j],3);
+				else
+					this.printSector(i,j,graphicMap[i][j],0);
+			}
+			controller.callMove(coordinatesSelected);
+		}
+	}
+
+
+/*	private String chooseAction(boolean hasMoved, boolean isHuman, boolean hasAttacked) {
+		String command;
+		
+		System.out.println("Scegli azione:");
+		if(!hasMoved){
+			System.out.println("[move] - muovi");
+		}
+		if(isHuman && (controller.getMyCharacter().getBagSize() > 0)){
+			System.out.println("[card] - usa carta oggetto");
+		}
+		if(!isHuman && !hasAttacked && hasMoved){
+			System.out.println("[attack] - attacca");
+		}
+		if(hasMoved){
+			System.out.println("[end] - finisci turno");
+		}
+		command = in.nextLine();
+		while(!((command.equals("move") && !hasMoved) || 
+		   (command.equals("card") && (isHuman && (controller.getMyCharacter().getBagSize() > 0))) ||
+		   (command.equals("attack") && (!isHuman && !hasAttacked && hasMoved)) ||
+		   (command.equals("end") && hasMoved)))
+		{
+			System.out.println("Comando non valido! Reinserisci il comando");
+			command = in.nextLine();
+		}
+		return command;
+	}*/
+
+	private void printCards() {
+		for(int i = 0; i < controller.getMyCharacter().getBagSize(); i++){
+			Image img = hashCard.get(controller.getMyCharacter().getCardFromBag(i).toString());
+			this.printSingleCard(img,i);
+		}
+	}
+
+	private void printSingleCard(Image img, int i) {
+		g.drawImage(img, this.mapMarginWidth + this.mapWidth + 20, this.mapMarginHeight + i*(img.getHeight(null)+40), null);
 	}
 
 	public void notifyOthersTurn(String playerTurn) {
@@ -165,13 +251,22 @@ public class GameGUI implements GameInterface,MouseListener {
 		for (int i=0;i<graphicMap.length;i++)
 		{
 			for (j=0;j<graphicMap[i].length;j++){
-				printSector(i,j,graphicMap[i][j]);
+				if (i==myCoordinates.getNumber()-1 && j==Coordinates.getNumberFromLetter(myCoordinates.getLetter()))
+					printSector(i,j,graphicMap[i][j],3);
+				else
+					printSector(i,j,graphicMap[i][j],0);
 			}
 		}
 	}
 
-	private void printSector(int i, int j, SectorName sectorName) {
-		Image img = hashSector.get(sectorName);
+	private void printSector(int i, int j, SectorName sectorName, int type) {
+		Image img;
+		if (type==0)
+			img = hashSector.get(sectorName);
+		else if (type==1)
+			img = hashSelectedSector.get(sectorName);
+		else
+			img = hashMySector.get(sectorName);
 		g.drawImage(img, mapMarginWidth+j*3*lw, mapMarginHeight+lh*(i*2+j%2), 4*lw, 2*lh, null);
 		if (sectorName.equals(SectorName.DANGEROUS) || sectorName.equals(SectorName.SAFE)){
 			String num = String.valueOf(i+1);
@@ -193,31 +288,34 @@ public class GameGUI implements GameInterface,MouseListener {
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		int x = e.getX()-this.mapMarginWidth;
-		int y = e.getY()-this.mapMarginHeight;
-	    int q = (int) (x/lw)/3;
-	    int r = (int) (y/lh-q%2)/2;
-	    if (x>0 && x<mapWidth && y>0 && y<mapHeight+lh)
-	    {
-	    	if ((x/lw)%3==0) 
-	    		if (((y/lh)%2==1 && q%2==0) || ((y/lh)%2==0 && q%2==1))
-	    		{
-	    			if (x%lw==0 || (float)(y%lh)/(x%lw)>Math.sqrt(3))
-	    			{
-	    				q--;
-	    				r+=1-q%2;
-	    			}
-	    		}
-	    		else{
-	    			if (x%lw==0 || (float)(-y%lh+lh)/(x%lw)>Math.sqrt(3))
-	    			{
-	    				q--;
-	    				r-=q%2;
-	    			}	
-	    		}
-	    	JOptionPane.showMessageDialog(null,Coordinates.getLetterFromNumber(q) + " " + (r*1+1));
-	    }
+		if (controller.isMyTurn()){
+			int x = e.getX()-this.mapMarginWidth;
+			int y = e.getY()-this.mapMarginHeight;
+			int q = (int) (x/lw)/3;
+			int r = (int) (y/lh-q%2)/2;
+			if (x>0 && x<mapWidth && y>0 && y<mapHeight+lh)
+			{
+				if ((x/lw)%3==0) 
+					if (((y/lh)%2==1 && q%2==0) || ((y/lh)%2==0 && q%2==1))
+					{
+						if (x%lw==0 || (float)(y%lh)/(x%lw)>Math.sqrt(3))
+						{
+							q--;
+							r+=1-q%2;
+						}
+					}
+					else{
+						if (x%lw==0 || (float)(-y%lh+lh)/(x%lw)>Math.sqrt(3))
+						{
+							q--;
+							r-=q%2;
+						}	
+					}
+				this.chooseMove(new Coordinates(Coordinates.getLetterFromNumber(q),r+1));
+			}
+		}
 	}
+
 
 	@Override
 	public void mousePressed(MouseEvent e) {
@@ -300,6 +398,14 @@ public class GameGUI implements GameInterface,MouseListener {
 	public void printTurnNumber(int turnNumber) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public void changedTurn() {
+		if (controller.isMyTurn())
+			managesMyTurn();
+		else
+			notifyOthersTurn(controller.getCurrentPlayer());
 	}
 
 

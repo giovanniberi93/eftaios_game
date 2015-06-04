@@ -15,7 +15,7 @@ import it.polimi.ingsw.beribinaghi.playerPackage.Character;
 import it.polimi.ingsw.beribinaghi.playerPackage.Player;
 
 /**
- * @author damianobinaghi
+ * This class manage all communication with client during the game using RMI
  *
  */
 public class ServerRMISession extends GameSessionServerSide implements RemoteGameSession {
@@ -25,6 +25,7 @@ public class ServerRMISession extends GameSessionServerSide implements RemoteGam
 	private Boolean notificableNewTurn;
 	private ArrayList<String> update = new ArrayList<String>();
 	private String playerTurn;
+	private boolean spotted = false;
 
 	public ServerRMISession(Player player) {
 		this.player = player;
@@ -43,7 +44,7 @@ public class ServerRMISession extends GameSessionServerSide implements RemoteGam
 		playerTurn = match.matchDataUpdate.getCurrentPlayer().getUser();
 		Player oldCurrentPlayer = match.matchDataUpdate.getOldCurrentPlayer();
 		if(!(oldCurrentPlayer == null) && !(this.player.getUser().equals(oldCurrentPlayer.getUser()))){
-			//TODO end
+			update.add("end");
 		}
 	}
 
@@ -111,6 +112,7 @@ public class ServerRMISession extends GameSessionServerSide implements RemoteGam
 			break;
 		case "attack" :
 			match.attack();
+			update.add("attack");
 			break;
 		case "sedatives" :
 			match.sedatives();
@@ -120,6 +122,7 @@ public class ServerRMISession extends GameSessionServerSide implements RemoteGam
 			break;
 		case "spotlight" :
 			match.spotlight(coordinates);
+			update.add("spotted");
 			break;
 		}
 	}
@@ -177,15 +180,28 @@ public class ServerRMISession extends GameSessionServerSide implements RemoteGam
 	}
 
 	@Override
-	public Card getUsedCard() throws RemoteException {
-		if (update.remove("card"))
-			return match.getLastUsedCard();
+	public ObjectCard getUsedCard() throws RemoteException {
+		if (update.remove("card")){
+			ObjectCard card = match.getLastUsedCard();
+			if(card.toString().equals("spotlight"))
+				spotted  = true;
+			return card;
+		}
 		return null;
 	}
 
 	@Override
 	public ArrayList<String> getSpottedPlayer() throws RemoteException {
-		// TODO Auto-generated method stub
+		if (update.remove("spotted")){
+			ArrayList<Player> spotted = match.getSpotted();
+			ArrayList<String> result = new ArrayList<String>();
+			for(Player player : spotted){
+				Coordinates playerCoordinates = player.getCharacter().getCurrentPosition();
+				result.add(player.getUser());
+				result.add(playerCoordinates.toString());
+			}
+			return result;
+		}
 		return null;
 	}
 
@@ -203,21 +219,31 @@ public class ServerRMISession extends GameSessionServerSide implements RemoteGam
 	@Override
 	public ArrayList<String> getAttackResult() throws RemoteException {
 		ArrayList<String> attackResult = new ArrayList<String>();
+		attackResult.add(match.matchDataUpdate.getCurrentPlayer().getCharacter().getCurrentPosition().toString());
 		if (update.remove("attack")){
 			ArrayList<Player> killed = match.getKilled();
-			attackResult.add("killed=");
+			attackResult.add("killed");
 			for(Player player : killed){
 				attackResult.add(player.getUser());
 				attackResult.add(player.getCharacter().toString());
 			}
 			ArrayList<Player> survived = match.getSurvived();
-			attackResult.add("survived=");
+			attackResult.add("survived");
 			for(Player player : survived){
 				attackResult.add(player.getUser());
 				attackResult.add(player.getCharacter().toString());
 			}
 		}
 		return attackResult;
+	}
+
+	@Override
+	public Coordinates getSpottedCoordinates() throws RemoteException {
+		if (spotted){
+			spotted = false;
+			return match.getSpotlightCoordinates();
+		}
+		return null;
 	}
 
 }
