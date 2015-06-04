@@ -56,7 +56,7 @@ public class Match {
 	private boolean successfulEscape;
 	private Coordinates spotlightCoordinates;
 	
-	public MatchDataUpdate matchDataUpdate;
+	private MatchDataUpdate matchDataUpdate;
 	
 	
 	/**
@@ -74,10 +74,10 @@ public class Match {
 		Collections.shuffle(players);
 		currentPlayerIndex = 0;
 		firstPlayerIndex = 0;
-		turnNumber = 0;
-		matchDataUpdate = new MatchDataUpdate(players.get(currentPlayerIndex));
+		turnNumber = 1;
+		setMatchDataUpdate(new MatchDataUpdate(players.get(currentPlayerIndex)));
 		for (GameSessionServerSide gameSession: sessions)
-			matchDataUpdate.addObserver(gameSession);
+			getMatchDataUpdate().addObserver(gameSession);
 		sendMap();
 		assignCharacter(players);
 		setInitialPositions(players);
@@ -104,6 +104,11 @@ public class Match {
 	}
 	
 	
+	public ShallopsDeck getShallopsDeck() {
+		return shallopsDeck;
+	}
+
+
 	/**
 	 * randomly assign a character to each player
 	 * @param players arrayList of players
@@ -162,7 +167,7 @@ public class Match {
 	 * start match
 	 */
 	public void start(){
-		matchDataUpdate.start();
+		getMatchDataUpdate().start();
 	}
 
 	/**
@@ -171,38 +176,41 @@ public class Match {
 	 * @return an arrayList with the card picked from the deck associated to the destination sector and the eventually found objectCard
 	 */
 	public ArrayList<Card> move(Coordinates destinationCoordinates){
-		Player currentPlayer = matchDataUpdate.getCurrentPlayer();
+		Player currentPlayer = getMatchDataUpdate().getCurrentPlayer();
 		ArrayList<Card> allCards = new ArrayList<Card>();
 		
 		currentPlayer.getCharacter().setCurrentPosition(destinationCoordinates);
-		if(searchUsedObjectCard(new Sedatives())){
-			allCards.add(new NothingToPick());
+		SectorCard pickedCard = map.getSector(destinationCoordinates).pickFromAssociatedDeck();
+		if(pickedCard instanceof ShallopCard){
+			ShallopCard shallopCard = (ShallopCard) pickedCard;
+			allCards.add(pickedCard);
+			if(!(shallopCard.isDamaged())){
+				if(players.get(firstPlayerIndex).getUser().equals(currentPlayer.getUser())){
+					firstPlayerIndex = getNextValidPlayerIndex();
+					turnNumber--;
+				}
+				successfulEscape = true;
+				currentPlayer.getCharacter().setCurrentPosition(null);
+			}
+			else
+				successfulEscape = false;
+			getMatchDataUpdate().setEscaped();
+			this.finishTurn();			//TODO sicuri?
 		}
 		else{
-			SectorCard pickedCard = map.getSector(destinationCoordinates).pickFromAssociatedDeck();
-			allCards.add(pickedCard);
-			if(pickedCard.containsObject() && !objectsDeck.isEmpty()){
-				ObjectCard objectCard = this.objectsDeck.pickCard();
-				if(objectCard instanceof Defense)
-					currentPlayer.getCharacter().addCardToBag(objectCard);
-				allCards.add(objectCard);
+			if(searchUsedObjectCard(new Sedatives())){
+				allCards.add(new NothingToPick());
 			}
-			if(pickedCard instanceof ShallopCard){
-				ShallopCard shallopCard = (ShallopCard) pickedCard;
-				if(!(shallopCard.isDamaged())){
-					if(players.get(firstPlayerIndex).getUser().equals(currentPlayer.getUser())){
-						firstPlayerIndex++;
-						turnNumber--;
-					}
-					successfulEscape = true;
-					this.finishTurn();			//TODO sicuri?
+			else{
+				allCards.add(pickedCard);
+				if(pickedCard.containsObject() && !objectsDeck.isEmpty()){
+					ObjectCard objectCard = this.objectsDeck.pickCard();
+					if(objectCard instanceof Defense)
+						currentPlayer.getCharacter().addCardToBag(objectCard);
+					allCards.add(objectCard);
 				}
-				else
-					successfulEscape = false;
-				matchDataUpdate.setEscaped();
 			}
 		}
-		
 		return allCards;
 	}
 		
@@ -215,33 +223,49 @@ public class Match {
 		HumanCharacter human;
 		
 		if(turnNumber >= App.NUMBEROFTURNS)
-			return false;
+			return true;
 		for(Player player: players)
 			if(player.getCharacter().getSide() == SideName.HUMAN){
 				human = (HumanCharacter) player.getCharacter();
-				if(human.isAlive() == true && human.isEscaped() == false)		//TODO rimetti isalive
+				if(human.getCurrentPosition() != null)		//TODO rimetti isalive
 					remainingHumans++;
 			}
 		return (remainingHumans == 0);
 	}
 
+	
+	
+	public void setTurnNumber(int turnNumber) {
+		this.turnNumber = turnNumber;
+	}
+
+
 	/**
 	 * Is called from currentPlayer when he finishes his turn; sets the new currentPlayer
 	 */
 	public void finishTurn(){
-		if(currentPlayerIndex == players.size()-1)
-			currentPlayerIndex = 0;
-		else currentPlayerIndex++;	
 		if(!isFinished()){
+			currentPlayerIndex = getNextValidPlayerIndex();
 			if(currentPlayerIndex == firstPlayerIndex)
 				turnNumber++;
-			matchDataUpdate.clear(players.get(currentPlayerIndex));
+			getMatchDataUpdate().clear(players.get(currentPlayerIndex));
 		}
-			
-		
 		else
-			matchDataUpdate.setMatchFinished();
+			getMatchDataUpdate().setMatchFinished();
 	}
+
+	public int getNextValidPlayerIndex() {
+		int index = currentPlayerIndex;
+		do{
+			if(index == players.size()-1)
+				index = 0;
+			else 
+				index++;
+		}
+		while(players.get(index).getCharacter().getCurrentPosition() == null);
+		return index;
+	}
+
 
 	public Map getMap() {
 		return map;
@@ -259,7 +283,7 @@ public class Match {
 
 
 	public void noise(Coordinates noiseCoordinates){
-		matchDataUpdate.setNoiseCoordinates();
+		getMatchDataUpdate().setNoiseCoordinates();
 	}
 	
 	public void spotlight(Coordinates selectedCoordinates){ //TODO Qua la cosa di spootlight
@@ -271,7 +295,7 @@ public class Match {
 		}
 		spotlightCoordinates = selectedCoordinates;
 		useAndSignalObjectCard(new Spotlight());
-		matchDataUpdate.setSpottedPlayers();
+		getMatchDataUpdate().setSpottedPlayers();
 	}
 	
 	public void discard(ObjectCard discardedCard){
@@ -288,7 +312,7 @@ public class Match {
 	public void attack(){
 		Player analyzedPlayer;
 	
-		Player currentPlayer = matchDataUpdate.getCurrentPlayer();
+		Player currentPlayer = getMatchDataUpdate().getCurrentPlayer();
 		for(int i = 0; i < players.size(); i++){
 			if(i != this.currentPlayerIndex){
 				analyzedPlayer = players.get(i);
@@ -297,10 +321,10 @@ public class Match {
 						this.survived.add(analyzedPlayer);
 					else{
 						this.killed.add(analyzedPlayer);
-						if(i == firstPlayerIndex)
-							firstPlayerIndex++;
 						analyzedPlayer.getCharacter().setAlive(false);
 						analyzedPlayer.getCharacter().setCurrentPosition(null);
+						if(i == firstPlayerIndex)
+							firstPlayerIndex = getNextValidPlayerIndex();
 					}	
 				}
 			}
@@ -309,7 +333,7 @@ public class Match {
 			useAndSignalObjectCard(new Attack());
 
 		}
-		matchDataUpdate.setAttackOutcome();
+		getMatchDataUpdate().setAttackOutcome();
 	}
 	
 	public void teleport(){
@@ -329,10 +353,10 @@ public class Match {
 		useAndSignalObjectCard(new Sedatives());
 	}
 
-	private void useAndSignalObjectCard(ObjectCard card){
+	public void useAndSignalObjectCard(ObjectCard card){
 		usedCards.add(card);
 		objectsDeck.addToDiscardPile(card);
-		matchDataUpdate.setUsedObjectCard();
+		getMatchDataUpdate().setUsedObjectCard();
 	}
 
 	public String getMatchName() {
@@ -357,6 +381,16 @@ public class Match {
 
 	public void setNoiseCoordinates(Coordinates noiseCoordinates) {
 		this.noiseCoordinates = noiseCoordinates;
+	}
+
+
+	public MatchDataUpdate getMatchDataUpdate() {
+		return matchDataUpdate;
+	}
+
+
+	private void setMatchDataUpdate(MatchDataUpdate matchDataUpdate) {
+		this.matchDataUpdate = matchDataUpdate;
 	}
 
 	

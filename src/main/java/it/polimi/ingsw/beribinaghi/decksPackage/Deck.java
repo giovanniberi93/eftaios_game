@@ -42,6 +42,12 @@ public abstract class Deck {
 	public void addToDiscardPile (Card card){	
 			discardPile.add(card);
 		}
+
+	public ArrayList<Card> getValidCards() {
+		return validCards;
+	}
+	
+	
 	}
 
 

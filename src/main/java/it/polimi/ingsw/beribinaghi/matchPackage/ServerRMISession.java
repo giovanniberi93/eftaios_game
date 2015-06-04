@@ -41,8 +41,8 @@ public class ServerRMISession extends GameSessionServerSide implements RemoteGam
 	@Override
 	protected void notifyBeginTurn() {
 		notificableNewTurn = true;
-		playerTurn = match.matchDataUpdate.getCurrentPlayer().getUser();
-		Player oldCurrentPlayer = match.matchDataUpdate.getOldCurrentPlayer();
+		playerTurn = match.getMatchDataUpdate().getCurrentPlayer().getUser();
+		Player oldCurrentPlayer = match.getMatchDataUpdate().getOldCurrentPlayer();
 		if(!(oldCurrentPlayer == null) && !(this.player.getUser().equals(oldCurrentPlayer.getUser()))){
 			update.add("end");
 		}
@@ -100,7 +100,7 @@ public class ServerRMISession extends GameSessionServerSide implements RemoteGam
 	@Override
 	public void noise(Coordinates coordinates) throws RemoteException {
 		match.setNoiseCoordinates(coordinates);
-		match.matchDataUpdate.setNoiseCoordinates();
+		match.getMatchDataUpdate().setNoiseCoordinates();
 	}
 
 	@Override
@@ -144,14 +144,14 @@ public class ServerRMISession extends GameSessionServerSide implements RemoteGam
 
 	@Override
 	protected void notifyNoise() {
-		if(!match.matchDataUpdate.getCurrentPlayer().equals(this.player)){
+		if(!match.getMatchDataUpdate().getCurrentPlayer().equals(this.player)){
 			update.add("noise");
 		}
 	}
 
 	@Override
 	protected void notifyEscape() {
-		if(!match.matchDataUpdate.getCurrentPlayer().equals(this.player)){
+		if(!match.getMatchDataUpdate().getCurrentPlayer().equals(this.player)){
 			update.add("escape");
 		}
 	}
@@ -175,7 +175,7 @@ public class ServerRMISession extends GameSessionServerSide implements RemoteGam
 
 	@Override
 	public void finishTurn() throws RemoteException {
-		match.matchDataUpdate.setOldCurrentPlayer(this.player);
+		match.getMatchDataUpdate().setOldCurrentPlayer(this.player);
 		match.finishTurn(); 
 	}
 
@@ -209,7 +209,7 @@ public class ServerRMISession extends GameSessionServerSide implements RemoteGam
 	public ArrayList<String> getEscapeResult() throws RemoteException {
 		ArrayList<String> escapeResult = new ArrayList<String>();
 		if (update.remove("escape")){
-			Coordinates shallopPosition = match.matchDataUpdate.getCurrentPlayer().getCharacter().getCurrentPosition();
+			Coordinates shallopPosition = match.getMatchDataUpdate().getCurrentPlayer().getCharacter().getCurrentPosition();
 			escapeResult.add(""+match.isSuccessfulEscape());
 			escapeResult.add(shallopPosition.toString());
 		}

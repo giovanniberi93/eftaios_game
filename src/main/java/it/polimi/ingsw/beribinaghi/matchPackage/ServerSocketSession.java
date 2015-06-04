@@ -43,8 +43,8 @@ public class ServerSocketSession extends GameSessionServerSide implements Runnab
  
 	@Override
 	protected void notifyBeginTurn() {
-		Player currentPlayer = match.matchDataUpdate.getCurrentPlayer();
-		Player oldCurrentPlayer = match.matchDataUpdate.getOldCurrentPlayer();
+		Player currentPlayer = match.getMatchDataUpdate().getCurrentPlayer();
+		Player oldCurrentPlayer = match.getMatchDataUpdate().getOldCurrentPlayer();
 		if(!(oldCurrentPlayer == null) && !(this.player.getUser().equals(oldCurrentPlayer.getUser()))){
 			out.println("end");
 			out.flush();
@@ -89,7 +89,7 @@ public class ServerSocketSession extends GameSessionServerSide implements Runnab
 			line = in.nextLine();
 			command = line.split("=");
 		}
-		match.matchDataUpdate.setOldCurrentPlayer(this.player);
+		match.getMatchDataUpdate().setOldCurrentPlayer(this.player);
 		match.finishTurn();  
 	}
 	
@@ -130,7 +130,7 @@ public class ServerSocketSession extends GameSessionServerSide implements Runnab
 		String[] noise = in.nextLine().split("=");		//aspetto il rumore comunicato dall'altra parte!
 		if(!noise[1].equals("nothing")){
 			match.setNoiseCoordinates(Coordinates.stringToCoordinates(noise[1]));
-			match.matchDataUpdate.setNoiseCoordinates();
+			match.getMatchDataUpdate().setNoiseCoordinates();
 		}
 	}
 
@@ -143,7 +143,7 @@ public class ServerSocketSession extends GameSessionServerSide implements Runnab
 
 	@Override
 	protected void notifyCard() {
-		if(!match.matchDataUpdate.getCurrentPlayer().equals(this.player)){
+		if(!match.getMatchDataUpdate().getCurrentPlayer().equals(this.player)){
 			String usedCard = match.getLastUsedCard().toString();
 			out.println("card="+usedCard);
 			out.flush();
@@ -170,7 +170,7 @@ public class ServerSocketSession extends GameSessionServerSide implements Runnab
 
 	@Override
 	protected void notifyNoise() {
-		if(!match.matchDataUpdate.getCurrentPlayer().equals(this.player)){
+		if(!match.getMatchDataUpdate().getCurrentPlayer().equals(this.player)){
 			Coordinates noiseCoordinates = match.getNoiseCoordinates();
 			String noise = new String("noise="+noiseCoordinates.toString());
 			out.println(noise);
@@ -182,8 +182,8 @@ public class ServerSocketSession extends GameSessionServerSide implements Runnab
 
 	@Override
 	protected void notifyEscape() {
-		if(!match.matchDataUpdate.getCurrentPlayer().equals(this.player)){
-			Coordinates shallopPosition = match.matchDataUpdate.getCurrentPlayer().getCharacter().getCurrentPosition();
+		if(!match.getMatchDataUpdate().getCurrentPlayer().equals(this.player)){
+			Coordinates shallopPosition = match.getMatchDataUpdate().getCurrentPlayer().getCharacter().getCurrentPosition();
 			String escapeResult = new String("escaped="+match.isSuccessfulEscape()+"="+shallopPosition);
 			out.println(escapeResult);
 			out.flush();
@@ -195,7 +195,7 @@ public class ServerSocketSession extends GameSessionServerSide implements Runnab
 	protected void notifyAttackResult() {
 		String attackResult;
 		ArrayList<Player> killed = match.getKilled();
-		Coordinates attackPosition = match.matchDataUpdate.getCurrentPlayer().getCharacter().getCurrentPosition();
+		Coordinates attackPosition = match.getMatchDataUpdate().getCurrentPlayer().getCharacter().getCurrentPosition();
 		attackResult = "attack=" + attackPosition+ "=";
 		attackResult += "killed=";		
 		for(Player player : killed)
