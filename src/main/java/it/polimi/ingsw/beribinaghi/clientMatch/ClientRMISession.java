@@ -21,7 +21,7 @@ import it.polimi.ingsw.beribinaghi.playerPackage.Character;
 public class ClientRMISession implements GameSessionClientSide {
 	private RemoteGameSession session;
 	private MatchController controller;
-	private long whaitNewNotify = 100;
+	private long waitNewNotify = 100;
 
 	public ClientRMISession(RemoteGameSession remoteGameSession) {
 		this.session = remoteGameSession;
@@ -36,7 +36,7 @@ public class ClientRMISession implements GameSessionClientSide {
 	public synchronized Character getCharacter() {
 		try {
 			while (!session.isCharacterNotificable())
-				this.wait(this.whaitNewNotify);
+				this.wait(this.waitNewNotify);
 			return session.getCharacter();
 		} catch (RemoteException e) {
 		} catch (InterruptedException e) {
@@ -48,7 +48,7 @@ public class ClientRMISession implements GameSessionClientSide {
 	public String listenTurn() {
 		try {
 			while (!session.isTurnNotificable())
-				this.wait(this.whaitNewNotify);
+				this.wait(this.waitNewNotify);
 			return session.getPlayerTurn();
 		} catch (RemoteException e) {
 		} catch (InterruptedException e) {
@@ -60,7 +60,7 @@ public class ClientRMISession implements GameSessionClientSide {
 	public synchronized Map getMap() {
 		try {
 			while (!session.isMapNotificable())
-				this.wait(this.whaitNewNotify);
+				this.wait(this.waitNewNotify);
 			return session.getMap();
 		} catch (RemoteException e) {
 		} catch (InterruptedException e) {
@@ -114,4 +114,26 @@ public class ClientRMISession implements GameSessionClientSide {
 		
 	}
 
+	@Override
+	public void signalDiscardedObjectCard(ObjectCard discarded) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	
+	
+		
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 }

@@ -41,6 +41,8 @@ public abstract class GameSessionServerSide implements Observer {
 		else if (line.equals("endMatch")){
 			this.notifyEndMatch();
 		}
+		else if (line.equals("discarded"))
+			this.notifyDiscardedObject();
 	}
 
 	protected void myTurn() {}
@@ -61,6 +63,14 @@ public abstract class GameSessionServerSide implements Observer {
 	 * @param spottedPlayers contains the usernames of the spotted players and the coordinates of their position;
 	 */
 	protected abstract void notifySpotted();
+
+	/**
+	 * Notifies to all players that currentPlayer has discarded an object
+	 */
+	protected void notifyDiscardedObject() {
+		// TODO Auto-generated method stub
+		
+	}
 
 	/**
 	 * Notifies to all players the position of the noise signaled by the current player with the string "noise=coordinatesLetter=coordinatesNumber"
@@ -95,4 +105,10 @@ public abstract class GameSessionServerSide implements Observer {
 	 * @param map is a Map object representing the match	 
 	 * */
 	public abstract void sendMap(Map map);
+
+	/**
+	 * create an objectCard from its name, adds it to the discardPile of objectsDeck, and signals the discarding to all gamesessions
+	 * @param discardedCardName is the name of the discarded card 
+	 */
+	protected abstract void discard(String discardedCardName);
 }

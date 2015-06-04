@@ -1,6 +1,7 @@
 package it.polimi.ingsw.beribinaghi.matchPackage;
 
 import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.Card;
+import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.ObjectCard;
 import it.polimi.ingsw.beribinaghi.gameNames.SectorName;
 import it.polimi.ingsw.beribinaghi.mapPackage.Coordinates;
 import it.polimi.ingsw.beribinaghi.mapPackage.Map;
@@ -80,8 +81,10 @@ public class ServerSocketSession extends GameSessionServerSide implements Runnab
 		while(!command[0].equals("end")){
 			if(command[0].equals("move"))
 				executeMove(command[1]);	
-			else 
-				executeCardAction(command);
+			else if (command[0].equals("discarded"))
+					discard(command[1]);
+				else 
+					executeCardAction(command);
 			line = in.nextLine();
 			command = line.split("=");
 		}
@@ -89,8 +92,17 @@ public class ServerSocketSession extends GameSessionServerSide implements Runnab
 		match.finishTurn();  
 	}
 	
+	@Override
+	protected void discard(String discardedCardName) {
+		ObjectCard discarded = ObjectCard.stringToCard(discardedCardName);
+		match.getObjectsDeck().addToDiscardPile(discarded);
+		match.getMatchDataUpdate().setDiscardedObject();
+	}
+
 	private void executeCardAction(String[] command) {
 		switch(command[0]){
+		case "discarded":
+			match.getMatchDataUpdate().setDiscardedObject();
 		case "teleport" : 
 			match.teleport();
 			break;
@@ -111,6 +123,14 @@ public class ServerSocketSession extends GameSessionServerSide implements Runnab
 		}
 	}
 
+
+	@Override
+	protected void notifyDiscardedObject() {
+		if(!match.getMatchDataUpdate().getCurrentPlayer().equals(this.player)){
+			out.println("discarded");
+			out.flush();
+			}
+	}
 
 	private void executeMove(String coordinatesString){
 		ArrayList<Card> pickedCards = new ArrayList<Card>();
@@ -151,7 +171,7 @@ public class ServerSocketSession extends GameSessionServerSide implements Runnab
 	}
 
 
-	@Override //TODO Secondo me è sbagliato
+	@Override 
 	protected void notifySpotted() {
 		ArrayList<Player> spotted = match.getSpotted();
 		String result = "spotlight=";

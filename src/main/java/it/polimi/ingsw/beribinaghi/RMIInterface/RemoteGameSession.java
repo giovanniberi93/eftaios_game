@@ -109,4 +109,5 @@ public interface RemoteGameSession extends Remote {
 	 * after that contains "survived=" follow by the user name and the character name of player survived
 	 */
 	public ArrayList<String> getAttackResult() throws RemoteException;
+	
 }

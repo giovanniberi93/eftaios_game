@@ -108,6 +108,11 @@ public class Match {
 		return shallopsDeck;
 	}
 
+	
+	public ObjectsDeck getObjectsDeck() {
+		return objectsDeck;
+	}
+
 
 	/**
 	 * randomly assign a character to each player
@@ -227,7 +232,7 @@ public class Match {
 		for(Player player: players)
 			if(player.getCharacter().getSide() == SideName.HUMAN){
 				human = (HumanCharacter) player.getCharacter();
-				if(human.getCurrentPosition() != null)		//TODO rimetti isalive
+				if(human.getCurrentPosition() != null)
 					remainingHumans++;
 			}
 		return (remainingHumans == 0);
@@ -262,7 +267,7 @@ public class Match {
 			else 
 				index++;
 		}
-		while(players.get(index).getCharacter().getCurrentPosition() == null);
+		while(players.get(index).getCharacter().getCurrentPosition() == null && !(index==currentPlayerIndex));
 		return index;
 	}
 
@@ -286,7 +291,7 @@ public class Match {
 		getMatchDataUpdate().setNoiseCoordinates();
 	}
 	
-	public void spotlight(Coordinates selectedCoordinates){ //TODO Qua la cosa di spootlight
+	public void spotlight(Coordinates selectedCoordinates){
 		ArrayList<Coordinates> lightedCoordinates = map.adiacentCoordinates(selectedCoordinates);
 		for(Coordinates analyzedCoordinates : lightedCoordinates){
 			for(Player analyzedPlayer : players)
