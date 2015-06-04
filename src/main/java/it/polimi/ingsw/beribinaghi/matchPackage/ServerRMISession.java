@@ -219,7 +219,7 @@ public class ServerRMISession extends GameSessionServerSide implements RemoteGam
 	@Override
 	public ArrayList<String> getAttackResult() throws RemoteException {
 		ArrayList<String> attackResult = new ArrayList<String>();
-		attackResult.add(match.matchDataUpdate.getCurrentPlayer().getCharacter().getCurrentPosition().toString());
+		attackResult.add(match.getMatchDataUpdate().getCurrentPlayer().getCharacter().getCurrentPosition().toString());
 		if (update.remove("attack")){
 			ArrayList<Player> killed = match.getKilled();
 			attackResult.add("killed");
