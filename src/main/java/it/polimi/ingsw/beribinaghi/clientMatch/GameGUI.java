@@ -466,5 +466,11 @@ public class GameGUI implements GameInterface,MouseListener {
 			notifyOthersTurn(controller.getCurrentPlayer());
 	}
 
+	@Override
+	public void showMatchResults(String[] command) {
+		// TODO Auto-generated method stub
+		
+	}
+
 
 }

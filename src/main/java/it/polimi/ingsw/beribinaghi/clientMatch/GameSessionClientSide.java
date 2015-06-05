@@ -69,4 +69,10 @@ public interface GameSessionClientSide {
 	 * @param discarded 
 	 */
 	public void signalDiscardedObjectCard(ObjectCard discarded);
+
+	public boolean isMatchFinished();
+
+	public void listenMatchResult();
+
+	public void listenEscapeResult();
 }

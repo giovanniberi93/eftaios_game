@@ -223,6 +223,24 @@ public class ClientRMISession implements GameSessionClientSide {
 		
 	}
 
+	@Override
+	public boolean isMatchFinished() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void listenMatchResult() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void listenEscapeResult() {
+		// TODO Auto-generated method stub
+		
+	}
+
 
 	
 	

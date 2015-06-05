@@ -23,6 +23,7 @@ import it.polimi.ingsw.beribinaghi.mapPackage.Map;
 import it.polimi.ingsw.beribinaghi.playerPackage.AlienCharacter;
 import it.polimi.ingsw.beribinaghi.playerPackage.Character;
 import it.polimi.ingsw.beribinaghi.playerPackage.HumanCharacter;
+import it.polimi.ingsw.beribinaghi.playerPackage.Player;
 
 import java.io.ObjectInputStream;
 import java.io.PrintWriter;
@@ -176,6 +177,7 @@ public class ClientSocketSession implements GameSessionClientSide {
 		out.println("end");
 		out.flush();		
 	}
+	
 
 	@Override
 	public void noise(Coordinates noiseCoordinates) {
@@ -259,7 +261,7 @@ public class ClientSocketSession implements GameSessionClientSide {
 					analyzeAndShowAttack(command);
 					break;
 				case "endMatch":
-					// TODO boh.
+					controller.getGraphicInterface().showMatchResults(command);
 					break;
 				case "spotlight":
 					analyzeAndShowSpotlight(command);
@@ -298,6 +300,36 @@ public class ClientSocketSession implements GameSessionClientSide {
 		}
 		return killed;
 			
+	}
+
+	@Override
+	public boolean isMatchFinished() {
+		String matchStatus = in.nextLine();
+
+		if(matchStatus.equals("endMatch"))
+			 return true;
+		return false;
+	}
+
+	@Override
+	public void listenMatchResult() {
+		String matchResult = in.nextLine();
+		String[] resultStrings = matchResult.split("=");
+		controller.getGraphicInterface().showMatchResults(resultStrings);
+	}
+
+	@Override
+	public void listenEscapeResult() {
+		boolean result;
+		
+		String[] command = in.nextLine().split("=");
+		if(command[1].equals("true"))
+			result = true;
+		else
+			result = false;
+		Coordinates coord = null;
+		coord = Coordinates.stringToCoordinates(command[2]);
+		controller.getGraphicInterface().showEscapeResult(result, coord);
 	}
 
 

@@ -248,11 +248,6 @@ public class ServerRMISession extends GameSessionServerSide implements RemoteGam
 		return null;
 	}
 
-	@Override
-	protected void discard(String discardedCardName) {
-		// TODO Auto-generated method stub
-		
-	}
 
 
 }
