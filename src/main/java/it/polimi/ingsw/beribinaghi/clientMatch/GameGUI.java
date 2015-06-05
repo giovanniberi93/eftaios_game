@@ -8,6 +8,7 @@ import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.Card;
 import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.ObjectCard;
 import it.polimi.ingsw.beribinaghi.gameNames.SectorName;
 import it.polimi.ingsw.beribinaghi.gameNames.CharacterName;
+import it.polimi.ingsw.beribinaghi.gameNames.SideName;
 import it.polimi.ingsw.beribinaghi.mapPackage.Coordinates;
 import it.polimi.ingsw.beribinaghi.mapPackage.Map;
 import it.polimi.ingsw.beribinaghi.playerPackage.Character;
@@ -26,7 +27,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import javax.imageio.ImageIO;
-import javax.swing.JOptionPane;
 import javax.swing.Timer;
 
 /**
@@ -34,6 +34,9 @@ import javax.swing.Timer;
  *
  */
 public class GameGUI implements GameInterface,MouseListener {
+	private static int imgx = 90;
+	private static int imgy = 135;
+	private static int separate = 85;
 	private MatchController controller;
 	private GUI frame;
 	private Graphics g;
@@ -49,10 +52,15 @@ public class GameGUI implements GameInterface,MouseListener {
 	private HashMap<SectorName,Image> hashMySector = new HashMap<SectorName,Image>();
 	private HashMap<String,Image> hashCharacter = new HashMap<String,Image>();
 	private HashMap<String,Image> hashCard = new HashMap<String,Image>();
+	private HashMap<String,Image> hashLogo = new HashMap<String,Image>();
+	private Image imgAttackButton;
+	private Image imgFinishTurn;
 	private ArrayList<Coordinates> posShallop = new ArrayList<Coordinates>();
 	private boolean hasMoved;
 	private boolean selectany;
 	private WatcherNoiseCoordinatesSelector selector;
+	private boolean hasAttacked;
+	private boolean isHuman;
 	
 	
 	public GameGUI(GUI frame) {
@@ -64,11 +72,11 @@ public class GameGUI implements GameInterface,MouseListener {
 	}
 	
 	private void printBegin() {
-		mapWidth = frame.getWidth()/4*3;
+		mapWidth = frame.getWidth()/10*7;
 		lw = mapWidth/(Map.WIDTH*3+1);
 		lh =  (int) (lw*(Math.sqrt(3)));
 		mapHeight = lh*2*Map.HEIGHT;
-		mapMarginWidth = (frame.getWidth()-mapWidth)/2;
+		mapMarginWidth =20;
 		mapMarginHeight = (frame.getHeight()-mapHeight)/2;
 		try {
 			hashSector.put(SectorName.DANGEROUS, ImageIO.read(new File("media/sector/dangerousSector.png").toURI().toURL()));
@@ -95,15 +103,21 @@ public class GameGUI implements GameInterface,MouseListener {
 			hashMySector.put(SectorName.HUMANBASE, ImageIO.read(new File("media/sector/humanBaseMy.png").toURI().toURL()));
 			hashMySector.put(SectorName.ALIENBASE, ImageIO.read(new File("media/sector/alienBaseMy.png").toURI().toURL()));
 			hashMySector.put(SectorName.SHALLOP, ImageIO.read(new File("media/sector/shallopSectorMy.png").toURI().toURL()));
-			hashCard.put("attack", ImageIO.read(new File("media/character/soldier.png").toURI().toURL()));
-			hashCard.put("teleport", ImageIO.read(new File("media/character/soldier.png").toURI().toURL()));
-			hashCard.put("sedatives", ImageIO.read(new File("media/character/soldier.png").toURI().toURL()));
-			hashCard.put("spotlight", ImageIO.read(new File("media/character/soldier.png").toURI().toURL()));
-			hashCard.put("defense", ImageIO.read(new File("media/character/alien1.png").toURI().toURL()));
-			hashCard.put("adrenaline", ImageIO.read(new File("media/character/alien1.png").toURI().toURL()));
-			hashCard.put("silence", ImageIO.read(new File("media/character/soldier.png").toURI().toURL()));
-			hashCard.put("anySector", ImageIO.read(new File("media/character/alien1.png").toURI().toURL()));
-			hashCard.put("yourSector", ImageIO.read(new File("media/character/soldier.png").toURI().toURL()));
+			hashCard.put("attack", ImageIO.read(new File("media/objectCard/attack.png").toURI().toURL()));
+			hashCard.put("teleport", ImageIO.read(new File("media/objectCard/teleport.png").toURI().toURL()));
+			hashCard.put("sedatives", ImageIO.read(new File("media/objectCard/sedatives.png").toURI().toURL()));
+			hashCard.put("spotlight", ImageIO.read(new File("media/objectCard/spotlight.png").toURI().toURL()));
+			hashCard.put("defense", ImageIO.read(new File("media/objectCard/defense.png").toURI().toURL()));
+			hashCard.put("adrenalin", ImageIO.read(new File("media/objectCard/adrenalin.png").toURI().toURL()));
+			hashCard.put("silence", ImageIO.read(new File("media/sectorCard/silence.png").toURI().toURL()));
+			hashCard.put("anySector", ImageIO.read(new File("media/sectorCard/noiseInEverySector.png").toURI().toURL()));
+			hashCard.put("yourSector", ImageIO.read(new File("media/sectorCard/rumorsInYourSector.png").toURI().toURL()));
+			hashLogo.put("character", ImageIO.read(new File("media/logoCard/characterLogo.png").toURI().toURL()));
+			hashLogo.put("escape", ImageIO.read(new File("media/logoCard/escapeLogo.png").toURI().toURL()));
+			hashLogo.put("object", ImageIO.read(new File("media/logoCard/objectLogo.png").toURI().toURL()));
+			hashLogo.put("sector", ImageIO.read(new File("media/logoCard/sectorLogo.png").toURI().toURL()));
+			imgAttackButton = ImageIO.read(new File("media/attack.png").toURI().toURL());
+			imgFinishTurn = ImageIO.read(new File("media/end.png").toURI().toURL());
 		} catch (IOException e) {
 		}
 	}
@@ -143,6 +157,7 @@ public class GameGUI implements GameInterface,MouseListener {
 				}
 			} else {
 				printMap(controller.getMap(),controller.getMyPosition());
+				printCards();
 				changedTurn();
 			}
 		}	
@@ -165,11 +180,11 @@ public class GameGUI implements GameInterface,MouseListener {
 
 	private void managesMyTurn() {
 		this.hasMoved = false;
+		this.hasAttacked = false;
 		this.selectany = false;
 		g.setColor(Color.WHITE);
 		g.setFont(new Font(frame.getFontName(), Font.BOLD, 24));
-		g.drawString("E' il tuo turno", frame.getWidth()/2-100,30);
-		this.printCards();
+		g.drawString("E' il tuo turno, turno numero " + controller.getTurnNumber(), 20,30);
 		this.printSelectableCoordinates(this.controller.getMyCharacter().getCurrentPosition(),controller.getMyCharacter().getPercorrableDistance());
 	}
 	
@@ -203,55 +218,41 @@ public class GameGUI implements GameInterface,MouseListener {
 	}
 
 
-/*	private String chooseAction(boolean hasMoved, boolean isHuman, boolean hasAttacked) {
-		String command;
-		
-		System.out.println("Scegli azione:");
-		if(!hasMoved){
-			System.out.println("[move] - muovi");
-		}
-		if(isHuman && (controller.getMyCharacter().getBagSize() > 0)){
-			System.out.println("[card] - usa carta oggetto");
-		}
-		if(!isHuman && !hasAttacked && hasMoved){
-			System.out.println("[attack] - attacca");
-		}
-		if(hasMoved){
-			System.out.println("[end] - finisci turno");
-		}
-		command = in.nextLine();
-		while(!((command.equals("move") && !hasMoved) || 
-		   (command.equals("card") && (isHuman && (controller.getMyCharacter().getBagSize() > 0))) ||
-		   (command.equals("attack") && (!isHuman && !hasAttacked && hasMoved)) ||
-		   (command.equals("end") && hasMoved)))
-		{
-			System.out.println("Comando non valido! Reinserisci il comando");
-			command = in.nextLine();
-		}
-		return command;
-	}*/
-
 	private void printCards() {
+		printLogos();
+		this.printSingleCard(hashCharacter.get(controller.getMyCharacter().getName()),0,1,imgx,imgy,0);
 		for(int i = 0; i < controller.getMyCharacter().getBagSize(); i++){
 			Image img = hashCard.get(controller.getMyCharacter().getCardFromBag(i).toString());
-			this.printSingleCard(img,i);
+			this.printSingleCard(img,3,i+1,imgx,imgy,0);
 		}
 	}
 
-	private void printSingleCard(Image img, int i) {
-		g.drawImage(img, this.mapMarginWidth + this.mapWidth + 10, this.mapMarginHeight + i*(img.getHeight(null)+40), null);
+	private void printLogos() {
+		this.printSingleCard(hashLogo.get("character"), 0, 0,separate,separate,(imgy-separate)/2);
+		this.printSingleCard(hashLogo.get("sector"), 1, 0,separate, separate,(imgy-separate)/2);
+		this.printSingleCard(hashLogo.get("escape"), 2, 0,separate, separate,(imgy-separate)/2);
+		this.printSingleCard(hashLogo.get("object"), 3, 0,separate, separate,(imgy-separate)/2);
+	}
+
+	private void printSingleCard(Image img, int i,int j,int dimensionx,int dimensiony,int marginy) {
+		if (i!=4)
+			g.drawImage(img, this.mapMarginWidth+this.mapWidth+j*(dimensionx+20)-20, this.mapMarginHeight + i*(separate+60)+marginy,dimensionx,dimensiony, null);
+		else
+			g.drawImage(img, this.mapMarginWidth+this.mapWidth+j*(dimensionx+20)-20, this.mapMarginHeight + i*(separate+60)-60,dimensionx,dimensiony, null);
 	}
 
 	public void notifyOthersTurn(String playerTurn) {
 		g.setColor(Color.WHITE);
 		g.setFont(new Font(frame.getFontName(), Font.BOLD, 24));
-		g.drawString("Turno di " + playerTurn, frame.getWidth()/2-105,30);
+		g.drawString("Turno di " + playerTurn + ", turno numero " + controller.getTurnNumber(), 20,30);
 	}
 	
 	@Override
 	public void printMap(Map map, Coordinates myCoordinates) {
 		int j;
 		this.map = map;
+		g.setColor(Color.BLACK);
+		g.fillRect(0, 0, frame.getWidth(), frame.getHeight());
 		g.setColor(Color.WHITE);
 		SectorName[][] graphicMap = map.getGraphicMap();
 		for (int i=0;i<graphicMap.length;i++)
@@ -289,8 +290,7 @@ public class GameGUI implements GameInterface,MouseListener {
 			g.setColor(Color.WHITE);
 			g.setFont(new Font(frame.getFontName(), Font.BOLD, 18));
 			g.drawString(""+(posShallop.indexOf(coordinates)+1),mapMarginWidth+j*3*lw+2*lw-3 , mapMarginHeight+lh*(i*2+j%2)+lh+5);
-		}
-			
+		}	
 	}
 
 
@@ -332,6 +332,10 @@ public class GameGUI implements GameInterface,MouseListener {
 		if (map.getSector(coordinates).equals(SectorName.DANGEROUS)){
 			this.selectany = false;
 			this.selector.makeNoise(coordinates);
+			if(!isHuman && !hasAttacked && hasMoved){
+				this.showAttackButton();
+			}
+			this.showEndButton();
 		}
 		
 	}
@@ -362,20 +366,32 @@ public class GameGUI implements GameInterface,MouseListener {
 
 	@Override
 	public void showPickedCards(ArrayList<Card> pickedCards) {
-		int i=0;
 		Card card = pickedCards.get(0);
 		if (!card.toString().equals("nothing")){
 			Image img = hashCard.get(card.toString());
-			g.drawImage(img, this.mapMarginWidth-20-img.getWidth(null), this.mapMarginHeight+i*(img.getHeight(null)+20), null);
-			i++;
+			this.printSingleCard(img, 1, 1, imgx, imgy,0);
 		}
 		if (pickedCards.size()>1){
 			card = pickedCards.get(1);
 			Image img = hashCard.get(card.toString());
-			this.printSingleCard(img,controller.getMyCharacter().getBagSize()-1);
+			this.printSingleCard(img,3,controller.getMyCharacter().getBagSize(),imgx,imgy,0);
+		}
+		if (!pickedCards.get(0).toString().equals("anySector")){
+			if(!isHuman && !hasAttacked && hasMoved ){
+				this.showAttackButton();
+			}
+			this.showEndButton();
 		}
 	}
 
+
+	private void showEndButton() {
+		g.drawImage(this.imgFinishTurn,this.mapMarginWidth+this.mapWidth-100, 15, 40, 40,null);
+	}
+
+	private void showAttackButton() {
+		g.drawImage(this.imgAttackButton,this.mapMarginWidth+this.mapWidth-140, 15, 40, 40,null);
+	}
 
 	@Override
 	public void chooseObjectCard() {
@@ -385,9 +401,6 @@ public class GameGUI implements GameInterface,MouseListener {
 
 	@Override
 	public void chooseAnyCoordinates(WatcherNoiseCoordinatesSelector selector) {
-		g.setColor(Color.WHITE);
-		g.setFont(new Font(frame.getFontName(), Font.BOLD, 24));
-		g.drawString("Scegli la coordinata in cui vuoi eseguire l'attacco", frame.getWidth()/2-100,30);
 		this.selectany = true;
 		this.selector = selector;
 	}
@@ -417,6 +430,11 @@ public class GameGUI implements GameInterface,MouseListener {
 	}
 
 	public void start() {
+		Character character = controller.getMyCharacter();
+		if (character.getSide().equals(SideName.HUMAN))
+			this.isHuman = true;
+		else 
+			this.isHuman = false;
 		this.printCharacter(controller.getMyCharacter());
 	}
 
@@ -428,8 +446,6 @@ public class GameGUI implements GameInterface,MouseListener {
 
 	@Override
 	public void printTurnNumber(int turnNumber) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
