@@ -69,7 +69,7 @@ public class GameCLI implements GameInterface {
 	}
 
 	@Override
-	public Coordinates chooseAnyCoordinates(){
+	public void chooseAnyCoordinates(WatcherNoiseCoordinatesSelector selector){
 		Coordinates selected = null;
 		System.out.println("Inserisci la coordinata desiderata");
 		String coordinatesInString = in.nextLine();
@@ -79,7 +79,7 @@ public class GameCLI implements GameInterface {
 			coordinatesInString = in.nextLine();
 			selected = Coordinates.stringToCoordinates(coordinatesInString);
 		}
-		return selected;
+		selector.makeNoise(selected);
 	}
 	
 	@Override

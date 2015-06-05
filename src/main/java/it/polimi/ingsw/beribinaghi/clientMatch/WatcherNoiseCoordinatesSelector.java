@@ -18,35 +18,42 @@ public class WatcherNoiseCoordinatesSelector implements NoiseCoordinatesSelector
 	}
 
 	@Override
-	public Coordinates select(SectorCard sectorCard) {
+	public void select(SectorCard sectorCard) {
 		sectorCard.accept(this);
-		return noiseCoordinates;
 	}
 
 	@Override
 	public void visit(NoiseInYourSector noiseInYourSector) {
 		noiseCoordinates = matchController.getMyCharacter().getCurrentPosition();
+		matchController.makeNoise(noiseCoordinates);
 	}
 
 	@Override
 	public void visit(NoiseInAnySector noiseInAnySector) {
-		noiseCoordinates = matchController.getGraphicInterface().chooseAnyCoordinates();
+		matchController.getGraphicInterface().chooseAnyCoordinates(this);
+	}
+	
+	public void makeNoise(Coordinates coordinates){
+		noiseCoordinates = coordinates;
+		matchController.makeNoise(noiseCoordinates);
 	}
 
 	@Override
 	public void visit(Silence silence) {
 		noiseCoordinates = Coordinates.SILENCE;
+		matchController.makeNoise(noiseCoordinates);
 	}
 
 	@Override
 	public void visit(NothingToPick nothingToPick) {
-		noiseCoordinates = null;		
+		noiseCoordinates = null;	
+		matchController.makeNoise(noiseCoordinates);
 	}
 
 	@Override
 	public void visit(ShallopCard shallopCard) {
 		noiseCoordinates = null;
-		
+		matchController.makeNoise(noiseCoordinates);
 	}
 
 }

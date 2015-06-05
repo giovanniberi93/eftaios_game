@@ -16,9 +16,9 @@ public interface NoiseCoordinatesSelector {
 	
 	/**
 	 * @param sectorCard is the picked sector card
-	 * @return the coordiantes of the noise
+	 * call the matchController's function make noise
 	 */
-	public Coordinates select(SectorCard sectorCard);
+	public void select(SectorCard sectorCard);
 	
 	/**
 	 * standard visit method of the visitor pattern
