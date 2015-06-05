@@ -53,7 +53,7 @@ public interface GameInterface {
 	 * Asks the user to choose a valid coordinate
 	 * @return the selected coordinates
 	 */
-	Coordinates chooseAnyCoordinates();
+	void chooseAnyCoordinates(WatcherNoiseCoordinatesSelector selector);
 
 	/**
 	 * Shows the result of the attempted escape

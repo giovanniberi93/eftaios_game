@@ -51,6 +51,8 @@ public class GameGUI implements GameInterface,MouseListener {
 	private HashMap<String,Image> hashCard = new HashMap<String,Image>();
 	private ArrayList<Coordinates> posShallop = new ArrayList<Coordinates>();
 	private boolean hasMoved;
+	private boolean selectany;
+	private WatcherNoiseCoordinatesSelector selector;
 	
 	
 	public GameGUI(GUI frame) {
@@ -75,14 +77,14 @@ public class GameGUI implements GameInterface,MouseListener {
 			hashSector.put(SectorName.ALIENBASE, ImageIO.read(new File("media/sector/alienBase.png").toURI().toURL()));
 			hashSector.put(SectorName.SHALLOP, ImageIO.read(new File("media/sector/shallopSector.png").toURI().toURL()));
 			hashSector.put(SectorName.BLANK, ImageIO.read(new File("media/sector/blankSector.png").toURI().toURL()));
-			hashCharacter.put(CharacterName.CAPTAIN.getPersonalName(), ImageIO.read(new File("media/character/soldier.png").toURI().toURL()));
-			hashCharacter.put(CharacterName.PILOT.getPersonalName(), ImageIO.read(new File("media/character/soldier.png").toURI().toURL()));
-			hashCharacter.put(CharacterName.PSYCHOLOGIST.getPersonalName(), ImageIO.read(new File("media/character/soldier.png").toURI().toURL()));
+			hashCharacter.put(CharacterName.CAPTAIN.getPersonalName(), ImageIO.read(new File("media/character/captain.png").toURI().toURL()));
+			hashCharacter.put(CharacterName.PILOT.getPersonalName(), ImageIO.read(new File("media/character/pilot.png").toURI().toURL()));
+			hashCharacter.put(CharacterName.PSYCHOLOGIST.getPersonalName(), ImageIO.read(new File("media/character/psychologist.png").toURI().toURL()));
 			hashCharacter.put(CharacterName.SOLDIER.getPersonalName(), ImageIO.read(new File("media/character/soldier.png").toURI().toURL()));
 			hashCharacter.put(CharacterName.FIRSTALIEN.getPersonalName(), ImageIO.read(new File("media/character/alien1.png").toURI().toURL()));
-			hashCharacter.put(CharacterName.SECONDALIEN.getPersonalName(), ImageIO.read(new File("media/character/alien1.png").toURI().toURL()));
-			hashCharacter.put(CharacterName.THIRDALIEN.getPersonalName(), ImageIO.read(new File("media/character/alien1.png").toURI().toURL()));
-			hashCharacter.put(CharacterName.FOURTHALIEN.getPersonalName(), ImageIO.read(new File("media/character/alien1.png").toURI().toURL()));
+			hashCharacter.put(CharacterName.SECONDALIEN.getPersonalName(), ImageIO.read(new File("media/character/alien2.png").toURI().toURL()));
+			hashCharacter.put(CharacterName.THIRDALIEN.getPersonalName(), ImageIO.read(new File("media/character/alien3.png").toURI().toURL()));
+			hashCharacter.put(CharacterName.FOURTHALIEN.getPersonalName(), ImageIO.read(new File("media/character/alien4.png").toURI().toURL()));
 			hashSelectedSector.put(SectorName.DANGEROUS, ImageIO.read(new File("media/sector/dangerousSectorSelected.png").toURI().toURL()));
 			hashSelectedSector.put(SectorName.SAFE, ImageIO.read(new File("media/sector/safeSectorSelected.png").toURI().toURL()));
 			hashSelectedSector.put(SectorName.HUMANBASE, ImageIO.read(new File("media/sector/humanBaseSelected.png").toURI().toURL()));
@@ -99,6 +101,9 @@ public class GameGUI implements GameInterface,MouseListener {
 			hashCard.put("spotlight", ImageIO.read(new File("media/character/soldier.png").toURI().toURL()));
 			hashCard.put("defense", ImageIO.read(new File("media/character/alien1.png").toURI().toURL()));
 			hashCard.put("adrenaline", ImageIO.read(new File("media/character/alien1.png").toURI().toURL()));
+			hashCard.put("silence", ImageIO.read(new File("media/character/soldier.png").toURI().toURL()));
+			hashCard.put("anySector", ImageIO.read(new File("media/character/alien1.png").toURI().toURL()));
+			hashCard.put("yourSector", ImageIO.read(new File("media/character/soldier.png").toURI().toURL()));
 		} catch (IOException e) {
 		}
 	}
@@ -160,6 +165,7 @@ public class GameGUI implements GameInterface,MouseListener {
 
 	private void managesMyTurn() {
 		this.hasMoved = false;
+		this.selectany = false;
 		g.setColor(Color.WHITE);
 		g.setFont(new Font(frame.getFontName(), Font.BOLD, 24));
 		g.drawString("E' il tuo turno", frame.getWidth()/2-100,30);
@@ -233,7 +239,7 @@ public class GameGUI implements GameInterface,MouseListener {
 	}
 
 	private void printSingleCard(Image img, int i) {
-		g.drawImage(img, this.mapMarginWidth + this.mapWidth + 20, this.mapMarginHeight + i*(img.getHeight(null)+40), null);
+		g.drawImage(img, this.mapMarginWidth + this.mapWidth + 10, this.mapMarginHeight + i*(img.getHeight(null)+40), null);
 	}
 
 	public void notifyOthersTurn(String playerTurn) {
@@ -277,10 +283,12 @@ public class GameGUI implements GameInterface,MouseListener {
 			g.setFont(frame.getFont());
 			g.drawString((Coordinates.getLetterFromNumber(j)+"" + num).toUpperCase(),mapMarginWidth+j*3*lw+2*lw-12 , mapMarginHeight+lh*(i*2+j%2)+lh+5);
 		} else if (sectorName.equals(SectorName.SHALLOP)){
-			posShallop.add(new Coordinates(Coordinates.getLetterFromNumber(i),j+1));
+			Coordinates coordinates = new Coordinates(Coordinates.getLetterFromNumber(i),j+1);
+			if (!posShallop.contains(coordinates))
+				posShallop.add(coordinates);
 			g.setColor(Color.WHITE);
 			g.setFont(new Font(frame.getFontName(), Font.BOLD, 18));
-			g.drawString(""+this.posShallop.size(),mapMarginWidth+j*3*lw+2*lw-3 , mapMarginHeight+lh*(i*2+j%2)+lh+5);
+			g.drawString(""+(posShallop.indexOf(coordinates)+1),mapMarginWidth+j*3*lw+2*lw-3 , mapMarginHeight+lh*(i*2+j%2)+lh+5);
 		}
 			
 	}
@@ -311,11 +319,22 @@ public class GameGUI implements GameInterface,MouseListener {
 							r-=q%2;
 						}	
 					}
-				this.chooseMove(new Coordinates(Coordinates.getLetterFromNumber(q),r+1));
+				if (!hasMoved)
+					this.chooseMove(new Coordinates(Coordinates.getLetterFromNumber(q),r+1));
+				else if (selectany)
+					this.selectRumordCoordinates(new Coordinates(Coordinates.getLetterFromNumber(q),r+1));
 			}
 		}
 	}
 
+
+	private void selectRumordCoordinates(Coordinates coordinates) {
+		if (map.getSector(coordinates).equals(SectorName.DANGEROUS)){
+			this.selectany = false;
+			this.selector.makeNoise(coordinates);
+		}
+		
+	}
 
 	@Override
 	public void mousePressed(MouseEvent e) {
@@ -343,8 +362,18 @@ public class GameGUI implements GameInterface,MouseListener {
 
 	@Override
 	public void showPickedCards(ArrayList<Card> pickedCards) {
-		// TODO Auto-generated method stub
-		
+		int i=0;
+		Card card = pickedCards.get(0);
+		if (!card.toString().equals("nothing")){
+			Image img = hashCard.get(card.toString());
+			g.drawImage(img, this.mapMarginWidth-20-img.getWidth(null), this.mapMarginHeight+i*(img.getHeight(null)+20), null);
+			i++;
+		}
+		if (pickedCards.size()>1){
+			card = pickedCards.get(1);
+			Image img = hashCard.get(card.toString());
+			this.printSingleCard(img,controller.getMyCharacter().getBagSize()-1);
+		}
 	}
 
 
@@ -355,9 +384,12 @@ public class GameGUI implements GameInterface,MouseListener {
 	}
 
 	@Override
-	public Coordinates chooseAnyCoordinates() {
-		// TODO Auto-generated method stub
-		return null;
+	public void chooseAnyCoordinates(WatcherNoiseCoordinatesSelector selector) {
+		g.setColor(Color.WHITE);
+		g.setFont(new Font(frame.getFontName(), Font.BOLD, 24));
+		g.drawString("Scegli la coordinata in cui vuoi eseguire l'attacco", frame.getWidth()/2-100,30);
+		this.selectany = true;
+		this.selector = selector;
 	}
 
 	@Override

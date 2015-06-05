@@ -100,8 +100,6 @@ public class MatchController {
 		try {
 			pickedCards = session.move(destinationCoordinates);
 		} catch (WrongSyntaxException e) {
-			System.out.println("Errore nella sintassi della comunicazione");
-			e.printStackTrace();
 		}
 		myCharacter.setCurrentPosition(destinationCoordinates);
 		if(pickedCards.size()>1){
@@ -112,7 +110,10 @@ public class MatchController {
 		}
 			
 		graphicInterface.showPickedCards(pickedCards);
-		Coordinates noiseCoordinates = noiseCoordinatesSelector.select((SectorCard) pickedCards.get(0));
+		noiseCoordinatesSelector.select((SectorCard) pickedCards.get(0));
+	}
+	
+	public void makeNoise(Coordinates noiseCoordinates){
 		session.noise(noiseCoordinates);
 	}
 
