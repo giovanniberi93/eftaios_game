@@ -80,6 +80,11 @@ public abstract class Character implements Serializable{
 		this.side = side;
 	}
 	
+	
+	public ArrayList<ObjectCard> getBag() {
+		return bag;
+	}
+
 	public int getBagSize(){
 		return bag.size();
 	}
@@ -90,20 +95,30 @@ public abstract class Character implements Serializable{
 		return currentPosition;
 	}
 	
+	/**
+	 * add the passed card to the character bag
+	 * @param pickedCard is the object card added
+	 * @return true if the bag is overloaded
+	 */
 	public boolean addCardToBag(ObjectCard pickedCard){
-		if(bag.size() >= 3)
-			return false;
 		bag.add(pickedCard);
-		return true;
+		if(bag.size() > 3)
+			return true;
+		return false;
 	}
 
 	public ObjectCard getCardFromBag (int index){
 		return bag.get(index);
 	}
 	
+	/**
+	 * Search a passed object card in the character's bag
+	 * @param searchedCard is the searched Object card
+	 * @return true if the card is found in the bag
+	 */
 	public boolean removeCardFromBag(ObjectCard searchedCard){
 		ObjectCard temporaryCard;
-		for(int i = 0; i< bag.size() ; i++){		//TODO constant
+		for(int i = 0; i< bag.size() ; i++){		
 			temporaryCard = getCardFromBag(i);
 			if(temporaryCard.getClass().equals(searchedCard.getClass())){
 				searchedCard = temporaryCard;

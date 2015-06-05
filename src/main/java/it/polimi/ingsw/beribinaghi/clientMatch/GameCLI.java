@@ -270,6 +270,30 @@ public class GameCLI implements GameInterface {
 	}
 
 	@Override
+	public ObjectCard selectObjectToDiscard() {
+		System.out.println("Non puoi trasportare più di 3 oggetti; selezionane uno da scartare");
+		ArrayList<String> cardsInBag = new ArrayList<String>();
+		ArrayList<ObjectCard> bag = controller.getMyCharacter().getBag();
+		
+		for(int i = 0; i < bag.size(); i++){
+			cardsInBag.add(bag.get(i).toString());
+			System.out.println(bag.get(i).toString());
+		}
+		String selectedCard = in.nextLine();
+		while(!cardsInBag.contains(selectedCard)){
+			System.out.println("Inserisci una carta esistente");
+			selectedCard = in.nextLine();
+		}
+		System.out.println("Hai scartato una carta "+selectedCard.toString());
+		return bag.get(bag.indexOf(selectedCard));
+	}
+
+	@Override
+	public void notifyDiscardedObject() {
+		System.out.println("Il giocatore corrente ha dovuto scartare un oggetto");
+	}
+	
+	
 	public void changedTurn() {
 		if (controller.isMyTurn())
 			this.managesMyTurn();

@@ -101,6 +101,13 @@ public class ClientSocketSession implements GameSessionClientSide {
 		}
 		return null;
 	}
+	
+	@Override
+	public void signalDiscardedObjectCard(ObjectCard discardedCard){
+		String command = new String("discarded="+discardedCard.toString());
+		out.println();
+		out.flush();
+	}
 
 	@Override
 	public Map getMap() {
@@ -257,6 +264,8 @@ public class ClientSocketSession implements GameSessionClientSide {
 				case "spotlight":
 					analyzeAndShowSpotlight(command);
 					break;
+				case "discarded":
+					controller.getGraphicInterface().notifyDiscardedObject();
 			}
 		commandString = in.nextLine();
 		command = commandString.split("=");

@@ -161,10 +161,12 @@ public class ServerRMISession extends GameSessionServerSide implements RemoteGam
 		update.add("attack");
 	}
 
+
 	@Override
 	public ArrayList<String> getUpdate() throws RemoteException {
 		return this.update;
 	}
+
 
 	@Override
 	public Coordinates getNoiseCoordinates() throws RemoteException {
@@ -237,13 +239,19 @@ public class ServerRMISession extends GameSessionServerSide implements RemoteGam
 		return attackResult;
 	}
 
-	@Override
+
 	public Coordinates getSpottedCoordinates() throws RemoteException {
 		if (spotted){
 			spotted = false;
 			return match.getSpotlightCoordinates();
 		}
 		return null;
+	}
+
+	@Override
+	protected void discard(String discardedCardName) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

@@ -110,7 +110,7 @@ public interface RemoteGameSession extends Remote {
 	 * after that contains "survived=" follow by the user name and the character name of player survived
 	 */
 	public ArrayList<String> getAttackResult() throws RemoteException;
-	
+
 	/**
 	 * @throws RemoteException
 	 * if last used card is spotted, this function get the coordinates of spotted result

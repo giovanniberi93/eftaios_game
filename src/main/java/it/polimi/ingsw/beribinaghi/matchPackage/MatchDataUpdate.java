@@ -94,6 +94,7 @@ public class MatchDataUpdate extends Observable {
 		this.notifyObservers("turn");
 	}
 
+
 	/**
 	 * Notifies all gamesessions the refreshed currentPlayer and turnNumber 
 	 * @param player is the new currentPlayer
@@ -111,6 +112,11 @@ public class MatchDataUpdate extends Observable {
 
 	public void setOldCurrentPlayer(Player oldCurrentPlayer) {
 		this.oldCurrentPlayer = oldCurrentPlayer;
+	}
+
+	public void setDiscardedObject() {
+		this.setChanged();
+		this.notifyObservers("discarded");		
 	}
 
 }

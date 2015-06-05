@@ -95,8 +95,16 @@ public class MatchController {
 		} catch (WrongSyntaxException e) {
 		}
 		myCharacter.setCurrentPosition(destinationCoordinates);
-		if(pickedCards.size()>1)
-			this.getMyCharacter().addCardToBag((ObjectCard) pickedCards.get(1));
+		if(pickedCards.size()>1){
+			boolean fullBag;
+			fullBag = getMyCharacter().addCardToBag((ObjectCard) pickedCards.get(1));
+			if(fullBag){
+				ObjectCard discarded = graphicInterface.selectObjectToDiscard();
+				getMyCharacter().removeCardFromBag(discarded);
+				session.signalDiscardedObjectCard(discarded);
+			}
+		}
+			
 		graphicInterface.showPickedCards(pickedCards);
 		noiseCoordinatesSelector.select((SectorCard) pickedCards.get(0));
 	}

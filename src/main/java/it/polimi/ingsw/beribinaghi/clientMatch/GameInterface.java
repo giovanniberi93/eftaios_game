@@ -106,4 +106,15 @@ public interface GameInterface {
 	 */
 	void changedTurn();
 
+	/**
+	 * Make the player choose a card from his bag to discard
+	 * @return the ObjectCard chosen to discard
+	 */
+	ObjectCard selectObjectToDiscard();
+
+	/**
+	 * Notifies that currentPlayer has discarded an object
+	 */
+	void notifyDiscardedObject();
+
 }

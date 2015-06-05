@@ -4,6 +4,7 @@
 package it.polimi.ingsw.beribinaghi.clientMatch;
 
 import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.Card;
+import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.ObjectCard;
 import it.polimi.ingsw.beribinaghi.mapPackage.Coordinates;
 import it.polimi.ingsw.beribinaghi.mapPackage.Map;
 import it.polimi.ingsw.beribinaghi.playerPackage.Character;
@@ -62,4 +63,10 @@ public interface GameSessionClientSide {
 	 * Listens from ServerSession the updates of the match during other's turn, like: used cards, noise coordinates, attack or escape results
 	 */
 	public void listenUpdate();
+
+	/**
+	 * Communicates to serverSession the objectCard that has been discarded
+	 * @param discarded 
+	 */
+	public void signalDiscardedObjectCard(ObjectCard discarded);
 }
