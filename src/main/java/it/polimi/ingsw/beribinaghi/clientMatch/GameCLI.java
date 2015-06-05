@@ -41,6 +41,7 @@ public class GameCLI implements GameInterface {
 		boolean hasMoved = false;
 		boolean hasAttacked = false;
 		boolean isHuman = controller.getMyCharacter().getSide().equals(SideName.HUMAN);
+		System.out.println("Turno numero " + controller.getTurnNumber());
 		System.out.println("");
 		System.out.println("E' il tuo turno!");
 		do{
@@ -176,6 +177,7 @@ public class GameCLI implements GameInterface {
 
 	@Override
 	public void notifyOthersTurn(String playerTurn) {
+		System.out.println("Turno numero " + controller.getTurnNumber());
 		System.out.println("");
 		System.out.println("E' il turno di " + playerTurn);
 	}
@@ -225,7 +227,7 @@ public class GameCLI implements GameInterface {
 		if(noiseCoord.equals(Coordinates.SILENCE))
 			System.out.println("SILENZIO");
 		else
-			System.out.print("Hai sentito un rumore dal settore "+noiseCoord.toString());	
+			System.out.println("Hai sentito un rumore dal settore "+noiseCoord.toString());	
 	}
 
 	@Override
@@ -237,14 +239,15 @@ public class GameCLI implements GameInterface {
 		}
 		else{
 			if(killed.size() != 0){
+				System.out.println("ASSASSINATI:");
 				for(String kills : killed)
-					System.out.print(kills);
-				System.out.println(" sono stati uccisi,");
+					System.out.println(kills);
 			}
 			if(survived.size() != 0){
+				System.out.println("");
+				System.out.println("SOPRAVVISSUTI");
 				for(String surv : survived)
-					System.out.print(surv);
-				System.out.print(" sono riusciti a difendersi");
+					System.out.println(surv);
 			}	
 		}
 	}
@@ -266,6 +269,7 @@ public class GameCLI implements GameInterface {
 
 	@Override
 	public void printTurnNumber(int turnNumber) {
+		
 		System.out.println("turno numero " + turnNumber);
 	}
 
@@ -301,6 +305,18 @@ public class GameCLI implements GameInterface {
 			this.managesMyTurn();
 		else
 			this.notifyOthersTurn(controller.getCurrentPlayer());
+	}
+
+	@Override
+	public void showMatchResults(String[] command) {
+		System.out.println("");
+		System.out.println("La partita è finita! I vincitori sono:");
+		for(int i=1; i<command.length; i++)
+			System.out.println(command[i]);
+		System.out.println("");
+		System.out.println("Premi invio per continuare");
+		in.nextLine();
+		controller.endMatch();
 	}
 }
 

@@ -86,22 +86,28 @@ public class ServerSocketSession extends GameSessionServerSide implements Runnab
 			if(command[0].equals("move"))
 				executeMove(command[1]);	
 			else if (command[0].equals("discarded"))
-					discard(command[1]);
+					match.discard(command[1]);
 				else 
 					executeCardAction(command);
 			line = in.nextLine();
 			command = line.split("=");
 		}
 		match.getMatchDataUpdate().setOldCurrentPlayer(this.player);
+		//provo
+		boolean finished = match.isFinished();
+		if(finished){
+			out.println("endMatch");
+			out.flush();
+		}
+		else{
+			out.println("continue");
+			out.flush();
+		}
+			//
 		match.finishTurn();  
 	}
 	
-	@Override
-	protected void discard(String discardedCardName) {
-		ObjectCard discarded = ObjectCard.stringToCard(discardedCardName);
-		match.getObjectsDeck().addToDiscardPile(discarded);
-		match.getMatchDataUpdate().setDiscardedObject();
-	}
+
 
 	private void executeCardAction(String[] command) {
 		switch(command[0]){
@@ -149,12 +155,20 @@ public class ServerSocketSession extends GameSessionServerSide implements Runnab
 		if(!noise[1].equals("nothing")){
 			match.setNoiseCoordinates(Coordinates.stringToCoordinates(noise[1]));
 			match.getMatchDataUpdate().setNoiseCoordinates();
+			if(match.isSuccessfulEscape() != null){
+				match.getMatchDataUpdate().setEscaped();
+				match.setSuccessfulEscape(null);
+			}
 		}
 	}
 
 	@Override
 	protected void notifyEndMatch() {
-		out.println("endMatch");
+		String winners = new String();
+		ArrayList<Player> winnersList = match.getWinners();
+		for(Player player : winnersList)
+			winners += "Il giocatore "+ player.getUser() + ", nel ruolo di " + player.getCharacter().toString()+"=";
+		out.println("endMatch="+winners);
 		out.flush();
 	}
 
@@ -217,11 +231,11 @@ public class ServerSocketSession extends GameSessionServerSide implements Runnab
 		attackResult = "attack=" + attackPosition+ "=";
 		attackResult += "killed=";		
 		for(Player player : killed)
-			attackResult += player.getUser() + "&" + player.getCharacter() + "="; 
+			attackResult += "Il giocatore "+player.getUser() + ", nel ruolo di " + player.getCharacter() + "="; 
 		ArrayList<Player> survived = match.getSurvived();
 		attackResult += "survived=";
 		for(Player player : survived)
-			attackResult += player.getUser() + "&" + player.getCharacter() + "="; 
+			attackResult += player.getUser() + ", nel ruolo di " + player.getCharacter() + "="; 
 		out.println(attackResult);
 		out.flush();
 	}

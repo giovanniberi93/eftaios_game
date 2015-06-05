@@ -51,10 +51,12 @@ public class Match {
 	private ArrayList<Player> killed = new ArrayList<Player>();
 	private ArrayList<Player> survived = new ArrayList<Player>();
 	private ArrayList<Player> spotted = new ArrayList<Player>();
+	private ArrayList<Player> winners = new ArrayList<Player>();
 	private ArrayList<ObjectCard> usedCards = new ArrayList<ObjectCard>();
 	private Coordinates noiseCoordinates;
-	private boolean successfulEscape;
+	private Boolean successfulEscape;
 	private Coordinates spotlightCoordinates;
+	private boolean lastHumanKilled = false;
 	
 	private MatchDataUpdate matchDataUpdate;
 	
@@ -107,8 +109,8 @@ public class Match {
 	public ShallopsDeck getShallopsDeck() {
 		return shallopsDeck;
 	}
-
 	
+		
 	public ObjectsDeck getObjectsDeck() {
 		return objectsDeck;
 	}
@@ -131,6 +133,15 @@ public class Match {
 		playersDeck.addToDiscardPile(characterCard);
 	}
 
+	/**
+	 * create an objectCard from its name, adds it to the discardPile of objectsDeck, and signals the discarding to all gamesessions
+	 * @param discardedCardName is the name of the discarded card 
+	 */
+	public void discard(String discardedCardName) {
+		ObjectCard discarded = ObjectCard.stringToCard(discardedCardName);
+		getObjectsDeck().addToDiscardPile(discarded);
+		getMatchDataUpdate().setDiscardedObject();
+	}
 	
 	public ArrayList<Player> getKilled() {
 		return killed;
@@ -139,6 +150,12 @@ public class Match {
 
 	public ArrayList<Player> getSurvived() {
 		return survived;
+	}
+
+	
+
+	public void setSuccessfulEscape(Boolean successfulEscape) {
+		this.successfulEscape = successfulEscape;
 	}
 
 
@@ -158,7 +175,7 @@ public class Match {
 	}
 	
 	
-	public boolean isSuccessfulEscape() {
+	public Boolean isSuccessfulEscape() {
 		return successfulEscape;
 	}
 
@@ -199,8 +216,6 @@ public class Match {
 			}
 			else
 				successfulEscape = false;
-			getMatchDataUpdate().setEscaped();
-			this.finishTurn();			//TODO sicuri?
 		}
 		else{
 			if(searchUsedObjectCard(new Sedatives())){
@@ -225,21 +240,40 @@ public class Match {
 	 */
 	public boolean isFinished(){
 		int remainingHumans = 0;
-		HumanCharacter human;
+		boolean isFinished = false;
 		
-		if(turnNumber >= App.NUMBEROFTURNS)
-			return true;
-		for(Player player: players)
-			if(player.getCharacter().getSide() == SideName.HUMAN){
-				human = (HumanCharacter) player.getCharacter();
-				if(human.getCurrentPosition() != null)
-					remainingHumans++;
-			}
-		return (remainingHumans == 0);
+		if(turnNumber > App.NUMBEROFTURNS)
+			isFinished = true;
+		else{
+			for(Player player: players)
+				if(player.getCharacter().getSide() == SideName.HUMAN &&
+				   player.getCharacter().getCurrentPosition() != null)
+						remainingHumans++;
+			if (remainingHumans == 0)
+				isFinished = true;
+		}
+		if(isFinished)
+			calculateWinners();
+		return isFinished;			
 	}
 
 	
 	
+	private void calculateWinners() {
+		if(turnNumber > App.NUMBEROFTURNS || lastHumanKilled){
+			for(Player player : players)
+				if(player.getCharacter().getSide().equals(SideName.ALIEN) && player.getCharacter().getCurrentPosition() != null)
+					winners.add(player);
+		}
+		for(Player player : players)
+			if(player.getCharacter().getSide().equals(SideName.HUMAN)){
+				HumanCharacter human = (HumanCharacter) player.getCharacter();
+				if(human.isEscaped())
+					winners.add(player);
+			}
+	}
+
+
 	public void setTurnNumber(int turnNumber) {
 		this.turnNumber = turnNumber;
 	}
@@ -258,6 +292,12 @@ public class Match {
 		else
 			getMatchDataUpdate().setMatchFinished();
 	}
+
+	
+	public ArrayList<Player> getWinners() {
+		return winners;
+	}
+
 
 	public int getNextValidPlayerIndex() {
 		int index = currentPlayerIndex;
@@ -316,7 +356,7 @@ public class Match {
 	
 	public void attack(){
 		Player analyzedPlayer;
-	
+		int remainingHumans;
 		Player currentPlayer = getMatchDataUpdate().getCurrentPlayer();
 		for(int i = 0; i < players.size(); i++){
 			if(i != this.currentPlayerIndex){
@@ -328,6 +368,12 @@ public class Match {
 						this.killed.add(analyzedPlayer);
 						analyzedPlayer.getCharacter().setAlive(false);
 						analyzedPlayer.getCharacter().setCurrentPosition(null);
+						remainingHumans = 0;
+						for(Player player : players)
+							if(player.getCharacter().getSide() == SideName.HUMAN && player.getCharacter().getCurrentPosition() != null)
+								remainingHumans++;
+						if(remainingHumans == 0)
+							lastHumanKilled = true;
 						if(i == firstPlayerIndex)
 							firstPlayerIndex = getNextValidPlayerIndex();
 					}	

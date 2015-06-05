@@ -37,15 +37,18 @@ public abstract class Character implements Serializable{
 		this.setSide(character.getSide());
 		this.setAlive(true);
 		isAlive = true;
-		/*bag.add(new Teleport());		//TODO poi toglile
+		bag.add(new Teleport());		//TODO poi toglile
 		bag.add(new Sedatives());
 		bag.add(new Spotlight());
-		bag.add(new Defense());
+		/*bag.add(new Defense());
 		bag.add(new Adrenalin());
 		bag.add(new Attack());*/
 	}
 
-	
+	public String toString(){
+		String character = new String(name + ", " + role);
+		return character;
+	}
 	
 	public void setHasAdrenalin(boolean hasAdrenalin) {
 		this.hasAdrenalin = hasAdrenalin;

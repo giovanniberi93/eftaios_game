@@ -117,4 +117,6 @@ public interface GameInterface {
 	 */
 	void notifyDiscardedObject();
 
+	void showMatchResults(String[] command);
+
 }

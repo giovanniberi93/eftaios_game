@@ -106,9 +106,4 @@ public abstract class GameSessionServerSide implements Observer {
 	 * */
 	public abstract void sendMap(Map map);
 
-	/**
-	 * create an objectCard from its name, adds it to the discardPile of objectsDeck, and signals the discarding to all gamesessions
-	 * @param discardedCardName is the name of the discarded card 
-	 */
-	protected abstract void discard(String discardedCardName);
 }

@@ -8,6 +8,7 @@ import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.ObjectCard;
 import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.SectorCard;
 import it.polimi.ingsw.beribinaghi.mapPackage.Coordinates;
 import it.polimi.ingsw.beribinaghi.mapPackage.Map;
+import it.polimi.ingsw.beribinaghi.mapPackage.ShallopSector;
 import it.polimi.ingsw.beribinaghi.playerPackage.Character;
 import it.polimi.ingsw.beribinaghi.playerPackage.Player;
 
@@ -95,22 +96,24 @@ public class MatchController {
 	 * @param destinationCoordinates are the coordinates of the destination coordinates
 	 */
 	public void callMove(Coordinates destinationCoordinates){
+		boolean fullBag = false;
 		NoiseCoordinatesSelector noiseCoordinatesSelector = new WatcherNoiseCoordinatesSelector(this);
 		ArrayList<Card> pickedCards = new ArrayList<Card>();
 		try {
 			pickedCards = session.move(destinationCoordinates);
 		} catch (WrongSyntaxException e) {
 		}
+		if(map.getSector(destinationCoordinates) instanceof ShallopSector)
+			session.listenEscapeResult();
 		myCharacter.setCurrentPosition(destinationCoordinates);
 		if(pickedCards.size()>1){
-			boolean fullBag;
 			fullBag = getMyCharacter().addCardToBag((ObjectCard) pickedCards.get(1));
-			/*if(fullBag)
-				graphicInterface.selectObjectToDiscard();*/
 		}
 			
 		graphicInterface.showPickedCards(pickedCards);
 		noiseCoordinatesSelector.select((SectorCard) pickedCards.get(0));
+		if(fullBag)
+			graphicInterface.selectObjectToDiscard();
 	}
 	
 	public void makeNoise(Coordinates noiseCoordinates){
@@ -136,7 +139,11 @@ public class MatchController {
 	 */
 	public void callEndTurn() {
 		session.endTurn();
-		turn(true);
+		boolean finished = session.isMatchFinished();
+		if(!finished)
+			turn(true);			
+		else
+			session.listenMatchResult();
 	}
 
 	public String getCurrentPlayer() {
@@ -157,5 +164,11 @@ public class MatchController {
 	public void setTurnNumber(int turnNumber) {
 		this.turnNumber = turnNumber;
 	}
+
+	public void endMatch() {
+		System.out.println("siamo riusciti ad arrivare fin qua");
+		
+	}
+
 
 }
