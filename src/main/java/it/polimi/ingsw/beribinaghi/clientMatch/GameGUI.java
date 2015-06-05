@@ -401,9 +401,8 @@ public class GameGUI implements GameInterface,MouseListener {
 	}
 
 	@Override
-	public ObjectCard selectObjectToDiscard() {
+	public void selectObjectToDiscard() {
 		// TODO Auto-generated method stub
-		return null;
 	}
 
 	@Override

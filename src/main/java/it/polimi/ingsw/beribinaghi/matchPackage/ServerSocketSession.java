@@ -105,8 +105,6 @@ public class ServerSocketSession extends GameSessionServerSide implements Runnab
 
 	private void executeCardAction(String[] command) {
 		switch(command[0]){
-		case "discarded":
-			match.getMatchDataUpdate().setDiscardedObject();
 		case "teleport" : 
 			match.teleport();
 			break;

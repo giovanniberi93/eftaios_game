@@ -79,10 +79,17 @@ public class MatchController {
 			this.myTurn = true;
 		else
 			this.myTurn = false;
-		if (type)
+		if (type){
 			graphicInterface.changedTurn();
+			session.listenUpdate();
+		}
 	}
 	
+	
+	public GameSessionClientSide getSession() {
+		return session;
+	}
+
 	/**
 	 * Call in the gamesession the "move" command, manages the noise in the right position and call showPickedCards in the graphic interface
 	 * @param destinationCoordinates are the coordinates of the destination coordinates
@@ -100,11 +107,8 @@ public class MatchController {
 		if(pickedCards.size()>1){
 			boolean fullBag;
 			fullBag = getMyCharacter().addCardToBag((ObjectCard) pickedCards.get(1));
-			if(fullBag){
-				ObjectCard discarded = graphicInterface.selectObjectToDiscard();
-				getMyCharacter().removeCardFromBag(discarded);
-				session.signalDiscardedObjectCard(discarded);
-			}
+			/*if(fullBag)
+				graphicInterface.selectObjectToDiscard();*/
 		}
 			
 		graphicInterface.showPickedCards(pickedCards);
