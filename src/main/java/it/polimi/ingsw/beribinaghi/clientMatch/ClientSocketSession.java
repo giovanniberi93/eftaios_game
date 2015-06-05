@@ -105,7 +105,7 @@ public class ClientSocketSession implements GameSessionClientSide {
 	@Override
 	public void signalDiscardedObjectCard(ObjectCard discardedCard){
 		String command = new String("discarded="+discardedCard.toString());
-		out.println();
+		out.println(command);
 		out.flush();
 	}
 
