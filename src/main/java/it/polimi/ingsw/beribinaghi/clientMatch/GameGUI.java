@@ -495,11 +495,7 @@ public class GameGUI implements GameInterface,MouseListener,Runnable {
 		}
 	}
 
-	@Override
-	public void showAttackResult(Coordinates attackCoordinates, ArrayList<String> killed, ArrayList<String> survived) {
-		// TODO Auto-generated method stub
-		
-	}
+	
 
 	@Override
 	public void showSpottedPlayer(String username, Coordinates position) {
@@ -558,7 +554,23 @@ public class GameGUI implements GameInterface,MouseListener,Runnable {
 
 	@Override
 	public void run() {
-		controller.callEndTurn();	
+		controller.callEndTurn();
+	}
+
+	public void showAttackCoordinates(Coordinates attackCoordinates) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void showKill(String username, String character) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void showSurvived(String username, String character) {
+		// TODO Auto-generated method stub
 	}
 
 

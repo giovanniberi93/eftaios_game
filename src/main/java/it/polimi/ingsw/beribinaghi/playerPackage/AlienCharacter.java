@@ -10,10 +10,25 @@ import it.polimi.ingsw.beribinaghi.gameNames.CharacterName;
  */
 public class AlienCharacter extends Character {
 	private static final long serialVersionUID = 1L;
+	private boolean isStrong;
 
 	public AlienCharacter(CharacterName character) {
 		super(character);
 		super.percorrableDistance = 2;	//TODO add constant; where?
+	}
+	
+	public int getPercorrableDistance() {
+		if(isStrong)
+			return percorrableDistance+1;
+		return percorrableDistance;
+	}
+
+	public boolean isStrong() {
+		return isStrong;
+	}
+
+	public void setStrong(boolean isStrong) {
+		this.isStrong = isStrong;
 	}
 
 }

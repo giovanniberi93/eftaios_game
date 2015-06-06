@@ -174,6 +174,11 @@ public class MatchController {
 		
 	}
 
+	
+	public String getMyPlayerName() {
+		return myPlayerName;
+	}
+
 	public boolean isAttemptedEscape() {
 		return attemptedEscape;
 	}
