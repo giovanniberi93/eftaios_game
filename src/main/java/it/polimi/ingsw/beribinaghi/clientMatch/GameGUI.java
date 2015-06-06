@@ -10,8 +10,8 @@ import it.polimi.ingsw.beribinaghi.gameNames.SectorName;
 import it.polimi.ingsw.beribinaghi.gameNames.CharacterName;
 import it.polimi.ingsw.beribinaghi.gameNames.SideName;
 import it.polimi.ingsw.beribinaghi.mapPackage.Coordinates;
+import it.polimi.ingsw.beribinaghi.mapPackage.DangerousSector;
 import it.polimi.ingsw.beribinaghi.mapPackage.Map;
-import it.polimi.ingsw.beribinaghi.mapPackage.Sector;
 import it.polimi.ingsw.beribinaghi.playerPackage.Character;
 
 import java.awt.Color;
@@ -56,6 +56,7 @@ public class GameGUI implements GameInterface,MouseListener {
 	private HashMap<String,Image> hashLogo = new HashMap<String,Image>();
 	private Image imgAttackButton;
 	private Image imgFinishTurn;
+	private Image imgRumors;
 	private ArrayList<Coordinates> posShallop = new ArrayList<Coordinates>();
 	private boolean hasMoved;
 	private boolean selectany;
@@ -119,6 +120,7 @@ public class GameGUI implements GameInterface,MouseListener {
 			hashLogo.put("sector", ImageIO.read(new File("media/logoCard/sectorLogo.png").toURI().toURL()));
 			imgAttackButton = ImageIO.read(new File("media/attack.png").toURI().toURL());
 			imgFinishTurn = ImageIO.read(new File("media/end.png").toURI().toURL());
+			imgRumors = ImageIO.read(new File("media/sector/dangerousSectorRumors.png").toURI().toURL());
 		} catch (IOException e) {
 		}
 	}
@@ -210,7 +212,7 @@ public class GameGUI implements GameInterface,MouseListener {
 				int i = coordinates.getNumber()-1;
 				int j = Coordinates.getNumberFromLetter(coordinates.getLetter());
 				if (coordinates.equals(coordinatesSelected))
-					this.printSector(i,j,graphicMap[i][j],3);
+					this.printSector(i,j,graphicMap[i][j],2);
 				else
 					this.printSector(i,j,graphicMap[i][j],0);
 			}
@@ -260,7 +262,7 @@ public class GameGUI implements GameInterface,MouseListener {
 		{
 			for (j=0;j<graphicMap[i].length;j++){
 				if (i==myCoordinates.getNumber()-1 && j==Coordinates.getNumberFromLetter(myCoordinates.getLetter()))
-					printSector(i,j,graphicMap[i][j],3);
+					printSector(i,j,graphicMap[i][j],2);
 				else
 					printSector(i,j,graphicMap[i][j],0);
 			}
@@ -273,8 +275,10 @@ public class GameGUI implements GameInterface,MouseListener {
 			img = hashSector.get(sectorName);
 		else if (type==1)
 			img = hashSelectedSector.get(sectorName);
-		else
+		else if (type==2)
 			img = hashMySector.get(sectorName);
+		else
+			img = this.imgRumors;
 		g.drawImage(img, mapMarginWidth+j*3*lw, mapMarginHeight+lh*(i*2+j%2), 4*lw, 2*lh, null);
 		if (sectorName.equals(SectorName.DANGEROUS) || sectorName.equals(SectorName.SAFE)){
 			String num = String.valueOf(i+1);
@@ -324,14 +328,33 @@ public class GameGUI implements GameInterface,MouseListener {
 					this.chooseMove(new Coordinates(Coordinates.getLetterFromNumber(q),r+1));
 				else if (selectany)
 					this.selectRumordCoordinates(new Coordinates(Coordinates.getLetterFromNumber(q),r+1));
+			} else if (e.getX()>this.mapMarginWidth+this.mapWidth-200 && e.getX()<this.mapMarginWidth+this.mapWidth-138 && e.getY()>2 && e.getY()<70 && hasMoved && !selectany){
+					this.endTurn();
+				}
+			else if (e.getX()>this.mapMarginWidth+this.mapWidth-400 && e.getX()<this.mapMarginWidth+this.mapWidth-338 && e.getY()>2 && e.getY()<70 && hasMoved && !selectany && !isHuman && !hasAttacked){
+				this.attack();
 			}
 		}
 	}
 
 
+	private void attack() {
+		hasAttacked = true;
+		ArrayList<String> command = new ArrayList<String>();
+		command.add("attack");
+		controller.callObjectCard(command);
+		g.setColor(Color.BLACK);
+		g.fillRect(this.mapMarginWidth+this.mapWidth-400, 2, 62, 68);
+	}
+
+	private void endTurn() {
+		g.setColor(Color.BLACK);
+		g.fillRect(0, 0, this.mapMarginWidth+this.mapWidth, this.mapMarginHeight);
+		controller.callEndTurn();
+	}
+
 	private void selectRumordCoordinates(Coordinates coordinates) {
-		Sector sector = map.getSector(coordinates);
-		if (map.getSector(coordinates).equals(SectorName.DANGEROUS.toString())){
+		if (map.getSector(coordinates) instanceof DangerousSector){
 			this.selectany = false;
 			this.selector.makeNoise(coordinates);
 			if(!isHuman && !hasAttacked && hasMoved){
@@ -343,27 +366,19 @@ public class GameGUI implements GameInterface,MouseListener {
 	}
 
 	@Override
-	public void mousePressed(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
+	public void mousePressed(MouseEvent e) {		
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void mouseEntered(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void mouseExited(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
@@ -388,11 +403,11 @@ public class GameGUI implements GameInterface,MouseListener {
 
 
 	private void showEndButton() {
-		g.drawImage(this.imgFinishTurn,this.mapMarginWidth+this.mapWidth-100, 15, 40, 40,null);
+		g.drawImage(this.imgFinishTurn,this.mapMarginWidth+this.mapWidth-200, 2, 68, 60,null);
 	}
 
 	private void showAttackButton() {
-		g.drawImage(this.imgAttackButton,this.mapMarginWidth+this.mapWidth-140, 15, 40, 40,null);
+		g.drawImage(this.imgAttackButton,this.mapMarginWidth+this.mapWidth-400, 2, 68, 60,null);
 	}
 
 	@Override
@@ -415,8 +430,10 @@ public class GameGUI implements GameInterface,MouseListener {
 
 	@Override
 	public void showNoise(Coordinates noiseCoord) {
-		// TODO Auto-generated method stub
-		
+		SectorName[][] graphicMap = map.getGraphicMap();
+		int i = noiseCoord.getNumber()-1;
+		int j = Coordinates.getNumberFromLetter(noiseCoord.getLetter());
+		this.printSector(i,j,graphicMap[i][j],3);
 	}
 
 	@Override
