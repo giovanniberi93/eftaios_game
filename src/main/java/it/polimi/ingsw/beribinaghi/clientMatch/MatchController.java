@@ -52,7 +52,7 @@ public class MatchController {
 		map = session.getMap();
 		myCharacter = session.getCharacter();
 		turn(false);
-		graphicInterface.start();
+		graphicInterface.startRapresenting();
 		if (!this.isMyTurn())
 			session.listenUpdate();
 	}
@@ -84,7 +84,8 @@ public class MatchController {
 			this.myTurn = false;
 		if (type){
 			graphicInterface.changedTurn();
-			session.listenUpdate();
+			if (!this.isMyTurn())	//TODO prova asda
+				session.listenUpdate();	
 		}
 	}
 	

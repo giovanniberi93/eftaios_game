@@ -38,7 +38,7 @@ public class MatchTest {
 		players.add(player4);
 		
 		ArrayList<GameSessionServerSide> gameSessions = new ArrayList<GameSessionServerSide>();
-		match = new Match(gameSessions, players, "testMap", "Galilei", MapModel.GALILEI);
+		match = new Match(gameSessions, players, "testMap", "Galilei", MapModel.GALILEI,null);
 	}	
 	
 	

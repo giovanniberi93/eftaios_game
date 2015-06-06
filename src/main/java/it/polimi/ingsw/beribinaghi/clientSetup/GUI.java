@@ -5,6 +5,7 @@ package it.polimi.ingsw.beribinaghi.clientSetup;
 
 import it.polimi.ingsw.beribinaghi.clientMatch.GameGUI;
 import it.polimi.ingsw.beribinaghi.clientMatch.GameInterface;
+import it.polimi.ingsw.beribinaghi.mapPackage.Coordinates;
 
 import java.awt.BorderLayout;
 import java.awt.Color;

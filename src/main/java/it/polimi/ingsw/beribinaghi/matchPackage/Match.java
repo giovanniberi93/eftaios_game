@@ -28,6 +28,7 @@ import it.polimi.ingsw.beribinaghi.mapPackage.Map;
 import it.polimi.ingsw.beribinaghi.playerPackage.CharacterFactory;
 import it.polimi.ingsw.beribinaghi.playerPackage.HumanCharacter;
 import it.polimi.ingsw.beribinaghi.playerPackage.Player;
+import it.polimi.ingsw.beribinaghi.serverSetup.PreMatch;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -60,6 +61,7 @@ public class Match {
 	
 	private MatchDataUpdate matchDataUpdate;
 	private Coordinates usedShallopCoordinates;
+	private PreMatch preMatch;
 	
 	
 	/**
@@ -68,8 +70,9 @@ public class Match {
 	 * @param players arrayList of connected players
 	 * @param matchName name of the starting match 
 	 */
-	public Match(ArrayList<GameSessionServerSide> sessions, ArrayList<Player> players, String matchName, String mapName, SectorName[][] graphicMap){
+	public Match(ArrayList<GameSessionServerSide> sessions, ArrayList<Player> players, String matchName, String mapName, SectorName[][] graphicMap,PreMatch preMatch){
 		this.players = players;
+		this.preMatch = preMatch;
 		setupDecks(players.size());
 		this.matchName = matchName;
 		this.sessions = sessions;
@@ -295,8 +298,10 @@ public class Match {
 				turnNumber++;
 			getMatchDataUpdate().clear(players.get(currentPlayerIndex));
 		}
-		else
+		else{
 			getMatchDataUpdate().setMatchFinished();
+			preMatch.finish();
+		}
 	}
 
 	

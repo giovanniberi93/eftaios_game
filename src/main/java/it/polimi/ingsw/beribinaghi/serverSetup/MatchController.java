@@ -40,7 +40,7 @@ public class MatchController {
 	public void createNewMatch(String name,Player player) throws AlreadyExistingNameException {
 		if (nameExists(name))
 			throw new AlreadyExistingNameException();
-		PreMatch match = new PreMatch(name,player);
+		PreMatch match = new PreMatch(name,player,this);
 		matches.add(match);
 	}
 	
@@ -132,6 +132,14 @@ public class MatchController {
 	 */
 	public void registerSession(SetupSession setupSession) {
 		sessions.add(setupSession);
+	}
+
+	public void endMatch(PreMatch preMatch) {
+		for (SetupSession setupSession: sessions)
+			if ((setupSession.getMatchName()!=null) && setupSession.getMatchName().equals(preMatch.getMatchName())){
+				setupSession.setInactive();
+			}
+		matches.remove(preMatch);
 	}
 
 }

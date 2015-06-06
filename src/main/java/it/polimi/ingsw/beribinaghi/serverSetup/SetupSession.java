@@ -36,5 +36,10 @@ public interface SetupSession {
 	 * @return the state of connection
 	 */
 	public Boolean isConnected();
+
+	/**
+	 * awake the begin session and it starts again to manages inactive match
+	 */
+	public void setInactive();
 	
 }

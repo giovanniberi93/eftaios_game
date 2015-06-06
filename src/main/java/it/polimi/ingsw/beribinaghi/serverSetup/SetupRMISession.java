@@ -163,5 +163,10 @@ public class SetupRMISession implements SetupSession,RemoteSetupSession {
 		return null;
 	}
 
+	@Override
+	public void setInactive() {
+		this.matchName = null;
+	}
+
 
 }
