@@ -11,6 +11,7 @@ import it.polimi.ingsw.beribinaghi.gameNames.CharacterName;
 import it.polimi.ingsw.beribinaghi.gameNames.SideName;
 import it.polimi.ingsw.beribinaghi.mapPackage.Coordinates;
 import it.polimi.ingsw.beribinaghi.mapPackage.Map;
+import it.polimi.ingsw.beribinaghi.mapPackage.Sector;
 import it.polimi.ingsw.beribinaghi.playerPackage.Character;
 
 import java.awt.Color;
@@ -329,7 +330,8 @@ public class GameGUI implements GameInterface,MouseListener {
 
 
 	private void selectRumordCoordinates(Coordinates coordinates) {
-		if (map.getSector(coordinates).equals(SectorName.DANGEROUS)){
+		Sector sector = map.getSector(coordinates);
+		if (map.getSector(coordinates).equals(SectorName.DANGEROUS.toString())){
 			this.selectany = false;
 			this.selector.makeNoise(coordinates);
 			if(!isHuman && !hasAttacked && hasMoved){
