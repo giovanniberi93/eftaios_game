@@ -31,6 +31,8 @@ import it.polimi.ingsw.beribinaghi.playerPackage.Player;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Manages a match
@@ -51,7 +53,7 @@ public class Match {
 	private ArrayList<Player> killed = new ArrayList<Player>();
 	private ArrayList<Player> survived = new ArrayList<Player>();
 	private ArrayList<Player> spotted = new ArrayList<Player>();
-	private ArrayList<Player> winners = new ArrayList<Player>();
+	private Set<Player> winners = new HashSet<Player>();
 	private ArrayList<ObjectCard> usedCards = new ArrayList<ObjectCard>();
 	private Coordinates noiseCoordinates;
 	private Boolean successfulEscape;
@@ -301,7 +303,9 @@ public class Match {
 
 	
 	public ArrayList<Player> getWinners() {
-		return winners;
+		ArrayList<Player> winnersList = new ArrayList<Player>();
+		winnersList.addAll(winners);
+		return winnersList;
 	}
 
 
@@ -348,10 +352,7 @@ public class Match {
 		useAndSignalObjectCard(new Spotlight());
 		getMatchDataUpdate().setSpottedPlayers();
 	}
-	
-	public void discard(ObjectCard discardedCard){
-		// TODO boh? devo anche aggiustare addCardToBag del character, non sto gestendo la carta in più
-	}
+
 	
 	public boolean searchUsedObjectCard(ObjectCard searchedCard) {
 		for(ObjectCard card : usedCards)

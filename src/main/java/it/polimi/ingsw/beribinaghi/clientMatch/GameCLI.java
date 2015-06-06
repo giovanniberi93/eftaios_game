@@ -122,7 +122,7 @@ public class GameCLI implements GameInterface {
 	}
 
 	private Coordinates chooseAdiacentCoordinates(Coordinates currentPosition, int percorrableDistance) {
-		boolean isAlien = (controller.getMyCharacter().equals(SideName.ALIEN));
+		boolean isAlien = (controller.getMyCharacter().getSide().equals(SideName.ALIEN));
 		ArrayList<Coordinates> selectableCoordinates = controller.getMap().getReachableCoordinates(currentPosition, percorrableDistance, isAlien);
 		System.out.println("Scegli la coordinata di destinazione");
 		for(Coordinates coord : selectableCoordinates){
@@ -235,26 +235,10 @@ public class GameCLI implements GameInterface {
 			System.out.println("Hai sentito un rumore dal settore "+noiseCoord.toString());	
 	}
 
+	
 	@Override
-	public void showAttackResult(Coordinates attackCoordinates, ArrayList<String> killed, ArrayList<String> survived) {
-		System.out.println("");
-		System.out.println("E' stato effettuato un attacco in " + attackCoordinates);
-		if(killed.size() == 0 && survived.size() == 0){
-			System.out.println("Nessuno è stato colpito");
-		}
-		else{
-			if(killed.size() != 0){
-				System.out.println("ASSASSINATI:");
-				for(String kills : killed)
-					System.out.println(kills);
-			}
-			if(survived.size() != 0){
-				System.out.println("");
-				System.out.println("SOPRAVVISSUTI");
-				for(String surv : survived)
-					System.out.println(surv);
-			}	
-		}
+	public void showAttackCoordinates(Coordinates attackCoord){
+		System.out.println("È stato effettuato un attacco nel settore " + attackCoord);
 	}
 
 	@Override
@@ -322,6 +306,26 @@ public class GameCLI implements GameInterface {
 		System.out.println("Premi invio per continuare");
 		in.nextLine();
 		controller.endMatch();
+	}
+
+
+	@Override
+	public void showKill(String username, String character) {
+		if(username == null)
+			System.out.println("Nessuno è rimasto ucciso!");
+		else if(username.equals(controller.getMyPlayerName())){
+			System.out.println("Sei stato ucciso!");
+			controller.getMyCharacter().setCurrentPosition(null);
+		}
+		else
+			System.out.println("Il giocatore " + username + ", nel ruolo di " + character + ", è stato ucciso");
+	}
+
+
+	@Override
+	public void showSurvived(String username, String character) {
+		System.out.println("Il giocatore " + username + " è riuscito a difendersi!");
+		
 	}
 }
 

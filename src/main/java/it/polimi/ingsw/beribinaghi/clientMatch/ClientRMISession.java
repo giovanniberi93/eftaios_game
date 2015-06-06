@@ -183,12 +183,12 @@ public class ClientRMISession implements GameSessionClientSide {
 	}
 
 	private void analyzeAndShowAttack(ArrayList<String> attackResult) {
-		ArrayList<String> killed;
+		/*ArrayList<String> killed;
 		ArrayList<String> survived;
 		Coordinates attackCoordinates = Coordinates.stringToCoordinates(attackResult.get(0));
 		killed = this.selectKilled(attackResult);
 		survived = this.selectSurvived(attackResult);
-		controller.getGraphicInterface().showAttackResult(attackCoordinates, killed, survived);
+		controller.getGraphicInterface().showAttackResult(attackCoordinates, killed, survived);*/
 	}
 	
 	private ArrayList<String> selectSurvived(ArrayList<String> result) {

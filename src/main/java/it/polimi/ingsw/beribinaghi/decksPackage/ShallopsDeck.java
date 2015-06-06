@@ -13,9 +13,9 @@ public class ShallopsDeck extends Deck {
 	 */
 	public ShallopsDeck(){
 		for(int i = 0; i<3; i++)
-			super.validCards.add(new ShallopCard(true));	
+			super.validCards.add(new ShallopCard(false));	
 		for(int i = 0; i<3; i++)
-			super.validCards.add(new ShallopCard(true));		//TODO aggiusta
+			super.validCards.add(new ShallopCard(false));		//TODO aggiusta
 	}
 
 }

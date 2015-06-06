@@ -68,13 +68,6 @@ public interface GameInterface {
 	 */
 	void showNoise(Coordinates noiseCoord);
 
-	/**
-	 * Shows the result of an attack attempted by currentPlayer
-	 * @param attackCoordinates are the coordinates of the attack
-	 * @param killed is the arrayList containing the usernames of killed players
-	 * @param survived is the arrayList containing the usernames of survived players
-	 */
-	void showAttackResult(Coordinates attackCoordinates, ArrayList<String> killed, ArrayList<String> survived);
 
 	/**
 	 * Shows position and username of a player caught by a spotligh
@@ -118,5 +111,11 @@ public interface GameInterface {
 	void notifyDiscardedObject();
 
 	void showMatchResults(String[] command);
+
+	void showAttackCoordinates(Coordinates attackCoordinates);
+
+	void showKill(String username, String character);
+
+	void showSurvived(String username, String character);
 
 }

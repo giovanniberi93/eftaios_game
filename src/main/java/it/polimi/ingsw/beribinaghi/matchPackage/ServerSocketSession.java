@@ -229,11 +229,11 @@ public class ServerSocketSession extends GameSessionServerSide implements Runnab
 		attackResult = "attack=" + attackPosition+ "=";
 		attackResult += "killed=";		
 		for(Player player : killed)
-			attackResult += "Il giocatore "+player.getUser() + ", nel ruolo di " + player.getCharacter() + "="; 
+			attackResult += player.getUser() + "&" + player.getCharacter() + "&" +player.getCharacter().getSide()+"="; 
 		ArrayList<Player> survived = match.getSurvived();
 		attackResult += "survived=";
 		for(Player player : survived)
-			attackResult += player.getUser() + ", nel ruolo di " + player.getCharacter() + "="; 
+			attackResult += player.getUser() + "="; 
 		out.println(attackResult);
 		out.flush();
 	}

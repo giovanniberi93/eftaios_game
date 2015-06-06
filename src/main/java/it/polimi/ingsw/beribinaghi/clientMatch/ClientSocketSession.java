@@ -29,6 +29,7 @@ import java.io.ObjectInputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Scanner;
 
 /**
@@ -221,12 +222,61 @@ public class ClientSocketSession implements GameSessionClientSide {
 	}
 
 	public void analyzeAndShowAttack(String[] attackResult) {
-		ArrayList<String> killed;
-		ArrayList<String> survived;
+
 		Coordinates attackCoordinates = Coordinates.stringToCoordinates(attackResult[1]);
-		killed = this.selectKilled(attackResult);
-		survived = this.selectSurvived(attackResult);
-		controller.getGraphicInterface().showAttackResult(attackCoordinates, killed, survived);
+		boolean humanKilled = this.showKilledAndAttackPosition(attackResult, attackCoordinates);
+		showSurvived(attackResult);
+		if(humanKilled && controller.getMyCharacter().getSide().equals(SideName.ALIEN)){
+			AlienCharacter myCharacter = (AlienCharacter) controller.getMyCharacter();
+			myCharacter.setStrong(true);
+		}
+	}
+	
+	private boolean showKilledAndAttackPosition(String[] command, Coordinates attackCoordinates) {
+		String[] killed;
+		boolean humanKilled = false;
+		int i = 0;
+		while(!command[i].equals("killed"))
+			i++;
+		i++;
+		int start = i;
+		while(!command[i].equals("survived"))
+			i++;
+		int end = i;
+		killed = Arrays.copyOfRange(command, start, end);
+		controller.getGraphicInterface().showAttackCoordinates(attackCoordinates);
+		if(killed.length == 0){
+			controller.getGraphicInterface().showKill(null, null);
+			return false;
+		}	
+		for(String singleKilled : killed){
+			String[] killedCharacter = singleKilled.split("&");
+			controller.getGraphicInterface().showKill(killedCharacter[0], killedCharacter[1]);
+			if(killedCharacter[2].equals(SideName.HUMAN.toString()))
+				humanKilled = true;
+
+		}
+		return humanKilled;		
+	}
+
+	private void showSurvived (String[] command) {
+		String[] survived;
+		boolean humanKilled = false;
+		int i = 0;
+		while(!command[i].equals("survived"))
+			i++;
+		i++;
+		int start = i;
+		int end = command.length;
+		survived = Arrays.copyOfRange(command, start, end);
+		if(survived.length != 0){
+			for(String singleSurvived : survived){
+				String[] survivedCharacter = singleSurvived.split("&");
+				controller.getGraphicInterface().showSurvived(survivedCharacter[0], survivedCharacter[1]);
+				if(survivedCharacter[0].equals(controller.getMyPlayerName()))
+					controller.getMyCharacter().removeCardFromBag(new Defense());
+			}
+		}	
 	}
 
 	@Override	
@@ -274,33 +324,7 @@ public class ClientSocketSession implements GameSessionClientSide {
 		}
 		controller.turn(true);
 	}
-
-	private ArrayList<String> selectSurvived(String[] command) {
-		ArrayList<String> survived = new ArrayList<String>();
-		int i = 0;
-		String string = command[i];
-		while(!string.equals("survived")){
-			i++;
-			string = command[i];
-		}
-		i++;
-		while (i < command.length){
-			survived.add(command[i]);
-			i++;
-		}
-		return survived;
-	}
-
-	private ArrayList<String> selectKilled(String[] command) {
-		ArrayList<String> killed = new ArrayList<String>();
-		int i = 3;
-		while(!command[i].equals("survived")){
-			killed.add(command[i]);
-			i++;
-		}
-		return killed;
-			
-	}
+	
 
 	@Override
 	public boolean isMatchFinished() {
