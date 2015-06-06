@@ -41,8 +41,7 @@ public class GameCLI implements GameInterface {
 		boolean hasMoved = false;
 		boolean hasAttacked = false;
 		boolean isHuman = controller.getMyCharacter().getSide().equals(SideName.HUMAN);
-		System.out.println("Turno numero " + controller.getTurnNumber());
-		System.out.println("");
+		printTurnNumber(controller.getTurnNumber());
 		System.out.println("E' il tuo turno!");
 		do{
 			choose = chooseAction(hasMoved,isHuman, hasAttacked); 
@@ -123,7 +122,8 @@ public class GameCLI implements GameInterface {
 	}
 
 	private Coordinates chooseAdiacentCoordinates(Coordinates currentPosition, int percorrableDistance) {
-		ArrayList<Coordinates> selectableCoordinates = controller.getMap().getReachableCoordinates(currentPosition, percorrableDistance);
+		boolean isAlien = (controller.getMyCharacter().equals(SideName.ALIEN));
+		ArrayList<Coordinates> selectableCoordinates = controller.getMap().getReachableCoordinates(currentPosition, percorrableDistance, isAlien);
 		System.out.println("Scegli la coordinata di destinazione");
 		for(Coordinates coord : selectableCoordinates){
 			System.out.println(coord.toString());
@@ -146,7 +146,7 @@ public class GameCLI implements GameInterface {
 		if(!hasMoved){
 			System.out.println("[move] - muovi");
 		}
-		if(isHuman && (controller.getMyCharacter().getBagSize() > 0)){
+		if(isHuman && (controller.getMyCharacter().getBagSize() > 0 && !controller.isAttemptedEscape())){
 			System.out.println("[card] - usa carta oggetto");
 		}
 		if(!isHuman && !hasAttacked && hasMoved){
@@ -177,8 +177,7 @@ public class GameCLI implements GameInterface {
 
 	@Override
 	public void notifyOthersTurn(String playerTurn) {
-		System.out.println("Turno numero " + controller.getTurnNumber());
-		System.out.println("");
+		printTurnNumber(controller.getTurnNumber());
 		System.out.println("E' il turno di " + playerTurn);
 	}
 
@@ -214,12 +213,18 @@ public class GameCLI implements GameInterface {
 
 	@Override
 	public void showEscapeResult(boolean result, Coordinates coord) {
-		System.out.println(controller.getCurrentPlayer());
-		if(!result)
-			System.out.print(" non");
-		System.out.print(" è riuscito a scappare!");
-		if(!result)
-			System.out.print("Peggio per lui.");		
+		if(controller.isMyTurn())
+			if (result)
+				System.out.println("Sei riuscito a scappare! La tua partita è finita");
+			else
+				System.out.println("Non sei riuscito a scappare, dovrai provare un'altra scialuppa");
+		else{
+			String currentPlayerUsername = controller.getCurrentPlayer();
+			if (result)
+				System.out.println("Il giocatore " + currentPlayerUsername + " è riuscito a scappare dalla scialuppa in "+ coord);
+			else
+				System.out.println("Il giocatore " + currentPlayerUsername + " non è riuscito a scappare dalla scialuppa in "+coord+", dovrà provare un'altra scialuppa");
+		}
 	}
 
 	@Override
@@ -269,8 +274,8 @@ public class GameCLI implements GameInterface {
 
 	@Override
 	public void printTurnNumber(int turnNumber) {
-		
-		System.out.println("turno numero " + turnNumber);
+		System.out.println("");
+		System.out.println("Turno numero " + turnNumber);
 	}
 
 	@Override

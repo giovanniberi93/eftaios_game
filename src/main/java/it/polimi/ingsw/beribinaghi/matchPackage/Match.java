@@ -59,6 +59,7 @@ public class Match {
 	private boolean lastHumanKilled = false;
 	
 	private MatchDataUpdate matchDataUpdate;
+	private Coordinates usedShallopCoordinates;
 	
 	
 	/**
@@ -185,6 +186,10 @@ public class Match {
 	}
 
 
+	public Coordinates getUsedShallopCoordinates() {
+		return usedShallopCoordinates;
+	}
+
 	/**
 	 * start match
 	 */
@@ -205,7 +210,8 @@ public class Match {
 		SectorCard pickedCard = map.getSector(destinationCoordinates).pickFromAssociatedDeck();
 		if(pickedCard instanceof ShallopCard){
 			ShallopCard shallopCard = (ShallopCard) pickedCard;
-			allCards.add(pickedCard);
+			usedShallopCoordinates = destinationCoordinates;
+			allCards.add(new NothingToPick());
 			if(!(shallopCard.isDamaged())){
 				if(players.get(firstPlayerIndex).getUser().equals(currentPlayer.getUser())){
 					firstPlayerIndex = getNextValidPlayerIndex();

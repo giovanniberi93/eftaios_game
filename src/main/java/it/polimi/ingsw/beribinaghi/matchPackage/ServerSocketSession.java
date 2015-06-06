@@ -155,11 +155,11 @@ public class ServerSocketSession extends GameSessionServerSide implements Runnab
 		if(!noise[1].equals("nothing")){
 			match.setNoiseCoordinates(Coordinates.stringToCoordinates(noise[1]));
 			match.getMatchDataUpdate().setNoiseCoordinates();
-			if(match.isSuccessfulEscape() != null){
-				match.getMatchDataUpdate().setEscaped();
-				match.setSuccessfulEscape(null);
-			}
 		}
+		if(match.isSuccessfulEscape() != null){
+			match.getMatchDataUpdate().setEscaped();
+			match.setSuccessfulEscape(null);
+			}
 	}
 
 	@Override
@@ -214,12 +214,10 @@ public class ServerSocketSession extends GameSessionServerSide implements Runnab
 
 	@Override
 	protected void notifyEscape() {
-		if(!match.getMatchDataUpdate().getCurrentPlayer().equals(this.player)){
-			Coordinates shallopPosition = match.getMatchDataUpdate().getCurrentPlayer().getCharacter().getCurrentPosition();
+			Coordinates shallopPosition = match.getUsedShallopCoordinates();
 			String escapeResult = new String("escaped="+match.isSuccessfulEscape()+"="+shallopPosition);
 			out.println(escapeResult);
 			out.flush();
-		}	
 	}
 
 

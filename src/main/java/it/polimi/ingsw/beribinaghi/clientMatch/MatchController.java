@@ -31,6 +31,7 @@ public class MatchController {
 	private ArrayList<Player> escapedPlayers = new ArrayList<Player>();
 	private boolean myTurn;
 	private int turnNumber;
+	private boolean attemptedEscape;
 
 	public Character getMyCharacter() {
 		return myCharacter;
@@ -56,6 +57,7 @@ public class MatchController {
 			session.listenUpdate();
 	}
 
+	
 	public Map getMap() {
 		return map;
 	}
@@ -63,7 +65,7 @@ public class MatchController {
 	public Coordinates getMyPosition() {
 		return myCharacter.getCurrentPosition();
 	}
-	
+
 	
 	public GameInterface getGraphicInterface() {
 		return graphicInterface;
@@ -103,8 +105,6 @@ public class MatchController {
 			pickedCards = session.move(destinationCoordinates);
 		} catch (WrongSyntaxException e) {
 		}
-		if(map.getSector(destinationCoordinates) instanceof ShallopSector)
-			session.listenEscapeResult();
 		myCharacter.setCurrentPosition(destinationCoordinates);
 		if(pickedCards.size()>1){
 			fullBag = getMyCharacter().addCardToBag((ObjectCard) pickedCards.get(1));
@@ -114,6 +114,8 @@ public class MatchController {
 		noiseCoordinatesSelector.select((SectorCard) pickedCards.get(0));
 		if(fullBag)
 			graphicInterface.selectObjectToDiscard();
+		if(map.getSector(destinationCoordinates) instanceof ShallopSector)
+			session.listenEscapeResult();
 	}
 	
 	public void makeNoise(Coordinates noiseCoordinates){
@@ -138,6 +140,7 @@ public class MatchController {
 	 * invokes the method endTurn in the session, and calls the method turn to listen the new current player
 	 */
 	public void callEndTurn() {
+		attemptedEscape = false;
 		session.endTurn();
 		boolean finished = session.isMatchFinished();
 		if(!finished)
@@ -168,6 +171,14 @@ public class MatchController {
 	public void endMatch() {
 		System.out.println("siamo riusciti ad arrivare fin qua");
 		
+	}
+
+	public boolean isAttemptedEscape() {
+		return attemptedEscape;
+	}
+
+	public void setAttemptedEscape(boolean attemptedEscape) {
+		this.attemptedEscape = attemptedEscape;
 	}
 
 

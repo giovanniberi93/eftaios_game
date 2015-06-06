@@ -19,6 +19,9 @@ public class Map implements Serializable {
 	private Coordinates AlienBaseCoordinates;
 	private Coordinates HumanBaseCoordinates;
 	private SectorName[][] graphicMap;
+	private ArrayList<Coordinates> usedShallops = new ArrayList<Coordinates>();
+	private ArrayList<Coordinates> shallopsCoordinates = new ArrayList<Coordinates>();
+
 	
 	/**
 	 * Generate a new Map with name mapName and graphics map, and sets the alienBaseCoordinates and the HumanBaseCoordinates;
@@ -40,8 +43,10 @@ public class Map implements Serializable {
 				map.put(actualCoordinates.toString(), actualSector);
 				if(actualSector instanceof AlienBase)
 					setAlienBaseCoordinates(actualCoordinates);
-				if(actualSector instanceof HumanBase)
+				else if(actualSector instanceof HumanBase)
 					setHumanBaseCoordinates(actualCoordinates);
+				else if(actualSector instanceof ShallopSector)
+					shallopsCoordinates.add(actualCoordinates);
 			}
 		}
 
@@ -60,8 +65,10 @@ public class Map implements Serializable {
 				map.put(actualCoordinates.toString(), actualSector);
 				if(actualSector instanceof AlienBase)
 					setAlienBaseCoordinates(actualCoordinates);
-				if(actualSector instanceof HumanBase)
+				else if(actualSector instanceof HumanBase)
 					setHumanBaseCoordinates(actualCoordinates);
+				else if(actualSector instanceof ShallopSector)
+					shallopsCoordinates.add(actualCoordinates);
 			}
 	}
 
@@ -82,9 +89,9 @@ public class Map implements Serializable {
 			otherNumber = currentNumber - 1;
 		else
 			otherNumber = currentNumber + 1;	//b,d,f...
-		for(int i = -1; i < 2; i++){
+		for(int i = -1; i < 2; i++){	
 			actualCoordinates = new Coordinates((char) ((int)currentLetter + i), currentNumber);	
-			if(actualCoordinates.isValid())
+			if(areCoordinatesValid(actualCoordinates))
 				adiacentCoordinates.add(actualCoordinates);
 			actualCoordinates = new Coordinates((char) ((int)currentLetter + i), otherNumber);
 			if(actualCoordinates.isValid())
@@ -92,8 +99,9 @@ public class Map implements Serializable {
 		}
 		otherNumber = currentNumber + (currentNumber - otherNumber);
 		actualCoordinates = new Coordinates(currentLetter, otherNumber);
-		adiacentCoordinates.add(actualCoordinates);
-			return adiacentCoordinates;
+		if(areCoordinatesValid(actualCoordinates))
+			adiacentCoordinates.add(actualCoordinates);
+		return adiacentCoordinates;
 	}
 
 	
@@ -105,7 +113,7 @@ public class Map implements Serializable {
 	 * @return the ArrayList of the reachable coordinates
 	 */
 
-	public ArrayList<Coordinates> getReachableCoordinates(Coordinates initialCoordinates, int distance){
+	public ArrayList<Coordinates> getReachableCoordinates(Coordinates initialCoordinates, int distance, boolean isAlien){
 		ArrayList<Coordinates> reachableCoordinates = new ArrayList<Coordinates>();
 		ArrayList<Coordinates> adiacentToTmp = new ArrayList<Coordinates>();
 		ArrayList<Coordinates> tmpReachable = new ArrayList<Coordinates>();
@@ -134,9 +142,31 @@ public class Map implements Serializable {
 			adiacentToTmp.clear();
 		}
 		reachableCoordinates.remove(initialCoordinates);
+		ArrayList<Coordinates> unreachableShallops;
+		if(isAlien)
+			unreachableShallops = shallopsCoordinates;
+		else
+			unreachableShallops = usedShallops;
+		for(Coordinates shallopCoord : unreachableShallops)
+			reachableCoordinates.remove(shallopCoord);
 		return reachableCoordinates;
 	}
 
+	public boolean areCoordinatesValid(Coordinates coord){
+		if(coord.isValid() && !usedShallops.contains(coord))
+			return true;
+		return false;
+			/*int number = coord.getNumber();
+			int letterNumber = Coordinates.getNumberFromLetter(coord.getLetter());*/
+			//TODO aggiungi controlli sulla dimensione della mappa; al momento funziona tutto perché la mappa galilei è della dimensione massima
+	}
+	
+	
+	public void addUsedShallop(Coordinates usedShallop){
+		usedShallops.add(usedShallop);
+	}
+	
+	
 	public Sector getSector (Coordinates coordinates){
 		Sector selectedSector = map.get(coordinates.toString());
 		return selectedSector;

@@ -190,7 +190,8 @@ public class GameGUI implements GameInterface,MouseListener {
 	}
 	
 	private void printSelectableCoordinates(Coordinates currentPosition, int percorrableDistance) {
-		ArrayList<Coordinates> selectableCoordinates = controller.getMap().getReachableCoordinates(currentPosition, percorrableDistance);
+		boolean isAlien = (controller.getMyCharacter().equals(SideName.ALIEN));
+		ArrayList<Coordinates> selectableCoordinates = controller.getMap().getReachableCoordinates(currentPosition, percorrableDistance,isAlien);
 		SectorName[][] graphicMap = map.getGraphicMap();
 		for (Coordinates coordinates:selectableCoordinates){	
 			int i = coordinates.getNumber()-1;
@@ -200,7 +201,8 @@ public class GameGUI implements GameInterface,MouseListener {
 	}
 	
 	private void chooseMove(Coordinates coordinatesSelected) {
-		ArrayList<Coordinates> selectableCoordinates = controller.getMap().getReachableCoordinates(controller.getMyPosition(), controller.getMyCharacter().getPercorrableDistance());
+		boolean isAlien = (controller.getMyCharacter().equals(SideName.ALIEN));
+		ArrayList<Coordinates> selectableCoordinates = controller.getMap().getReachableCoordinates(controller.getMyPosition(), controller.getMyCharacter().getPercorrableDistance(), isAlien);
 		if (selectableCoordinates.contains(coordinatesSelected)){
 			hasMoved  = true;
 			SectorName[][] graphicMap = map.getGraphicMap();

@@ -327,9 +327,11 @@ public class ClientSocketSession implements GameSessionClientSide {
 			result = true;
 		else
 			result = false;
-		Coordinates coord = null;
-		coord = Coordinates.stringToCoordinates(command[2]);
-		controller.getGraphicInterface().showEscapeResult(result, coord);
+		Coordinates shallopCoord;
+		shallopCoord = Coordinates.stringToCoordinates(command[2]);
+		controller.setAttemptedEscape(true);
+		controller.getMap().addUsedShallop(shallopCoord);
+		controller.getGraphicInterface().showEscapeResult(result, shallopCoord);
 	}
 
 
