@@ -2,7 +2,7 @@ package it.polimi.ingsw.beribinaghi;
 
 
 /**
- * This class is everything
+ * This class is everything 
  *
  */
 public class App 
