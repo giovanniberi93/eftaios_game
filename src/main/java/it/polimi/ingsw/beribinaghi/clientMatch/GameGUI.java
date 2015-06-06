@@ -235,10 +235,10 @@ public class GameGUI implements GameInterface,MouseListener {
 	}
 
 	private void printSingleCard(Image img, int i,int j,int dimensionx,int dimensiony,int marginy) {
-		if (i!=4)
+		if (i!=3 || j==0)
 			g.drawImage(img, this.mapMarginWidth+this.mapWidth+j*(dimensionx+20)-20, this.mapMarginHeight + i*(separate+60)+marginy,dimensionx,dimensiony, null);
 		else
-			g.drawImage(img, this.mapMarginWidth+this.mapWidth+j*(dimensionx+20)-20, this.mapMarginHeight + i*(separate+60)-60,dimensionx,dimensiony, null);
+			g.drawImage(img, this.mapMarginWidth+this.mapWidth+j*(dimensionx+10)-30, this.mapMarginHeight + i*(separate+60),dimensionx,dimensiony, null);
 	}
 
 	public void notifyOthersTurn(String playerTurn) {
