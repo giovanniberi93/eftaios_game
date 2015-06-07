@@ -19,6 +19,44 @@ public class Player implements Serializable{
 		userName = user;
 	}
 	
+	
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((character == null) ? 0 : character.hashCode());
+		result = prime * result
+				+ ((userName == null) ? 0 : userName.hashCode());
+		return result;
+	}
+
+
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Player other = (Player) obj;
+		if (character == null) {
+			if (other.character != null)
+				return false;
+		} else if (!character.equals(other.character))
+			return false;
+		if (userName == null) {
+			if (other.userName != null)
+				return false;
+		} else if (!userName.equals(other.userName))
+			return false;
+		return true;
+	}
+
+
 
 	/**
 	 * @return the user name

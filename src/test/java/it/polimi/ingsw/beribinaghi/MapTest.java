@@ -5,9 +5,9 @@ import static org.junit.Assert.assertTrue;
 import it.polimi.ingsw.beribinaghi.mapPackage.Coordinates;
 import it.polimi.ingsw.beribinaghi.mapPackage.Map;
 import it.polimi.ingsw.beribinaghi.mapPackage.MapModel;
+import it.polimi.ingsw.beribinaghi.playerPackage.AlienCharacter;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -40,39 +40,14 @@ public class MapTest {
 		assertFalse(reachableCoord.contains(new Coordinates('v',2)));
 	}
 	
-	
-	
 	@Test
-	public void copyRange(){
-		String a = new String("a");
-		String b = new String("b");
-		String c = new String("c");
-		String d = new String("d");
-		String e = new String("e");
-		
-		String[] cosa = new String[5];
-		cosa[0] = a;
-		cosa[1] = b;
-		cosa[2] = c;
-		cosa[3] = d;
-		cosa[4] = e;
-
-		String[] sub = Arrays.copyOfRange(cosa, 1, 4);
-		assertTrue(true);
-
+	public void reachableCoord(){
+		ArrayList<Coordinates> reachable = map.getReachableCoordinates(new Coordinates('m',8), 1, false);
+		assertTrue(reachable.remove(new Coordinates('n',8)) &&
+				   reachable.remove(new Coordinates('m',9)) && 
+				   reachable.size() == 0);
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+
 	
 }
+	

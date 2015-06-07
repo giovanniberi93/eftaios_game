@@ -1,17 +1,19 @@
 package it.polimi.ingsw.beribinaghi;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.Card;
 import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.Defense;
-import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.NothingToPick;
-import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.Sedatives;
+import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.ObjectCard;
 import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.Teleport;
 import it.polimi.ingsw.beribinaghi.gameNames.SideName;
 import it.polimi.ingsw.beribinaghi.mapPackage.Coordinates;
 import it.polimi.ingsw.beribinaghi.mapPackage.MapModel;
 import it.polimi.ingsw.beribinaghi.matchPackage.GameSessionServerSide;
 import it.polimi.ingsw.beribinaghi.matchPackage.Match;
+import it.polimi.ingsw.beribinaghi.playerPackage.AlienCharacter;
+import it.polimi.ingsw.beribinaghi.playerPackage.HumanCharacter;
 import it.polimi.ingsw.beribinaghi.playerPackage.Player;
 
 import java.util.ArrayList;
@@ -41,36 +43,48 @@ public class MatchTest {
 		match = new Match(gameSessions, players, "testMap", "Galilei", MapModel.GALILEI,null);
 	}	
 	
+	@Test
+	public void matchNotNull(){
+		assertTrue(match != null);
+	}
 	
 	@Test
-	public void killEveryoneAttackTest(){
-		Coordinates coord = new Coordinates ('c',5);
-		for(int i = 0; i<4; i++)
-			players.get(i).getCharacter().setCurrentPosition(coord);
-		match.attack();
-		int survived = 0;
-		for (Player player : players)
-			if(player.getCharacter().isAlive())
-				survived++;
-		assertTrue(survived == 1);
+	public void moveAndPickObjectCard(){
+		ArrayList<Card> pickedCard =  new ArrayList<Card>();
+		int countDefense = 0;
+		int bagSizeBefore = match.getMatchDataUpdate().getCurrentPlayer().getCharacter().getBagSize();
+		while(match.getObjectsDeck().getValidCardsSize()>0){
+			pickedCard = match.move(new Coordinates('n',5));
+			if(pickedCard.size() == 2 && pickedCard.get(1) instanceof Defense)
+				countDefense++;
+		}
+		int bagSizeAfter = match.getMatchDataUpdate().getCurrentPlayer().getCharacter().getBagSize();
+		assertTrue(bagSizeAfter - bagSizeBefore == countDefense);
+		ArrayList<ObjectCard> bag = match.getMatchDataUpdate().getCurrentPlayer().getCharacter().getBag();
+		for(ObjectCard obj : bag)
+			match.discard(obj.toString());
+	}
+	
+	@Test
+	public void moveAndTryEscape(){
+		int countSuccess = 0;
+		int countFail = 0;
+		
+		it.polimi.ingsw.beribinaghi.playerPackage.Character currentCharacter = match.getMatchDataUpdate().getCurrentPlayer().getCharacter();
+		while(currentCharacter instanceof AlienCharacter){
+			match.finishTurn();
+			currentCharacter = match.getMatchDataUpdate().getCurrentPlayer().getCharacter();
+		}
+		while(match.getShallopsDeck().getValidCardsSize()>0){
+			match.move(new Coordinates('v',2));
+			if(match.isSuccessfulEscape())
+				countSuccess++;
+			else
+				countFail++;
+		}
+		assertEquals(countSuccess, countFail);
 	}
 
-	
-	@Test
-	public void attackWithDefense(){
-		int killedHumans = 0;
-		for(int i = 0; i<4; i++){
-			players.get(i).getCharacter().setCurrentPosition(new Coordinates('a',1));
-			players.get(i).getCharacter().addCardToBag(new Defense());
-		}
-		match.attack();
-		for(int i = 0; i<4; i++){
-			if(players.get(i).getCharacter().getSide() == SideName.HUMAN && !players.get(i).getCharacter().isAlive())
-				killedHumans++;
-		}
-		assertTrue(killedHumans == 0);
-	}
-	
 	
 	@Test
 	public void charactersNotNull(){
@@ -99,14 +113,7 @@ public class MatchTest {
 		assertTrue(rightInitialPosition);
 	}
 	
-	@Test 
-	public void sedativesCardEffectTest(){
-		ArrayList<Card> pickedCard =  new ArrayList<Card>();
-		this.match.addToUsedCards(new Sedatives());
-		pickedCard = match.move(new Coordinates('a',2));
-		assertTrue(pickedCard.get(0) instanceof NothingToPick);
-		
-	}
+
 
 	@Test
 	public void finishedTurnsTest(){
@@ -115,7 +122,15 @@ public class MatchTest {
 	}
 	
 	@Test
-	public void allHumansKilledOrEscapedTest(){
+	public void moreThanOneHumanAlive(){
+		match.setTurnNumber(1);
+		for(Player player : match.getPlayers())
+			player.getCharacter().setCurrentPosition(new Coordinates('a',1));
+		assertFalse(match.isFinished());
+	}
+	
+	@Test
+	public void allHumansKilledOrEscaped(){
 		for(Player player : players){
 			if(player.getCharacter().getSide() == SideName.HUMAN)
 				player.getCharacter().setCurrentPosition(null);
@@ -124,41 +139,35 @@ public class MatchTest {
 	}
 	
 	@Test
+	public void calculateWinners(){
+		match.setTurnNumber(40);
+		int i = 0;
+		while(!players.get(i).getCharacter().getSide().equals(SideName.HUMAN))
+			i++;
+		HumanCharacter hChar = (HumanCharacter) players.get(i).getCharacter();
+		hChar.setEscaped(true);
+		match.isFinished();
+		assertTrue(match.getWinners().size() == 3);
+	}
+
+	
+	@Test
 	public void turnsNotFinishedTest(){
 		match.setTurnNumber(27);
 		assertFalse(match.isFinished());
 	}
 	
-	@Test
-	public void allHumansNotKilledTest(){
-		assertFalse(match.isFinished());
-	}
+
 	
-	@Test
-	public void teleportTest(){
-		Coordinates coord = new Coordinates ('c',5);
-		for(Player player : players)
-			player.getCharacter().setCurrentPosition(coord);
-		match.teleport();
-		assertTrue(match.getMatchDataUpdate().getCurrentPlayer().getCharacter().getCurrentPosition().equals(match.getMap().getHumanBaseCoordinates()));		
-	}
-	
-	@Test
-	public void spotlightTest(){
-		Coordinates coord = new Coordinates ('c',5);
-		for(int i = 0; i<3; i++)
-			players.get(i).getCharacter().setCurrentPosition(coord);
-		match.spotlight(new Coordinates('b',5));
-		assertTrue(match.getSpotted().size() == 3);
-	}
 	
 	@Test
 	public void nextInitialCharacterTest(){
-		players.get(1).getCharacter().setCurrentPosition(null);
-		players.get(2).getCharacter().setCurrentPosition(null);
+		match.finishTurn();
+		match.finishTurn();
+		match.finishTurn();
 		players.get(3).getCharacter().setCurrentPosition(null);
-
-		assertTrue(match.getNextValidPlayerIndex() == 0);
+		match.finishTurn();
+		assertTrue(match.getMatchDataUpdate().getCurrentPlayer().equals(players.get(0)));
 	}
 	
 	@Test
