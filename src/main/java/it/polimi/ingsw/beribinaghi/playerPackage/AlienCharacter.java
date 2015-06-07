@@ -20,7 +20,7 @@ public class AlienCharacter extends Character {
 	public int getPercorrableDistance() {
 		if(isStrong)
 			return percorrableDistance+1;
-		return percorrableDistance;
+		return super.percorrableDistance;
 	}
 
 	public boolean isStrong() {

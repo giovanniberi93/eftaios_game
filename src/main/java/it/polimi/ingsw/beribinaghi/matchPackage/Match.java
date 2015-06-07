@@ -220,7 +220,9 @@ public class Match {
 					turnNumber--;
 				}
 				successfulEscape = true;
-				currentPlayer.getCharacter().setCurrentPosition(null);
+				HumanCharacter currentCharacter = (HumanCharacter) currentPlayer.getCharacter();
+				currentCharacter.setCurrentPosition(null);
+				currentCharacter.setEscaped(true);
 			}
 			else
 				successfulEscape = false;
