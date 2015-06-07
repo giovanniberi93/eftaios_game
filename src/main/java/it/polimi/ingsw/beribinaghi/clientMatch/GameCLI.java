@@ -250,7 +250,7 @@ public class GameCLI implements GameInterface {
 
 
 	@Override
-	public void start() {
+	public void startRapresenting() {
 		this.printMap(controller.getMap(), controller.getMyPosition());
 		this.printCharacter(controller.getMyCharacter().getName(), controller.getMyCharacter().getRole(), controller.getMyCharacter().getSide());
 		this.changedTurn();

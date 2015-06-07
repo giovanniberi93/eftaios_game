@@ -25,6 +25,7 @@ import it.polimi.ingsw.beribinaghi.playerPackage.Character;
 import it.polimi.ingsw.beribinaghi.playerPackage.HumanCharacter;
 import it.polimi.ingsw.beribinaghi.playerPackage.Player;
 
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.PrintWriter;
 import java.net.Socket;

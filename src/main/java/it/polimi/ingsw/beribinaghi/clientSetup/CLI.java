@@ -65,50 +65,52 @@ public class CLI implements GraphicInterface {
 		Boolean inRoom = false;
 		Boolean exitGame = false;
 		do{
-			System.out.println("Cosa vuoi fare? Entra (nome partita)/Crea (nome partita)/Aggiorna/Esci");
-			String command = inLine.nextLine().trim();
-			String commandType[] = command.split(" "); //Divide il comando in parole
-			commandType[0] = correct(commandType[0]);
-			if (commandType.length>1 && commandType[0].equals("crea"))
-			{
-				if (setupController.create(command.substring(commandType[0].length()+1, command.length()))) //Tutta la stringa tranne il comando
+			do{
+				System.out.println("Cosa vuoi fare? Entra (nome partita)/Crea (nome partita)/Aggiorna/Esci");
+				String command = inLine.nextLine().trim();
+				String commandType[] = command.split(" "); //Divide il comando in parole
+				commandType[0] = correct(commandType[0]);
+				if (commandType.length>1 && commandType[0].equals("crea"))
 				{
-					inRoom = true;
-					System.out.println("Partita creata, sei nella room");
-					System.out.println("Giocatori aggiunti:");
+					if (setupController.create(command.substring(commandType[0].length()+1, command.length()))) //Tutta la stringa tranne il comando
+					{
+						inRoom = true;
+						System.out.println("Partita creata, sei nella room");
+						System.out.println("Giocatori aggiunti:");
+					}
+					else 
+						System.out.println("Nome partita già esistente");
 				}
-				else 
-					System.out.println("Nome partita già esistente");
-			}
-			else if (commandType.length>1 && commandType[0].equals("entra"))
-			{
-				int result = setupController.enter(command.substring(commandType[0].length()+1, command.length()));
-				if (result==0){
-					System.out.println("Entrato nella partita, sei nella room");
-					printPlayer(setupController.getPlayersName());
-					inRoom = true;
-				}
-				else if (result==1)
-					System.out.println("Nome partita non esistente");
-				else if (result==2)
-					System.out.println("Ci sono troppi giocatori in questa partita");
-				else
+				else if (commandType.length>1 && commandType[0].equals("entra"))
 				{
-					System.out.println("Partita già iniziata");
+					int result = setupController.enter(command.substring(commandType[0].length()+1, command.length()));
+					if (result==0){
+						System.out.println("Entrato nella partita, sei nella room");
+						printPlayer(setupController.getPlayersName());
+						inRoom = true;
+					}
+					else if (result==1)
+						System.out.println("Nome partita non esistente");
+					else if (result==2)
+						System.out.println("Ci sono troppi giocatori in questa partita");
+					else
+					{
+						System.out.println("Partita già iniziata");
+						this.printMatchesName();
+					}
+				}
+				else if (commandType.length>0 && commandType[0].equals("aggiorna"))
 					this.printMatchesName();
-				}
-			}
-			else if (commandType.length>0 && commandType[0].equals("aggiorna"))
-				this.printMatchesName();
-			else if (commandType.length>0 && commandType[0].equals("esci"))
-				exitGame = true;
+				else if (commandType.length>0 && commandType[0].equals("esci"))
+					exitGame = true;
+				else
+					System.out.println("Comando non riconosciuto!");
+			}while(!inRoom && !exitGame);
+			if (!exitGame)
+				setupController.inRoom();
 			else
-				System.out.println("Comando non riconosciuto!");
-		}while(!inRoom && !exitGame);
-		if (!exitGame)
-			setupController.inRoom();
-		else
-			setupController.closeConnection();
+				setupController.closeConnection();
+		}while (!exitGame);
 	}
 
 	private void printPlayer(ArrayList<String> playersName) {

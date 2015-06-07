@@ -21,6 +21,7 @@ public class PreMatch{
 	private ArrayList<Player> players;
 	private Timer timer;
 	private Match match;
+	private MatchController matchController;
 
 	public Match getMatch() {
 		return match;
@@ -77,8 +78,9 @@ public class PreMatch{
 	 * @param administrator
 	 * Creates a preMatch with name and a player administrator
 	 */
-	public PreMatch(String name,Player administrator){
+	public PreMatch(String name,Player administrator,MatchController matchController){
 		matchName = name;
+		this.matchController = matchController;
 		players = new ArrayList<Player>();
 		this.players.add(administrator);
 		timer = new Timer();
@@ -91,7 +93,7 @@ public class PreMatch{
 	public void setGameSession(ArrayList<GameSessionServerSide> sessions){
 		active = true;
 		timer.cancel();
-		match = new Match(sessions,players,matchName,"galilei",MapModel.GALILEI);
+		match = new Match(sessions,players,matchName,"galilei",MapModel.GALILEI,this);
 	}
 	
 	/**
@@ -106,5 +108,12 @@ public class PreMatch{
 		for (Player player: players)
 			playerName.add(player.getUser());
 		return playerName;
+	}
+
+	/**
+	 *  Finish the game, communicate the end to match controller
+	 */
+	public void finish() {
+		matchController.endMatch(this);
 	}
 }

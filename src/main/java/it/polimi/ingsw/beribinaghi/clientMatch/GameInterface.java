@@ -79,7 +79,7 @@ public interface GameInterface {
 	/**
 	 * start with showing to user character, map and first turn's player
 	 */
-	void start();
+	void startRapresenting();
 
 	/**
 	 * Shows a card used by currentPlayer

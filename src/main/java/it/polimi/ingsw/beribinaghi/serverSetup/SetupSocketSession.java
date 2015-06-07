@@ -54,26 +54,29 @@ public class SetupSocketSession extends Thread implements SetupSession {
 		Object choose;
 		Boolean exitPre = false;
 		do{
-			choose = in.nextLine();
-			if (choose.equals("update"))
-				printMatchName();
-			else if (choose.equals("new"))
-			{
-				if (createNewMatch(in.nextLine()))
-					inRoom = true;
-			}
-			else if (choose.equals("enter"))
-			{
-				if (enterMatch(in.nextLine()))
-					inRoom= true;
-			}
-			else if (choose.equals("exit"))
+			do{
+				choose = in.nextLine();
+				if (choose.equals("update"))
+					printMatchName();
+				else if (choose.equals("new"))
+				{
+					if (createNewMatch(in.nextLine()))
+						inRoom = true;
+				}
+				else if (choose.equals("enter"))
+				{
+					if (enterMatch(in.nextLine()))
+						inRoom= true;
+				}
+				else if (choose.equals("exit"))
 					exitPre = true;
-		}while (!inRoom && !exitPre);
-		if (exitPre)
-			closeSession();
-		else 
-			playerInRoom();
+			}while (!inRoom && !exitPre);
+			if (exitPre)
+				closeSession();
+			else 
+				playerInRoom();
+			inRoom = false;
+		}while (!exitPre);
 	}
 
 
@@ -228,5 +231,13 @@ public class SetupSocketSession extends Thread implements SetupSession {
 			return false;
 		}
 		return true;
+	}
+
+
+	@Override
+	public synchronized void setInactive() {
+		this.active = false;
+		this.matchName = null;
+		this.notify();
 	}
 }
