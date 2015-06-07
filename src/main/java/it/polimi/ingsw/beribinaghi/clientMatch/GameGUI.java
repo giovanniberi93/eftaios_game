@@ -51,6 +51,7 @@ public class GameGUI implements GameInterface,MouseListener,Runnable {
 	private HashMap<SectorName,Image> hashSector = new HashMap<SectorName,Image>();
 	private HashMap<SectorName,Image> hashSelectedSector = new HashMap<SectorName,Image>();
 	private HashMap<SectorName,Image> hashMySector = new HashMap<SectorName,Image>();
+	private HashMap<SectorName,Image> hashAttackSector = new HashMap<SectorName,Image>();
 	private HashMap<String,Image> hashCharacter = new HashMap<String,Image>();
 	private HashMap<String,Image> hashCard = new HashMap<String,Image>();
 	private HashMap<String,Image> hashLogo = new HashMap<String,Image>();
@@ -63,8 +64,12 @@ public class GameGUI implements GameInterface,MouseListener,Runnable {
 	private WatcherNoiseCoordinatesSelector selector;
 	private boolean hasAttacked;
 	private boolean isHuman;
-	private Coordinates rumorsCoordinates;
+	private Coordinates rumorsCoordinates = null;
+	private Coordinates attackCoordinates = null;
 	private boolean spotted;
+	private int row;
+	private int xRect,yRect,heightRect,widthRect;
+	private int nKill,nSurvived;
 	
 	
 	public GameGUI(GUI frame) {
@@ -82,6 +87,10 @@ public class GameGUI implements GameInterface,MouseListener,Runnable {
 		mapHeight = lh*2*Map.HEIGHT;
 		mapMarginWidth =20;
 		mapMarginHeight = (frame.getHeight()-mapHeight)/2;
+		xRect = this.mapMarginWidth+this.mapWidth+2*imgx+5;
+		yRect = 20;
+		heightRect =  this.mapMarginHeight + 3*(separate+60)-30;
+		widthRect = frame.getWidth()-xRect-5;
 		try {
 			hashSector.put(SectorName.DANGEROUS, ImageIO.read(new File("media/sector/dangerousSector.png").toURI().toURL()));
 			hashSector.put(SectorName.SAFE, ImageIO.read(new File("media/sector/safeSector.png").toURI().toURL()));
@@ -107,6 +116,11 @@ public class GameGUI implements GameInterface,MouseListener,Runnable {
 			hashMySector.put(SectorName.HUMANBASE, ImageIO.read(new File("media/sector/humanBaseMy.png").toURI().toURL()));
 			hashMySector.put(SectorName.ALIENBASE, ImageIO.read(new File("media/sector/alienBaseMy.png").toURI().toURL()));
 			hashMySector.put(SectorName.SHALLOP, ImageIO.read(new File("media/sector/shallopSectorMy.png").toURI().toURL()));
+			hashAttackSector.put(SectorName.DANGEROUS, ImageIO.read(new File("media/sector/dangerousSectorAttack.png").toURI().toURL()));
+			hashAttackSector.put(SectorName.SAFE, ImageIO.read(new File("media/sector/safeSectorAttack.png").toURI().toURL()));
+			hashAttackSector.put(SectorName.HUMANBASE, ImageIO.read(new File("media/sector/humanBaseAttack.png").toURI().toURL()));
+			hashAttackSector.put(SectorName.ALIENBASE, ImageIO.read(new File("media/sector/alienBaseAttack.png").toURI().toURL()));
+			hashAttackSector.put(SectorName.SHALLOP, ImageIO.read(new File("media/sector/shallopSectorAttack.png").toURI().toURL()));
 			hashCard.put("attack", ImageIO.read(new File("media/objectCard/attack.png").toURI().toURL()));
 			hashCard.put("teleport", ImageIO.read(new File("media/objectCard/teleport.png").toURI().toURL()));
 			hashCard.put("sedatives", ImageIO.read(new File("media/objectCard/sedatives.png").toURI().toURL()));
@@ -184,20 +198,62 @@ public class GameGUI implements GameInterface,MouseListener,Runnable {
 	}
 
 	private void managesMyTurn() {
+		iniTurn();
+		this.hasMoved = false;
+		this.hasAttacked = false;
+		this.selectany = false;
+		this.spotted = false;
+		g.setFont(new Font(frame.getFontName(), Font.BOLD, 16));
+		g.drawString("E' il tuo turno", xRect+5,yRect+17);
+		row++;
+		g.drawString("turno numero " + controller.getTurnNumber(), xRect+5,yRect+17*row);
+		row++;
+		this.printSelectableCoordinates(this.controller.getMyCharacter().getCurrentPosition(),controller.getMyCharacter().getPercorrableDistance());
+		g.setFont(new Font(frame.getFontName(), Font.BOLD, 16));
+		g.setColor(Color.WHITE);
+		g.drawString("Effettua spostamento", xRect+5,yRect+17*row);
+		row++;
+		if (isHuman && controller.getMyCharacter().getBagSize()>0){
+			g.drawString("o usa carta oggetto", xRect+5,yRect+17*row);
+			row++;
+		}
+	}
+	
+	public void notifyOthersTurn(String playerTurn) {
+		g.setColor(Color.BLACK);
+		g.fillRect( this.mapMarginWidth+this.mapWidth+imgx-20, this.mapMarginHeight +(separate+60), imgx, imgy);
+		g.setColor(Color.WHITE);
+		g.setFont(new Font(frame.getFontName(), Font.BOLD, 24));
+		iniTurn();
+		g.setFont(new Font(frame.getFontName(), Font.BOLD, 16));
+		g.drawString("Turno di " + playerTurn, xRect+5,yRect+17);
+		row++;
+		g.drawString("turno numero " + controller.getTurnNumber(), xRect+5,yRect+17*row);
+		row++;
+	}
+	
+	private void iniTurn(){
 		if (this.rumorsCoordinates!=null)
 			if (!this.rumorsCoordinates.equals(controller.getMyPosition()))
 				this.printSector( this.rumorsCoordinates.getNumber()-1, Coordinates.getNumberFromLetter(this.rumorsCoordinates.getLetter()), SectorName.DANGEROUS, 0);
 			else
 				this.printSector( this.rumorsCoordinates.getNumber()-1, Coordinates.getNumberFromLetter(this.rumorsCoordinates.getLetter()), SectorName.DANGEROUS, 2);
+		if (this.attackCoordinates!=null){
+			SectorName[][] graphicMap = map.getGraphicMap();
+			int i = attackCoordinates.getNumber()-1;
+			int j = Coordinates.getNumberFromLetter(attackCoordinates.getLetter());
+			if (!this.attackCoordinates.equals(controller.getMyPosition()))
+				this.printSector(i, j, graphicMap[i][j], 0);
+			else
+				this.printSector(i, j, graphicMap[i][j], 2);
+		}
 		this.rumorsCoordinates = null;
-		this.hasMoved = false;
-		this.hasAttacked = false;
-		this.selectany = false;
-		this.spotted = false;
+		this.attackCoordinates = null;
+		g.setColor(Color.BLACK);
+		g.fillRect(xRect, yRect, widthRect, heightRect);
 		g.setColor(Color.WHITE);
-		g.setFont(new Font(frame.getFontName(), Font.BOLD, 24));
-		g.drawString("E' il tuo turno, turno numero " + controller.getTurnNumber(), 20,30);
-		this.printSelectableCoordinates(this.controller.getMyCharacter().getCurrentPosition(),controller.getMyCharacter().getPercorrableDistance());
+		g.drawRect(xRect, yRect, widthRect, heightRect);
+		this.row = 1;
 	}
 	
 	private void printSelectableCoordinates(Coordinates currentPosition, int percorrableDistance) {
@@ -258,24 +314,10 @@ public class GameGUI implements GameInterface,MouseListener,Runnable {
 	}
 
 	private void printSingleCard(Image img, int i,int j,int dimensionx,int dimensiony,int marginy) {
-		if (i!=3 || j==0)
+		if (j==0)
 			g.drawImage(img, this.mapMarginWidth+this.mapWidth+j*(dimensionx+20)-20, this.mapMarginHeight + i*(separate+60)+marginy,dimensionx,dimensiony, null);
 		else
 			g.drawImage(img, this.mapMarginWidth+this.mapWidth+j*(dimensionx+10)-30, this.mapMarginHeight + i*(separate+60),dimensionx,dimensiony, null);
-	}
-
-	public void notifyOthersTurn(String playerTurn) {
-		g.setColor(Color.BLACK);
-		g.fillRect( this.mapMarginWidth+this.mapWidth+imgx, this.mapMarginHeight +(separate+60), imgx, imgy);
-		g.setColor(Color.WHITE);
-		g.setFont(new Font(frame.getFontName(), Font.BOLD, 24));
-		g.drawString("Turno di " + playerTurn + ", turno numero " + controller.getTurnNumber(), 20,30);
-		if (this.rumorsCoordinates!=null)
-			if (!this.rumorsCoordinates.equals(controller.getMyPosition()))
-				this.printSector( this.rumorsCoordinates.getNumber()-1, Coordinates.getNumberFromLetter(this.rumorsCoordinates.getLetter()), SectorName.DANGEROUS, 0);
-			else
-				this.printSector( this.rumorsCoordinates.getNumber()-1, Coordinates.getNumberFromLetter(this.rumorsCoordinates.getLetter()), SectorName.DANGEROUS, 2);
-		this.rumorsCoordinates = null;
 	}
 	
 	@Override
@@ -305,8 +347,10 @@ public class GameGUI implements GameInterface,MouseListener,Runnable {
 			img = hashSelectedSector.get(sectorName);
 		else if (type==2)
 			img = hashMySector.get(sectorName);
-		else
+		else if (type==3)
 			img = this.imgRumors;
+		else
+			img = hashAttackSector.get(sectorName);
 		g.drawImage(img, mapMarginWidth+j*3*lw, mapMarginHeight+lh*(i*2+j%2), 4*lw, 2*lh, null);
 		if (sectorName.equals(SectorName.DANGEROUS) || sectorName.equals(SectorName.SAFE)){
 			String num = String.valueOf(i+1);
@@ -447,10 +491,26 @@ public class GameGUI implements GameInterface,MouseListener,Runnable {
 			this.printSingleCard(img,3,controller.getMyCharacter().getBagSize(),imgx,imgy,0);
 		}
 		if (!pickedCards.get(0).toString().equals("anySector")){
+			g.setColor(Color.WHITE);
+			g.setFont(new Font(frame.getFontName(), Font.BOLD, 16));
+			if (pickedCards.get(0).toString().equals("yourSector"))
+				g.drawString("Rumore nel tuo settore", xRect+5,yRect+17*row);
+			else if (!card.toString().equals("nothing"))
+				g.drawString("Silenzio", xRect+5,yRect+17*row);
+			this.row++;
 			if(!isHuman && !hasAttacked && hasMoved ){
 				this.showAttackButton();
 			}
 			this.showEndButton();
+			
+		}
+		if (pickedCards.size()>1){
+			g.setColor(Color.WHITE);
+			g.setFont(new Font(frame.getFontName(), Font.BOLD, 16));
+			g.drawString("Hai pescato una carta", xRect+5,yRect+17*row);
+			this.row++;
+			g.drawString("oggetto", xRect+5,yRect+17*row);
+			this.row++;
 		}
 	}
 
@@ -472,6 +532,11 @@ public class GameGUI implements GameInterface,MouseListener,Runnable {
 	public void chooseAnyCoordinates(WatcherNoiseCoordinatesSelector selector) {
 		this.selectany = true;
 		this.selector = selector;
+		g.setFont(new Font(frame.getFontName(), Font.BOLD, 16));
+		g.drawString("Seleziona la coordinata", xRect+5,yRect+17*row);
+		this.row++;
+		g.drawString("dove fare rumore", xRect+5,yRect+17*row);
+		this.row++;
 	}
 
 	@Override
@@ -488,10 +553,15 @@ public class GameGUI implements GameInterface,MouseListener,Runnable {
 		if (i!=-1){
 			this.rumorsCoordinates = noiseCoord;
 			this.printSector(i,j,graphicMap[i][j],3);
+			g.setColor(Color.WHITE);
+			g.setFont(new Font(frame.getFontName(), Font.BOLD, 16));
+			g.drawString("Hai sentito un rumore", xRect+5,yRect+17*row);
+			this.row++;
 		} else{
 			g.setColor(Color.WHITE);
-			g.setFont(new Font(frame.getFontName(), Font.BOLD, 24));
-			g.drawString("Silenzio", this.mapWidth+this.mapMarginWidth-200,30);
+			g.setFont(new Font(frame.getFontName(), Font.BOLD, 16));
+			g.drawString("Silenzio", xRect+5,yRect+17*row);
+			this.row++;
 		}
 	}
 
@@ -557,20 +627,54 @@ public class GameGUI implements GameInterface,MouseListener,Runnable {
 		controller.callEndTurn();
 	}
 
+	@Override
 	public void showAttackCoordinates(Coordinates attackCoordinates) {
-		// TODO Auto-generated method stub
-		
+		this.attackCoordinates = attackCoordinates;
+		SectorName[][] graphicMap = map.getGraphicMap();
+		int i = attackCoordinates.getNumber()-1;
+		int j = Coordinates.getNumberFromLetter(attackCoordinates.getLetter());
+		this.printSector(i,j,graphicMap[i][j],4);
+		this.nKill = 0;
+		this.nSurvived = 0;
+		g.setColor(Color.WHITE);
+		g.setFont(new Font(frame.getFontName(), Font.BOLD, 16));
+		g.drawString("Attacco", xRect+5,yRect+17*row);
+		this.row++;
 	}
 
 	@Override
 	public void showKill(String username, String character) {
-		// TODO Auto-generated method stub
-		
+		g.setColor(Color.WHITE);
+		g.setFont(new Font(frame.getFontName(), Font.BOLD, 16));
+		if (nKill==0){
+			g.drawString("Morti:", xRect+5,yRect+17*row);
+			this.row++;
+		}
+		if(username == null)
+			g.drawString("Nessuno morto", xRect+5,yRect+17*row);
+		else if(username.equals(controller.getMyPlayerName())){
+			g.drawString("Sei stato ucciso", xRect+5,yRect+17*row);
+			controller.getMyCharacter().setCurrentPosition(null);
+		} else{
+			g.drawString(username+", nel ruolo di", xRect+5,yRect+17*row);
+			this.row++;
+			g.drawString(character, xRect+5,yRect+17*row);
+		}
+		this.row++;
+		this.nKill++;
 	}
 
 	@Override
-	public void showSurvived(String username, String character) {
-		// TODO Auto-generated method stub
+	public void showSurvived(String username) {
+		g.setColor(Color.WHITE);
+		g.setFont(new Font(frame.getFontName(), Font.BOLD, 16));
+		if (this.nSurvived==0){
+			g.drawString("Difesi:", xRect+5,yRect+17*row);
+			this.row++;
+		}
+		g.drawString(username, xRect+5,yRect+17*row);
+		this.row++;
+		this.nSurvived++;
 	}
 
 

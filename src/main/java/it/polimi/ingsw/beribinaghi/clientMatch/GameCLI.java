@@ -323,7 +323,7 @@ public class GameCLI implements GameInterface {
 
 
 	@Override
-	public void showSurvived(String username, String character) {
+	public void showSurvived(String username) {
 		System.out.println("Il giocatore " + username + " è riuscito a difendersi!");
 		
 	}

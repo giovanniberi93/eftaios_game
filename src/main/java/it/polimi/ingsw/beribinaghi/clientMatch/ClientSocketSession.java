@@ -273,7 +273,7 @@ public class ClientSocketSession implements GameSessionClientSide {
 		if(survived.length != 0){
 			for(String singleSurvived : survived){
 				String[] survivedCharacter = singleSurvived.split("&");
-				controller.getGraphicInterface().showSurvived(survivedCharacter[0], survivedCharacter[1]);
+				controller.getGraphicInterface().showSurvived(survivedCharacter[0]);
 				if(survivedCharacter[0].equals(controller.getMyPlayerName()))
 					controller.getMyCharacter().removeCardFromBag(new Defense());
 			}
