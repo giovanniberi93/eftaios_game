@@ -43,11 +43,14 @@ public abstract class Deck {
 			discardPile.add(card);
 		}
 
-	public ArrayList<Card> getValidCards() {
-		return validCards;
+	public int getDiscardPileSize(){
+		return discardPile.size();
 	}
 	
-	
+	public int getValidCardsSize(){
+		return validCards.size();
 	}
+	
+}
 
 

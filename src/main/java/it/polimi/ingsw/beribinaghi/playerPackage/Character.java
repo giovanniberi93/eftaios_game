@@ -39,6 +39,65 @@ public abstract class Character implements Serializable{
 		isAlive = true;
 	}
 
+	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((bag == null) ? 0 : bag.hashCode());
+		result = prime * result
+				+ ((currentPosition == null) ? 0 : currentPosition.hashCode());
+		result = prime * result + (hasAdrenalin ? 1231 : 1237);
+		result = prime * result + (isAlive ? 1231 : 1237);
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		result = prime * result + percorrableDistance;
+		result = prime * result + ((role == null) ? 0 : role.hashCode());
+		result = prime * result + ((side == null) ? 0 : side.hashCode());
+		return result;
+	}
+
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Character other = (Character) obj;
+		if (bag == null) {
+			if (other.bag != null)
+				return false;
+		} else if (!bag.equals(other.bag))
+			return false;
+		if (currentPosition == null) {
+			if (other.currentPosition != null)
+				return false;
+		} else if (!currentPosition.equals(other.currentPosition))
+			return false;
+		if (hasAdrenalin != other.hasAdrenalin)
+			return false;
+		if (isAlive != other.isAlive)
+			return false;
+		if (name == null) {
+			if (other.name != null)
+				return false;
+		} else if (!name.equals(other.name))
+			return false;
+		if (percorrableDistance != other.percorrableDistance)
+			return false;
+		if (role == null) {
+			if (other.role != null)
+				return false;
+		} else if (!role.equals(other.role))
+			return false;
+		if (side != other.side)
+			return false;
+		return true;
+	}
+
+
 	public String toString(){
 		String character = new String(name + ", " + role);
 		return character;
@@ -48,7 +107,7 @@ public abstract class Character implements Serializable{
 		this.hasAdrenalin = hasAdrenalin;
 	}
 
-
+	
 
 	public int getPercorrableDistance() {
 		if(hasAdrenalin == true){
@@ -124,7 +183,7 @@ public abstract class Character implements Serializable{
 			}
 		}
 		return false;
-	}
+	}	
 
 	/**
 	 * sets the parameter as the new currentPosition

@@ -1,4 +1,4 @@
-/**
+	/**
  * 
  */
 package it.polimi.ingsw.beribinaghi.matchPackage;
@@ -112,6 +112,17 @@ public class Match {
 	}
 	
 	
+	
+	public DangerousSectorsDeck getDangerousSectorsDeck() {
+		return dangerousSectorsDeck;
+	}
+
+
+	public CharactersDeck getCharactersDeck() {
+		return playersDeck;
+	}
+
+
 	public ShallopsDeck getShallopsDeck() {
 		return shallopsDeck;
 	}
@@ -291,6 +302,12 @@ public class Match {
 		this.turnNumber = turnNumber;
 	}
 
+	
+
+	public ArrayList<Player> getPlayers() {
+		return players;
+	}
+
 
 	/**
 	 * Is called from currentPlayer when he finishes his turn; sets the new currentPlayer
@@ -300,6 +317,7 @@ public class Match {
 			currentPlayerIndex = getNextValidPlayerIndex();
 			if(currentPlayerIndex == firstPlayerIndex)
 				turnNumber++;
+			usedCards.clear();
 			getMatchDataUpdate().clear(players.get(currentPlayerIndex));
 		}
 		else{
@@ -316,7 +334,7 @@ public class Match {
 	}
 
 
-	public int getNextValidPlayerIndex() {
+	private int getNextValidPlayerIndex() {
 		int index = currentPlayerIndex;
 		do{
 			if(index == players.size()-1)

@@ -32,6 +32,7 @@ public class MatchController {
 	private boolean myTurn;
 	private int turnNumber;
 	private boolean attemptedEscape;
+	private boolean matchFinished;
 
 	public Character getMyCharacter() {
 		return myCharacter;
@@ -53,7 +54,7 @@ public class MatchController {
 		myCharacter = session.getCharacter();
 		turn(false);
 		graphicInterface.startRapresenting();
-		if (!this.isMyTurn())
+		if (!this.isMyTurn() && !isMatchFinished())
 			session.listenUpdate();
 	}
 
@@ -171,6 +172,7 @@ public class MatchController {
 	}
 
 	public void endMatch() {
+		setMatchFinished(true);
 		System.out.println("siamo riusciti ad arrivare fin qua");
 		
 	}
@@ -186,6 +188,14 @@ public class MatchController {
 
 	public void setAttemptedEscape(boolean attemptedEscape) {
 		this.attemptedEscape = attemptedEscape;
+	}
+
+	public boolean isMatchFinished() {
+		return matchFinished;
+	}
+
+	public void setMatchFinished(boolean matchFinished) {
+		this.matchFinished = matchFinished;
 	}
 
 

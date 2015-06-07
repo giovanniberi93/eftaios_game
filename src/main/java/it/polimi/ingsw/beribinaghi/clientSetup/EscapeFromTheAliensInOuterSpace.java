@@ -14,7 +14,7 @@ public class EscapeFromTheAliensInOuterSpace {
 
 
 
-	public final static String ADDRESS = "127.0.0.1";
+	public final static String ADDRESS = "192.168.0.17";
 	public final static int SOCKETPORT = 2767;
 	public final static int RMIPORT = 2768;
 	

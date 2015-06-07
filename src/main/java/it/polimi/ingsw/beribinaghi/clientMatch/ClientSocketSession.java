@@ -284,7 +284,7 @@ public class ClientSocketSession implements GameSessionClientSide {
 	public void listenUpdate() {
 		String commandString = in.nextLine();
 		String[] command = commandString.split("=");
-		while(!command[0].equals("end")){
+		while(!command[0].equals("end") && !controller.isMatchFinished()){
 			switch(command[0]){
 				case "noise":
 					Coordinates noiseCoord = null;
@@ -320,10 +320,13 @@ public class ClientSocketSession implements GameSessionClientSide {
 				case "discarded":
 					controller.getGraphicInterface().notifyDiscardedObject();
 			}
-		commandString = in.nextLine();
-		command = commandString.split("=");
+			if(!controller.isMatchFinished()){
+				commandString = in.nextLine();
+				command = commandString.split("=");		
+			}
 		}
-		controller.turn(true);
+		if(!controller.isMatchFinished())
+			controller.turn(true);
 	}
 	
 

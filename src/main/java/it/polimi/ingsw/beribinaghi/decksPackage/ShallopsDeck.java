@@ -13,7 +13,7 @@ public class ShallopsDeck extends Deck {
 	 */
 	public ShallopsDeck(){
 		for(int i = 0; i<3; i++)
-			super.validCards.add(new ShallopCard(false));	
+			super.validCards.add(new ShallopCard(true));	
 		for(int i = 0; i<3; i++)
 			super.validCards.add(new ShallopCard(false));		//TODO aggiusta
 	}

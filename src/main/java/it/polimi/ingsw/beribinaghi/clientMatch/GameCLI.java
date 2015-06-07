@@ -11,6 +11,7 @@ import it.polimi.ingsw.beribinaghi.gameNames.SideName;
 import it.polimi.ingsw.beribinaghi.mapPackage.Coordinates;
 import it.polimi.ingsw.beribinaghi.mapPackage.Map;
 
+import java.io.Console;
 import java.util.ArrayList;
 import java.util.Scanner;
 
