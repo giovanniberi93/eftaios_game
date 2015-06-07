@@ -352,7 +352,7 @@ public class Match {
 		ArrayList<Coordinates> lightedCoordinates = map.adiacentCoordinates(selectedCoordinates);
 		for(Coordinates analyzedCoordinates : lightedCoordinates){
 			for(Player analyzedPlayer : players)
-				if(analyzedPlayer.getCharacter().getCurrentPosition().equals(analyzedCoordinates))
+				if(analyzedPlayer.getCharacter().getCurrentPosition() != null && analyzedPlayer.getCharacter().getCurrentPosition().equals(analyzedCoordinates))
 					this.spotted.add(analyzedPlayer);
 		}
 		spotlightCoordinates = selectedCoordinates;
@@ -375,7 +375,7 @@ public class Match {
 		for(int i = 0; i < players.size(); i++){
 			if(i != this.currentPlayerIndex){
 				analyzedPlayer = players.get(i);
-				if(analyzedPlayer.getCharacter().getCurrentPosition().equals(currentPlayer.getCharacter().getCurrentPosition())){
+				if(analyzedPlayer.getCharacter().getCurrentPosition() != null && analyzedPlayer.getCharacter().getCurrentPosition().equals(currentPlayer.getCharacter().getCurrentPosition())){
 					if(analyzedPlayer.getCharacter().getSide() == SideName.HUMAN && (analyzedPlayer.getCharacter().removeCardFromBag(new Defense())))
 						this.survived.add(analyzedPlayer);
 					else{
@@ -399,6 +399,8 @@ public class Match {
 
 		}
 		getMatchDataUpdate().setAttackOutcome();
+		killed.clear();
+		survived.clear();
 	}
 	
 	public void teleport(){

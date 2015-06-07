@@ -116,6 +116,6 @@ public interface GameInterface {
 
 	void showKill(String username, String character);
 
-	void showSurvived(String username, String character);
+	void showSurvived(String username);
 
 }

@@ -569,7 +569,7 @@ public class GameGUI implements GameInterface,MouseListener,Runnable {
 	}
 
 	@Override
-	public void showSurvived(String username, String character) {
+	public void showSurvived(String username) {
 		// TODO Auto-generated method stub
 	}
 

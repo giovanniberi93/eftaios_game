@@ -3,6 +3,7 @@
  */
 package it.polimi.ingsw.beribinaghi.clientMatch;
 import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.Card;
+import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.Defense;
 import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.NothingToPick;
 import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.ObjectCard;
 import it.polimi.ingsw.beribinaghi.gameNames.SectorName;
@@ -141,25 +142,29 @@ public class GameCLI implements GameInterface {
 
 	private String chooseAction(boolean hasMoved, boolean isHuman, boolean hasAttacked) {
 		String command;
+		ArrayList<String> availableCommands = new ArrayList<String>();
 		
 		System.out.println("Scegli azione:");
 		if(!hasMoved){
 			System.out.println("[move] - muovi");
+			availableCommands.add("move");
 		}
-		if(isHuman && (controller.getMyCharacter().getBagSize() > 0 && !controller.isAttemptedEscape())){
+		if(isHuman && controller.getMyCharacter().getBagSize() > 0 && 
+				!controller.isAttemptedEscape() &&
+				!(controller.getMyCharacter().getBagSize() == 1 && controller.getMyCharacter().getBag().get(0) instanceof Defense)){
 			System.out.println("[card] - usa carta oggetto");
+			availableCommands.add("card");
 		}
 		if(!isHuman && !hasAttacked && hasMoved){
 			System.out.println("[attack] - attacca");
+			availableCommands.add("attack");
 		}
 		if(hasMoved){
 			System.out.println("[end] - finisci turno");
+			availableCommands.add("end");
 		}
 		command = in.nextLine();
-		while(!((command.equals("move") && !hasMoved) || 
-		   (command.equals("card") && (isHuman && (controller.getMyCharacter().getBagSize() > 0))) ||
-		   (command.equals("attack") && (!isHuman && !hasAttacked && hasMoved)) ||
-		   (command.equals("end") && hasMoved)))
+		while(!availableCommands.contains(command))
 		{
 			System.out.println("Comando non valido! Reinserisci il comando");
 			command = in.nextLine();
@@ -169,9 +174,11 @@ public class GameCLI implements GameInterface {
 
 	@Override
 	public void showUsedCard(ObjectCard card, Coordinates coord) {
-		System.out.println("Il giocatore corrente ha usato la carta "+ card.toString());
+		System.out.print("Il giocatore corrente ha usato la carta "+ card.toString());
 		if(coord !=  null)
-			System.out.print(" alla coordinata " + coord);
+			System.out.println(" alla coordinata " + coord);
+		else
+			System.out.println("");
 		
 	}
 
@@ -323,8 +330,11 @@ public class GameCLI implements GameInterface {
 
 
 	@Override
-	public void showSurvived(String username, String character) {
-		System.out.println("Il giocatore " + username + " è riuscito a difendersi!");
+	public void showSurvived(String username) {
+		if(username.equals(controller.getMyPlayerName()))
+			System.out.println("Sei riuscito a difenderti!");
+		else 
+			System.out.println("Il giocatore " + username + " è riuscito a difendersi");
 		
 	}
 }
