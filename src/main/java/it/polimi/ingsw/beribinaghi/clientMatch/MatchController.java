@@ -142,6 +142,7 @@ public class MatchController {
 	 */
 	public void callEndTurn() {
 		attemptedEscape = false;
+		myCharacter.setHasAdrenalin(false);
 		session.endTurn();
 		boolean finished = session.isMatchFinished();
 		if(!finished)

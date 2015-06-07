@@ -5,7 +5,6 @@ package it.polimi.ingsw.beribinaghi.clientSetup;
 
 import it.polimi.ingsw.beribinaghi.clientMatch.GameGUI;
 import it.polimi.ingsw.beribinaghi.clientMatch.GameInterface;
-import it.polimi.ingsw.beribinaghi.mapPackage.Coordinates;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -166,7 +165,7 @@ public class GUI extends JFrame implements GraphicInterface {
 			 if (e instanceof EndOfMediaEvent)
 	         {
 				 try {
-					playerMusic = Manager.createPlayer(mediaLocator);
+					 playerMusic = Manager.createPlayer(mediaLocator);
 					 playerMusic.start();
 					 playerMusic.addControllerListener(this);
 				} catch (NoPlayerException | IOException e1) {

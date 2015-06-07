@@ -13,8 +13,8 @@ public class DangerousSectorsDeck extends Deck {
 	
 	private final static int NUMBERANYSECTORCARDS = 10;
 	private final static int NUMBERYOURSECTORCARDS = 10;
-	private final static int NUMBERSILENCECARDS = 10;
-	private final static int NUMBEROBJECTSFORTYPE = 0;
+	private final static int NUMBERSILENCECARDS = 5;
+	private final static int NUMBEROBJECTSFORTYPE = 4;
 
 
 	/**
