@@ -672,7 +672,10 @@ public class GameGUI implements GameInterface,MouseListener,Runnable {
 			g.drawString("Difesi:", xRect+5,yRect+17*row);
 			this.row++;
 		}
-		g.drawString(username, xRect+5,yRect+17*row);
+		if(username.equals(controller.getMyPlayerName()))
+			g.drawString("Sei riuscito a difenderti!", xRect+5,yRect+17*row);
+		else 
+			g.drawString(username, xRect+5,yRect+17*row);
 		this.row++;
 		this.nSurvived++;
 	}

@@ -15,7 +15,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 
-public abstract class Character implements Serializable{
+public abstract class Character implements Serializable{ 
 	private static final long serialVersionUID = 1L;
 	private String name;
 	private String role;
@@ -37,6 +37,7 @@ public abstract class Character implements Serializable{
 		this.setSide(character.getSide());
 		this.setAlive(true);
 		isAlive = true;
+		bag.add(new Defense());
 	}
 
 	public String toString(){
@@ -99,7 +100,7 @@ public abstract class Character implements Serializable{
 	 */
 	public boolean addCardToBag(ObjectCard pickedCard){
 		bag.add(pickedCard);
-		if(bag.size() > 3)
+		if(bag.size() > 3)		//TODO costante
 			return true;
 		return false;
 	}
