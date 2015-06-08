@@ -28,6 +28,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import javax.imageio.ImageIO;
+import javax.media.ControllerEvent;
+import javax.media.ControllerListener;
+import javax.media.EndOfMediaEvent;
+import javax.media.Manager;
+import javax.media.MediaLocator;
+import javax.media.NoPlayerException;
+import javax.media.Player;
+import javax.swing.JOptionPane;
 import javax.swing.Timer;
 
 /**
@@ -52,6 +60,7 @@ public class GameGUI implements GameInterface,MouseListener,Runnable {
 	private HashMap<SectorName,Image> hashSelectedSector = new HashMap<SectorName,Image>();
 	private HashMap<SectorName,Image> hashMySector = new HashMap<SectorName,Image>();
 	private HashMap<SectorName,Image> hashAttackSector = new HashMap<SectorName,Image>();
+	private HashMap<SectorName,Image> hashSpotSector = new HashMap<SectorName,Image>();
 	private HashMap<String,Image> hashCharacter = new HashMap<String,Image>();
 	private HashMap<String,Image> hashCard = new HashMap<String,Image>();
 	private HashMap<String,Image> hashLogo = new HashMap<String,Image>();
@@ -59,6 +68,7 @@ public class GameGUI implements GameInterface,MouseListener,Runnable {
 	private Image imgFinishTurn;
 	private Image imgRumors;
 	private ArrayList<Coordinates> posShallop = new ArrayList<Coordinates>();
+	private ArrayList<Integer> sitShallop = new ArrayList<Integer>();
 	private boolean hasMoved;
 	private boolean selectany;
 	private WatcherNoiseCoordinatesSelector selector;
@@ -70,6 +80,14 @@ public class GameGUI implements GameInterface,MouseListener,Runnable {
 	private int row;
 	private int xRect,yRect,heightRect,widthRect;
 	private int nKill,nSurvived;
+	private Image imgShallopOk;
+	private Image imgShallopKo;
+	private PlayerHandler playerRumors;
+	private PlayerHandler playerAttack;
+	private PlayerHandler playerSilence;
+	private int posEscape=-1;
+	private int numspot;
+	private boolean isFinish;
 	
 	
 	public GameGUI(GUI frame) {
@@ -91,6 +109,7 @@ public class GameGUI implements GameInterface,MouseListener,Runnable {
 		yRect = 20;
 		heightRect =  this.mapMarginHeight + 3*(separate+60)-30;
 		widthRect = frame.getWidth()-xRect-5;
+		this.isFinish = false;
 		try {
 			hashSector.put(SectorName.DANGEROUS, ImageIO.read(new File("media/sector/dangerousSector.png").toURI().toURL()));
 			hashSector.put(SectorName.SAFE, ImageIO.read(new File("media/sector/safeSector.png").toURI().toURL()));
@@ -121,6 +140,11 @@ public class GameGUI implements GameInterface,MouseListener,Runnable {
 			hashAttackSector.put(SectorName.HUMANBASE, ImageIO.read(new File("media/sector/humanBaseAttack.png").toURI().toURL()));
 			hashAttackSector.put(SectorName.ALIENBASE, ImageIO.read(new File("media/sector/alienBaseAttack.png").toURI().toURL()));
 			hashAttackSector.put(SectorName.SHALLOP, ImageIO.read(new File("media/sector/shallopSectorAttack.png").toURI().toURL()));
+			hashSpotSector.put(SectorName.DANGEROUS, ImageIO.read(new File("media/sector/dangerousSectorSpot.png").toURI().toURL()));
+			hashSpotSector.put(SectorName.SAFE, ImageIO.read(new File("media/sector/safeSectorSpot.png").toURI().toURL()));
+			hashSpotSector.put(SectorName.HUMANBASE, ImageIO.read(new File("media/sector/humanBaseSpot.png").toURI().toURL()));
+			hashSpotSector.put(SectorName.ALIENBASE, ImageIO.read(new File("media/sector/alienBaseSpot.png").toURI().toURL()));
+			hashSpotSector.put(SectorName.SHALLOP, ImageIO.read(new File("media/sector/shallopSectorSpot.png").toURI().toURL()));
 			hashCard.put("attack", ImageIO.read(new File("media/objectCard/attack.png").toURI().toURL()));
 			hashCard.put("teleport", ImageIO.read(new File("media/objectCard/teleport.png").toURI().toURL()));
 			hashCard.put("sedatives", ImageIO.read(new File("media/objectCard/sedatives.png").toURI().toURL()));
@@ -137,6 +161,11 @@ public class GameGUI implements GameInterface,MouseListener,Runnable {
 			imgAttackButton = ImageIO.read(new File("media/attack.png").toURI().toURL());
 			imgFinishTurn = ImageIO.read(new File("media/end.png").toURI().toURL());
 			imgRumors = ImageIO.read(new File("media/sector/dangerousSectorRumors.png").toURI().toURL());
+			imgShallopOk = ImageIO.read(new File("media/sector/shallopOk.png").toURI().toURL());
+			imgShallopKo = ImageIO.read(new File("media/sector/shallopKo.png").toURI().toURL());
+			playerRumors = new PlayerHandler(new MediaLocator(new File("media/noise.wav").toURI().toURL()));
+			playerAttack = new PlayerHandler(new MediaLocator(new File("media/attack.wav").toURI().toURL()));
+			playerSilence = new PlayerHandler(new MediaLocator(new File("media/silence.wav").toURI().toURL()));
 		} catch (IOException e) {
 		}
 	}
@@ -254,6 +283,13 @@ public class GameGUI implements GameInterface,MouseListener,Runnable {
 		g.setColor(Color.WHITE);
 		g.drawRect(xRect, yRect, widthRect, heightRect);
 		this.row = 1;
+		this.numspot = 0;
+		if (this.posEscape!=-1){
+			Coordinates coordToClose = posShallop.get(posEscape);
+			sitShallop.set(posEscape, 2);
+			this.printSector(coordToClose.getNumber()-1, Coordinates.getNumberFromLetter(coordToClose.getLetter()), SectorName.SHALLOP, 0);
+			posEscape = -1;
+		}
 	}
 	
 	private void printSelectableCoordinates(Coordinates currentPosition, int percorrableDistance) {
@@ -305,6 +341,21 @@ public class GameGUI implements GameInterface,MouseListener,Runnable {
 			this.printSingleCard(img,3,i+1,imgx,imgy,0);
 		}
 	}
+	
+	private void clearDefenseCard() {
+		int j=0;
+		Boolean find = false;
+		g.setColor(Color.BLACK);
+		g.fillRect(this.mapMarginWidth+this.mapWidth+imgx+-20, this.mapMarginHeight + 3*(separate+60), 4*imgx, imgy);
+		for(int i = 0; i < controller.getMyCharacter().getBagSize(); i++){
+			if (!controller.getMyCharacter().getCardFromBag(i).toString().equals("defense") || find){
+				Image img = hashCard.get(controller.getMyCharacter().getCardFromBag(i).toString());
+				this.printSingleCard(img,3,j+1,imgx,imgy,0);
+				j++;
+			} else
+				find = true;
+		}
+	}
 
 	private void printLogos() {
 		this.printSingleCard(hashLogo.get("character"), 0, 0,separate,separate,(imgy-separate)/2);
@@ -349,8 +400,10 @@ public class GameGUI implements GameInterface,MouseListener,Runnable {
 			img = hashMySector.get(sectorName);
 		else if (type==3)
 			img = this.imgRumors;
-		else
+		else if (type==4)
 			img = hashAttackSector.get(sectorName);
+		else
+			img = hashSpotSector.get(sectorName);
 		g.drawImage(img, mapMarginWidth+j*3*lw, mapMarginHeight+lh*(i*2+j%2), 4*lw, 2*lh, null);
 		if (sectorName.equals(SectorName.DANGEROUS) || sectorName.equals(SectorName.SAFE)){
 			String num = String.valueOf(i+1);
@@ -361,11 +414,20 @@ public class GameGUI implements GameInterface,MouseListener,Runnable {
 			g.setFont(frame.getFont());
 			g.drawString((Coordinates.getLetterFromNumber(j)+"" + num).toUpperCase(),mapMarginWidth+j*3*lw+2*lw-12 , mapMarginHeight+lh*(i*2+j%2)+lh+5);
 		} else if (sectorName.equals(SectorName.SHALLOP)){
-			Coordinates coordinates = new Coordinates(Coordinates.getLetterFromNumber(i),j+1);
-			if (!posShallop.contains(coordinates))
+			Coordinates coordinates = new Coordinates(Coordinates.getLetterFromNumber(j),i+1);
+			if (!posShallop.contains(coordinates)){
 				posShallop.add(coordinates);
+				sitShallop.add(0);
+			} 
+			int pos = posShallop.indexOf(coordinates);
 			g.setColor(Color.WHITE);
 			g.setFont(new Font(frame.getFontName(), Font.BOLD, 18));
+			if (sitShallop.get(pos)==1){
+				img = this.imgShallopOk;
+			} else if (sitShallop.get(pos)==2){
+				img = this.imgShallopKo;
+			}
+			g.drawImage(img, mapMarginWidth+j*3*lw, mapMarginHeight+lh*(i*2+j%2), 4*lw, 2*lh, null);
 			g.drawString(""+(posShallop.indexOf(coordinates)+1),mapMarginWidth+j*3*lw+2*lw-3 , mapMarginHeight+lh*(i*2+j%2)+lh+5);
 		}	
 	}
@@ -396,21 +458,21 @@ public class GameGUI implements GameInterface,MouseListener,Runnable {
 							r-=q%2;
 						}	
 					}
-				if (!hasMoved)
+				if (!hasMoved && !spotted)
 					this.chooseMove(new Coordinates(Coordinates.getLetterFromNumber(q),r+1));
 				else if (selectany)
 					this.selectRumorCoordinates(new Coordinates(Coordinates.getLetterFromNumber(q),r+1));
 				else if (spotted)
 					this.selectSpottedCoordinates(new Coordinates(Coordinates.getLetterFromNumber(q),r+1));
-			} else if (e.getX()>this.mapMarginWidth+this.mapWidth-200 && e.getX()<this.mapMarginWidth+this.mapWidth-138 && e.getY()>2 && e.getY()<70 && hasMoved && !selectany){
+			} else if (e.getX()>this.mapMarginWidth+this.mapWidth-200 && e.getX()<this.mapMarginWidth+this.mapWidth-138 && e.getY()>2 && e.getY()<70 && ((hasMoved && !selectany && !this.spotted) || isFinish)){
 					this.endTurn();
-				}
+			}
 			else if (e.getX()>this.mapMarginWidth+this.mapWidth-400 && e.getX()<this.mapMarginWidth+this.mapWidth-338 && e.getY()>2 && e.getY()<70 && hasMoved && !selectany && !isHuman && !hasAttacked){
 				this.attack();
-			} else if (isHuman){
-				for (int i=0; i<controller.getMyCharacter().getBagSize();i++){
+			} else if (isHuman && !selectany){
+				for (int i=1; i<=controller.getMyCharacter().getBagSize();i++){
 					if ((e.getX()>this.mapMarginWidth+this.mapWidth+i*(imgx+10)-30) && (e.getX()<this.mapMarginWidth+this.mapWidth+i*(imgx+10)-30+imgx) && (e.getY()>this.mapMarginHeight + 3*(separate+60)) && (e.getY()<this.mapMarginHeight + 3*(separate+60)+imgy)){
-						this.useObjectCard(controller.getMyCharacter().getBag().get(i));
+						this.useObjectCard(controller.getMyCharacter().getBag().get(i-1));
 						this.clearCard();
 						break;
 					}
@@ -421,19 +483,73 @@ public class GameGUI implements GameInterface,MouseListener,Runnable {
 
 
 	private void selectSpottedCoordinates(Coordinates coordinates) {
-		ArrayList<String> command = new ArrayList<String>();
-		command.add("spotlight");
-		command.add(coordinates.toString());
-		controller.callObjectCard(command);
+		SectorName[][] graphicMap = map.getGraphicMap();
+		int i = coordinates.getNumber()-1;
+		int j = Coordinates.getNumberFromLetter(coordinates.getLetter());
+		if (!graphicMap[i][j].equals(SectorName.BLANK)){
+			ArrayList<String> command = new ArrayList<String>();
+			command.add("spotlight");
+			command.add(coordinates.toString());
+			controller.callObjectCard(command);
+			this.spotted = false;
+			this.showEndButton();
+			this.clearCard();
+		}
 	}
 
 	private void useObjectCard(Card card) {
-		if(card.toString().equals("spotlight")){
-			this.spotted = true;
-		} else {
-			ArrayList<String> command = new ArrayList<String>();
-			command.add(card.toString());
-			controller.callObjectCard(command);
+		SectorName[][] graphicMap = map.getGraphicMap();
+		if(!card.toString().equals("defense")){
+			if(card.toString().equals("spotlight")){
+				g.setColor(Color.BLACK);
+				g.fillRect(this.mapMarginWidth+this.mapWidth-200, 2, 68, 60);
+				g.setColor(Color.WHITE);
+				g.setFont(new Font(frame.getFontName(), Font.BOLD, 17));
+				g.drawString("Selezionare la", xRect+5,yRect+17*row);
+				this.row++;
+				g.drawString("coordinata spotted", xRect+5,yRect+17*row);
+				this.row++;
+				this.spotted = true;
+			} else {
+				Coordinates oldcoord = controller.getMyPosition();
+				if (!hasMoved && card.toString().equals("teleport")){
+					ArrayList<Coordinates> selectableCoordinates = controller.getMap().getReachableCoordinates(controller.getMyPosition(), controller.getMyCharacter().getPercorrableDistance(),false);
+					for (Coordinates coordinates:selectableCoordinates){	
+						int i = coordinates.getNumber()-1;
+						int j = Coordinates.getNumberFromLetter(coordinates.getLetter());
+						this.printSector(i,j,graphicMap[i][j],0);
+					}	
+				}
+				ArrayList<String> command = new ArrayList<String>();
+				command.add(card.toString());
+				controller.callObjectCard(command);
+				if (card.toString().equals("teleport")){
+					int i = oldcoord.getNumber()-1;
+					int j = Coordinates.getNumberFromLetter(oldcoord.getLetter());
+					this.printSector(i,j,graphicMap[i][j],0);
+					Coordinates newPos = controller.getMyPosition();
+					i = newPos.getNumber()-1;
+					j = Coordinates.getNumberFromLetter(newPos.getLetter());
+					this.printSector(i,j,graphicMap[i][j],2);
+					if (!hasMoved){
+						ArrayList<Coordinates> selectableCoordinates = controller.getMap().getReachableCoordinates(controller.getMyPosition(), controller.getMyCharacter().getPercorrableDistance(),false);
+						for (Coordinates coordinates:selectableCoordinates){	
+							i = coordinates.getNumber()-1;
+							j = Coordinates.getNumberFromLetter(coordinates.getLetter());
+							this.printSector(i,j,graphicMap[i][j],1);
+						}
+					}
+				} 
+				else if (card.toString().equals("adrenalin") && !this.hasMoved){
+					ArrayList<Coordinates> selectableCoordinates = controller.getMap().getReachableCoordinates(controller.getMyPosition(), 2,false);
+					for (Coordinates coordinates:selectableCoordinates){	
+						int i = coordinates.getNumber()-1;
+						int j = Coordinates.getNumberFromLetter(coordinates.getLetter());
+						this.printSector(i,j,graphicMap[i][j],1);
+					}
+				}
+					
+			}
 		}
 	}
 
@@ -447,11 +563,19 @@ public class GameGUI implements GameInterface,MouseListener,Runnable {
 	}
 
 	private void endTurn() {
-		new Thread(this).start();
+		if (!isFinish)
+			new Thread(this).start();
+		else{
+			this.playerAttack.stop();
+			this.playerRumors.stop();
+			this.playerSilence.stop();
+			controller.endMatch();
+		}
 	}
 
 	private void selectRumorCoordinates(Coordinates coordinates) {
 		if (map.getSector(coordinates) instanceof DangerousSector){
+			this.playerRumors.start();
 			this.selectany = false;
 			this.selector.makeNoise(coordinates);
 			if(!isHuman && !hasAttacked && hasMoved){
@@ -493,10 +617,13 @@ public class GameGUI implements GameInterface,MouseListener,Runnable {
 		if (!pickedCards.get(0).toString().equals("anySector")){
 			g.setColor(Color.WHITE);
 			g.setFont(new Font(frame.getFontName(), Font.BOLD, 16));
-			if (pickedCards.get(0).toString().equals("yourSector"))
+			if (pickedCards.get(0).toString().equals("yourSector")){
 				g.drawString("Rumore nel tuo settore", xRect+5,yRect+17*row);
-			else if (!card.toString().equals("nothing"))
+				this.playerRumors.start();
+			}else if (!card.toString().equals("nothing")){
 				g.drawString("Silenzio", xRect+5,yRect+17*row);
+				this.playerSilence.start();
+			}
 			this.row++;
 			if(!isHuman && !hasAttacked && hasMoved ){
 				this.showAttackButton();
@@ -525,13 +652,13 @@ public class GameGUI implements GameInterface,MouseListener,Runnable {
 
 	@Override
 	public void chooseObjectCard() {
-
 	}
 
 	@Override
 	public void chooseAnyCoordinates(WatcherNoiseCoordinatesSelector selector) {
 		this.selectany = true;
 		this.selector = selector;
+		g.setColor(Color.WHITE);
 		g.setFont(new Font(frame.getFontName(), Font.BOLD, 16));
 		g.drawString("Seleziona la coordinata", xRect+5,yRect+17*row);
 		this.row++;
@@ -541,9 +668,81 @@ public class GameGUI implements GameInterface,MouseListener,Runnable {
 
 	@Override
 	public void showEscapeResult(boolean result, Coordinates coord) {
-		// TODO Auto-generated method stub
+		g.setFont(new Font(frame.getFontName(), Font.BOLD, 16));
+		if(controller.isMyTurn())
+			if (result){
+				g.drawString("Sei riuscito a scappare!", xRect+5,yRect+17*row);
+				this.row++;
+				g.drawString("La tua partita è finita", xRect+5,yRect+17*row);
+				this.row++;
+			}else{
+				g.drawString("Non sei riuscito a scappare,", xRect+5,yRect+17*row);
+				this.row++;
+				g.drawString("Prova un'altra scialuppa", xRect+5,yRect+17*row);
+				this.row++;
+			}
+		else{
+			String currentPlayerUsername = controller.getCurrentPlayer();
+			if (result){
+				g.drawString("Il giocatore " + currentPlayerUsername, xRect+5,yRect+17*row);
+				this.row++;
+				g.drawString("è riuscito a scappare", xRect+5,yRect+17*row);
+				this.row++;
+			}else{
+				g.drawString("Il giocatore " + currentPlayerUsername, xRect+5,yRect+17*row);
+				this.row++;
+				g.drawString(" non è riuscito a scappare", xRect+5,yRect+17*row);
+				this.row++;
+			}
+		}
+		posEscape = posShallop.indexOf(coord);
+		if (result)
+			sitShallop.set(posEscape, 1);
+		else
+			sitShallop.set(posEscape,2);
+		
+		this.printSector(coord.getNumber()-1, Coordinates.getNumberFromLetter(coord.getLetter()), SectorName.SHALLOP, 0);
+	}
+	
+	private class PlayerHandler implements ControllerListener{
+		private Player playerMusic;
+		private MediaLocator mediaLocator;
+		
+		public PlayerHandler(MediaLocator mediaLocator){
+			try {
+				playerMusic = Manager.createPlayer(mediaLocator);
+				this.mediaLocator = mediaLocator;
+				playerMusic.addControllerListener(this);
+			} catch (NoPlayerException | IOException e) {
+			}
+		}
+		
+		public void start(){
+			playerMusic.start();
+		}
+
+		@Override
+		public void controllerUpdate(ControllerEvent e) {
+			 if (e instanceof EndOfMediaEvent)
+	         {
+				 try {
+					playerMusic = Manager.createPlayer(mediaLocator);
+				} catch (NoPlayerException e1) {
+				} catch (IOException e1) {
+				}
+				 playerMusic.addControllerListener(this);
+	         }
+	     }
+
+		public void stop() {
+			playerMusic.stop();
+			playerMusic.close();
+			playerMusic.deallocate();
+		}
+
 		
 	}
+
 
 	@Override
 	public void showNoise(Coordinates noiseCoord) {
@@ -551,6 +750,7 @@ public class GameGUI implements GameInterface,MouseListener,Runnable {
 		int i = noiseCoord.getNumber()-1;
 		int j = Coordinates.getNumberFromLetter(noiseCoord.getLetter());
 		if (i!=-1){
+			this.playerRumors.start();
 			this.rumorsCoordinates = noiseCoord;
 			this.printSector(i,j,graphicMap[i][j],3);
 			g.setColor(Color.WHITE);
@@ -558,6 +758,7 @@ public class GameGUI implements GameInterface,MouseListener,Runnable {
 			g.drawString("Hai sentito un rumore", xRect+5,yRect+17*row);
 			this.row++;
 		} else{
+			this.playerSilence.start();
 			g.setColor(Color.WHITE);
 			g.setFont(new Font(frame.getFontName(), Font.BOLD, 16));
 			g.drawString("Silenzio", xRect+5,yRect+17*row);
@@ -569,12 +770,23 @@ public class GameGUI implements GameInterface,MouseListener,Runnable {
 
 	@Override
 	public void showSpottedPlayer(String username, Coordinates position) {
-		g.setColor(Color.BLACK);
-		g.fillRect(this.mapWidth+this.mapMarginWidth-200, 0, this.mapMarginWidth+this.mapWidth, this.mapMarginHeight);
+		if (numspot==0){
+			SectorName[][] graphicMap = map.getGraphicMap();
+			int i = position.getNumber()-1;
+			int j = Coordinates.getNumberFromLetter(position.getLetter());
+			this.printSector(i,j,graphicMap[i][j],5);
+			g.setColor(Color.WHITE);
+			g.setFont(new Font(frame.getFontName(), Font.BOLD, 16));
+			g.drawString("Spotlight nel settore", xRect+5,yRect+17*row);
+			this.row++;
+			g.drawString("indicato, giocatori:", xRect+5,yRect+17*row);
+			this.row++;
+		}
 		g.setColor(Color.WHITE);
-		g.setFont(new Font(frame.getFontName(), Font.BOLD, 24));
-		//TODO Farlo
-		g.drawString("Silenzio", this.mapWidth+this.mapMarginWidth-200,30);
+		g.setFont(new Font(frame.getFontName(), Font.BOLD, 16));
+		g.drawString(username, xRect+5,yRect+17*row);
+		this.row++;
+		numspot++;
 	}
 
 	public void startRapresenting() {
@@ -588,8 +800,12 @@ public class GameGUI implements GameInterface,MouseListener,Runnable {
 
 	@Override
 	public void showUsedCard(ObjectCard card, Coordinates coord) {
-		// TODO Auto-generated method stub
-		
+		g.setColor(Color.WHITE);
+		g.setFont(new Font(frame.getFontName(), Font.BOLD, 16));
+		g.drawString("è stata usata la carta:", xRect+5,yRect+17*row);
+		this.row++;
+		g.drawString(card.toString(), xRect+5,yRect+17*row);
+		this.row++;
 	}
 
 	@Override
@@ -618,8 +834,20 @@ public class GameGUI implements GameInterface,MouseListener,Runnable {
 
 	@Override
 	public void showMatchResults(String[] command) {
-		// TODO Auto-generated method stub
-		
+		g.setColor(Color.WHITE);
+		g.setFont(new Font(frame.getFontName(), Font.BOLD, 16));
+		g.drawString("La partita è finita", xRect+5,yRect+17*row);
+		row++;
+		g.drawString("I vincitori sono:", xRect+5,yRect+17*row);
+		row++;
+		for(int i=1; i<command.length; i++){
+			g.drawString(command[i], xRect+5,yRect+17*row);
+			row++;
+		}
+		g.drawString("premi fine", xRect+5,yRect+17*row);
+		this.showEndButton();
+		row++;
+		this.isFinish = true;
 	}
 
 	@Override
@@ -644,6 +872,7 @@ public class GameGUI implements GameInterface,MouseListener,Runnable {
 
 	@Override
 	public void showKill(String username, String character) {
+		this.playerAttack.start();
 		g.setColor(Color.WHITE);
 		g.setFont(new Font(frame.getFontName(), Font.BOLD, 16));
 		if (nKill==0){
@@ -672,9 +901,10 @@ public class GameGUI implements GameInterface,MouseListener,Runnable {
 			g.drawString("Difesi:", xRect+5,yRect+17*row);
 			this.row++;
 		}
-		if(username.equals(controller.getMyPlayerName()))
+		if(username.equals(controller.getMyPlayerName())){
 			g.drawString("Sei riuscito a difenderti!", xRect+5,yRect+17*row);
-		else 
+			clearDefenseCard();
+		}else 
 			g.drawString(username, xRect+5,yRect+17*row);
 		this.row++;
 		this.nSurvived++;
