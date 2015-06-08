@@ -22,7 +22,7 @@ public class ObjectsDeck extends Deck {
 	private final static int ATTACKNUMBER = 2;
 	private final static int SEDATIVESNUMBER = 3;
 	private final static int DEFENSENUMBER = 1;
-	private final static int SPOTLIGHTNUMBER = 2;
+	private final static int SPOTLIGHTNUMBER = 400;//2;
 	private final static int TELEPORTNUMBER = 2;
 	
 	public ObjectsDeck(){

@@ -60,6 +60,7 @@ public class GameGUI implements GameInterface,MouseListener,Runnable {
 	private HashMap<SectorName,Image> hashSelectedSector = new HashMap<SectorName,Image>();
 	private HashMap<SectorName,Image> hashMySector = new HashMap<SectorName,Image>();
 	private HashMap<SectorName,Image> hashAttackSector = new HashMap<SectorName,Image>();
+	private HashMap<SectorName,Image> hashSpotSector = new HashMap<SectorName,Image>();
 	private HashMap<String,Image> hashCharacter = new HashMap<String,Image>();
 	private HashMap<String,Image> hashCard = new HashMap<String,Image>();
 	private HashMap<String,Image> hashLogo = new HashMap<String,Image>();
@@ -85,6 +86,7 @@ public class GameGUI implements GameInterface,MouseListener,Runnable {
 	private PlayerHandler playerAttack;
 	private PlayerHandler playerSilence;
 	private int posEscape=-1;
+	private int numspot;
 	private boolean isFinish;
 	
 	
@@ -138,6 +140,11 @@ public class GameGUI implements GameInterface,MouseListener,Runnable {
 			hashAttackSector.put(SectorName.HUMANBASE, ImageIO.read(new File("media/sector/humanBaseAttack.png").toURI().toURL()));
 			hashAttackSector.put(SectorName.ALIENBASE, ImageIO.read(new File("media/sector/alienBaseAttack.png").toURI().toURL()));
 			hashAttackSector.put(SectorName.SHALLOP, ImageIO.read(new File("media/sector/shallopSectorAttack.png").toURI().toURL()));
+			hashSpotSector.put(SectorName.DANGEROUS, ImageIO.read(new File("media/sector/dangerousSectorSpot.png").toURI().toURL()));
+			hashSpotSector.put(SectorName.SAFE, ImageIO.read(new File("media/sector/safeSectorSpot.png").toURI().toURL()));
+			hashSpotSector.put(SectorName.HUMANBASE, ImageIO.read(new File("media/sector/humanBaseSpot.png").toURI().toURL()));
+			hashSpotSector.put(SectorName.ALIENBASE, ImageIO.read(new File("media/sector/alienBaseSpot.png").toURI().toURL()));
+			hashSpotSector.put(SectorName.SHALLOP, ImageIO.read(new File("media/sector/shallopSectorSpot.png").toURI().toURL()));
 			hashCard.put("attack", ImageIO.read(new File("media/objectCard/attack.png").toURI().toURL()));
 			hashCard.put("teleport", ImageIO.read(new File("media/objectCard/teleport.png").toURI().toURL()));
 			hashCard.put("sedatives", ImageIO.read(new File("media/objectCard/sedatives.png").toURI().toURL()));
@@ -276,6 +283,7 @@ public class GameGUI implements GameInterface,MouseListener,Runnable {
 		g.setColor(Color.WHITE);
 		g.drawRect(xRect, yRect, widthRect, heightRect);
 		this.row = 1;
+		this.numspot = 0;
 		if (this.posEscape!=-1){
 			Coordinates coordToClose = posShallop.get(posEscape);
 			sitShallop.set(posEscape, 2);
@@ -392,8 +400,10 @@ public class GameGUI implements GameInterface,MouseListener,Runnable {
 			img = hashMySector.get(sectorName);
 		else if (type==3)
 			img = this.imgRumors;
-		else
+		else if (type==4)
 			img = hashAttackSector.get(sectorName);
+		else
+			img = hashSpotSector.get(sectorName);
 		g.drawImage(img, mapMarginWidth+j*3*lw, mapMarginHeight+lh*(i*2+j%2), 4*lw, 2*lh, null);
 		if (sectorName.equals(SectorName.DANGEROUS) || sectorName.equals(SectorName.SAFE)){
 			String num = String.valueOf(i+1);
@@ -448,13 +458,13 @@ public class GameGUI implements GameInterface,MouseListener,Runnable {
 							r-=q%2;
 						}	
 					}
-				if (!hasMoved)
+				if (!hasMoved && !spotted)
 					this.chooseMove(new Coordinates(Coordinates.getLetterFromNumber(q),r+1));
 				else if (selectany)
 					this.selectRumorCoordinates(new Coordinates(Coordinates.getLetterFromNumber(q),r+1));
 				else if (spotted)
 					this.selectSpottedCoordinates(new Coordinates(Coordinates.getLetterFromNumber(q),r+1));
-			} else if (e.getX()>this.mapMarginWidth+this.mapWidth-200 && e.getX()<this.mapMarginWidth+this.mapWidth-138 && e.getY()>2 && e.getY()<70 && ((hasMoved && !selectany) || isFinish)){
+			} else if (e.getX()>this.mapMarginWidth+this.mapWidth-200 && e.getX()<this.mapMarginWidth+this.mapWidth-138 && e.getY()>2 && e.getY()<70 && ((hasMoved && !selectany && !this.spotted) || isFinish)){
 					this.endTurn();
 			}
 			else if (e.getX()>this.mapMarginWidth+this.mapWidth-400 && e.getX()<this.mapMarginWidth+this.mapWidth-338 && e.getY()>2 && e.getY()<70 && hasMoved && !selectany && !isHuman && !hasAttacked){
@@ -473,16 +483,32 @@ public class GameGUI implements GameInterface,MouseListener,Runnable {
 
 
 	private void selectSpottedCoordinates(Coordinates coordinates) {
-		ArrayList<String> command = new ArrayList<String>();
-		command.add("spotlight");
-		command.add(coordinates.toString());
-		controller.callObjectCard(command);
+		SectorName[][] graphicMap = map.getGraphicMap();
+		int i = coordinates.getNumber()-1;
+		int j = Coordinates.getNumberFromLetter(coordinates.getLetter());
+		if (!graphicMap[i][j].equals(SectorName.BLANK)){
+			ArrayList<String> command = new ArrayList<String>();
+			command.add("spotlight");
+			command.add(coordinates.toString());
+			controller.callObjectCard(command);
+			this.spotted = false;
+			this.showEndButton();
+			this.clearCard();
+		}
 	}
 
 	private void useObjectCard(Card card) {
 		SectorName[][] graphicMap = map.getGraphicMap();
 		if(!card.toString().equals("defense")){
 			if(card.toString().equals("spotlight")){
+				g.setColor(Color.BLACK);
+				g.fillRect(this.mapMarginWidth+this.mapWidth-200, 2, 68, 60);
+				g.setColor(Color.WHITE);
+				g.setFont(new Font(frame.getFontName(), Font.BOLD, 17));
+				g.drawString("Selezionare la", xRect+5,yRect+17*row);
+				this.row++;
+				g.drawString("coordinata spotted", xRect+5,yRect+17*row);
+				this.row++;
 				this.spotted = true;
 			} else {
 				Coordinates oldcoord = controller.getMyPosition();
@@ -505,11 +531,13 @@ public class GameGUI implements GameInterface,MouseListener,Runnable {
 					i = newPos.getNumber()-1;
 					j = Coordinates.getNumberFromLetter(newPos.getLetter());
 					this.printSector(i,j,graphicMap[i][j],2);
-					ArrayList<Coordinates> selectableCoordinates = controller.getMap().getReachableCoordinates(controller.getMyPosition(), controller.getMyCharacter().getPercorrableDistance(),false);
-					for (Coordinates coordinates:selectableCoordinates){	
-						i = coordinates.getNumber()-1;
-						j = Coordinates.getNumberFromLetter(coordinates.getLetter());
-						this.printSector(i,j,graphicMap[i][j],1);
+					if (!hasMoved){
+						ArrayList<Coordinates> selectableCoordinates = controller.getMap().getReachableCoordinates(controller.getMyPosition(), controller.getMyCharacter().getPercorrableDistance(),false);
+						for (Coordinates coordinates:selectableCoordinates){	
+							i = coordinates.getNumber()-1;
+							j = Coordinates.getNumberFromLetter(coordinates.getLetter());
+							this.printSector(i,j,graphicMap[i][j],1);
+						}
 					}
 				} 
 				else if (card.toString().equals("adrenalin") && !this.hasMoved){
@@ -742,12 +770,23 @@ public class GameGUI implements GameInterface,MouseListener,Runnable {
 
 	@Override
 	public void showSpottedPlayer(String username, Coordinates position) {
-		g.setColor(Color.BLACK);
-		g.fillRect(this.mapWidth+this.mapMarginWidth-200, 0, this.mapMarginWidth+this.mapWidth, this.mapMarginHeight);
+		if (numspot==0){
+			SectorName[][] graphicMap = map.getGraphicMap();
+			int i = position.getNumber()-1;
+			int j = Coordinates.getNumberFromLetter(position.getLetter());
+			this.printSector(i,j,graphicMap[i][j],5);
+			g.setColor(Color.WHITE);
+			g.setFont(new Font(frame.getFontName(), Font.BOLD, 16));
+			g.drawString("Spotlight nel settore", xRect+5,yRect+17*row);
+			this.row++;
+			g.drawString("indicato, giocatori:", xRect+5,yRect+17*row);
+			this.row++;
+		}
 		g.setColor(Color.WHITE);
-		g.setFont(new Font(frame.getFontName(), Font.BOLD, 24));
-		//TODO Farlo
-		g.drawString("Silenzio", this.mapWidth+this.mapMarginWidth-200,30);
+		g.setFont(new Font(frame.getFontName(), Font.BOLD, 16));
+		g.drawString(username, xRect+5,yRect+17*row);
+		this.row++;
+		numspot++;
 	}
 
 	public void startRapresenting() {
@@ -761,8 +800,12 @@ public class GameGUI implements GameInterface,MouseListener,Runnable {
 
 	@Override
 	public void showUsedCard(ObjectCard card, Coordinates coord) {
-		// TODO Auto-generated method stub
-		
+		g.setColor(Color.WHITE);
+		g.setFont(new Font(frame.getFontName(), Font.BOLD, 16));
+		g.drawString("è stata usata la carta:", xRect+5,yRect+17*row);
+		this.row++;
+		g.drawString(card.toString(), xRect+5,yRect+17*row);
+		this.row++;
 	}
 
 	@Override
