@@ -234,8 +234,7 @@ public class ClientSocketSession implements GameSessionClientSide {
 	 * @param spotlightResult is  an array of strings containing the coordinates of the spotlight and the spotted players
 	 */
 	private void analyzeAndShowSpotlight(String[] spotlightResult) {
-		Coordinates spotlightPosition = Coordinates.stringToCoordinates(spotlightResult[2]);
-		for(int i=3; i<spotlightResult.length; i++){
+		for(int i=1; i<spotlightResult.length; i++){
 			String[] spottedPlayer = spotlightResult[i].split("&");
 			String username = spottedPlayer[0];
 			Coordinates position = Coordinates.stringToCoordinates(spottedPlayer[1]);
@@ -339,11 +338,8 @@ public class ClientSocketSession implements GameSessionClientSide {
 				case "card":
 					ObjectCard usedCard = ObjectCard.stringToCard(command[1]);
 					Coordinates destinationCoord = null;
-					if(command[1].equals("spotlight")){
-						destinationCoord = Coordinates.stringToCoordinates(in.nextLine());
-						analyzeAndShowSpotlight(command);
-					}
-						
+					if(command[1].equals("spotlight"))
+						destinationCoord = Coordinates.stringToCoordinates(command[2]);
 					controller.getGraphicInterface().showUsedCard(usedCard, destinationCoord);
 					break;
 				case "attack":
