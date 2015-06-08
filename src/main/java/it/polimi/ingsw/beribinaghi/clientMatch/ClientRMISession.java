@@ -49,7 +49,9 @@ public class ClientRMISession implements GameSessionClientSide {
 		try {
 			while (!session.isTurnNotificable())
 				this.wait(this.waitNewNotify);
-			return session.getPlayerTurn();
+			int turnNumber = session.getTurnNumber();
+			controller.setTurnNumber(turnNumber);
+			return session.getCurrentPlayer();
 		} catch (RemoteException e) {
 		} catch (InterruptedException e) {
 		}

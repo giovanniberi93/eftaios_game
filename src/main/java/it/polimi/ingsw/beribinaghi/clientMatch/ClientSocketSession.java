@@ -45,6 +45,12 @@ public class ClientSocketSession implements GameSessionClientSide {
 	private MatchController controller;
 
 	
+	/**
+	 * Constructs a ClientSocketSession assigning socket, scanner and printwriter
+	 * @param socket
+	 * @param in
+	 * @param out
+	 */
 	public ClientSocketSession(Socket socket, Scanner in, PrintWriter out) {
 			this.socket = socket;
 			this.in = in;
@@ -79,6 +85,11 @@ public class ClientSocketSession implements GameSessionClientSide {
 		return character;
 	}
 
+	/**
+	 * splits a command with the string "&"
+	 * @param command is the string command
+	 * @return the array of string containing the splitted strings
+	 */
 	private static ArrayList<String> manageCommand(String command) {
 		ArrayList<String> commands = new ArrayList<String>();
 		String []different = command.split("&");
@@ -129,6 +140,11 @@ public class ClientSocketSession implements GameSessionClientSide {
 		return new Map(mapName,graphicMap);
 	}
 
+	/**
+	 * create a sector from its abbreviation
+	 * @param abbrevation is the short name of the sector
+	 * @return an instance of correspondent sector type
+	 */
 	private static SectorName abbrevationToSector(String abbrevation) {
 		SectorName correctSector = null;
 		for (SectorName sectorName: SectorName.values())
@@ -213,8 +229,13 @@ public class ClientSocketSession implements GameSessionClientSide {
 	}
 
 
+	/**
+	 * analyzes the spotlight and invokes the graphic interface methods to show the spotted players 
+	 * @param spotlightResult is  an array of strings containing the coordinates of the spotlight and the spotted players
+	 */
 	private void analyzeAndShowSpotlight(String[] spotlightResult) {
-		for(int i=1; i<spotlightResult.length; i++){
+		Coordinates spotlightPosition = Coordinates.stringToCoordinates(spotlightResult[2]);
+		for(int i=3; i<spotlightResult.length; i++){
 			String[] spottedPlayer = spotlightResult[i].split("&");
 			String username = spottedPlayer[0];
 			Coordinates position = Coordinates.stringToCoordinates(spottedPlayer[1]);
@@ -222,17 +243,27 @@ public class ClientSocketSession implements GameSessionClientSide {
 		}
 	}
 
+	/**
+	 * analyzes the attack result, and if an alien has killed an human in his attack, the boolean isStrong in the AlienCharacter is setted true
+	 * @param attackResult is an array of strings containing the coordinates of the attack, the killed players' username and character, the survived players' username
+	 */
 	public void analyzeAndShowAttack(String[] attackResult) {
 
 		Coordinates attackCoordinates = Coordinates.stringToCoordinates(attackResult[1]);
 		boolean humanKilled = this.showKilledAndAttackPosition(attackResult, attackCoordinates);
 		showSurvived(attackResult);
-		if(humanKilled && controller.getMyCharacter().getSide().equals(SideName.ALIEN)){
+		if(controller.isMyTurn() && humanKilled && controller.getMyCharacter().getSide().equals(SideName.ALIEN)){
 			AlienCharacter myCharacter = (AlienCharacter) controller.getMyCharacter();
 			myCharacter.setStrong(true);
 		}
 	}
 	
+	/**
+	 * analyzes the attack result and invokes the graphic interface methods to show username and character of the killed players 
+	 * @param command is an array of strings containing the coordinates of the attack, the killed players' username and character, the survived players' username
+	 * @param attackCoordinates are the coordinates of the attack
+	 * @return true if an human was killed by an alien
+	 */
 	private boolean showKilledAndAttackPosition(String[] command, Coordinates attackCoordinates) {
 		String[] killed;
 		boolean humanKilled = false;
@@ -260,6 +291,10 @@ public class ClientSocketSession implements GameSessionClientSide {
 		return humanKilled;		
 	}
 
+	/**
+	 * analyzes the s result and invokes the graphic interface methods to show username of the survived players 
+	 * @param command is an array of strings containing the coordinates of the attack, the killed players' username and character, the survived players' username
+	 */
 	private void showSurvived (String[] command) {
 		String[] survived;
 		boolean humanKilled = false;
@@ -304,8 +339,11 @@ public class ClientSocketSession implements GameSessionClientSide {
 				case "card":
 					ObjectCard usedCard = ObjectCard.stringToCard(command[1]);
 					Coordinates destinationCoord = null;
-					if(command[1].equals("spotlight"))
+					if(command[1].equals("spotlight")){
 						destinationCoord = Coordinates.stringToCoordinates(in.nextLine());
+						analyzeAndShowSpotlight(command);
+					}
+						
 					controller.getGraphicInterface().showUsedCard(usedCard, destinationCoord);
 					break;
 				case "attack":

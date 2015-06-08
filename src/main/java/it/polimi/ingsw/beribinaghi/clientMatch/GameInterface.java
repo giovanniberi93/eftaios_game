@@ -110,12 +110,29 @@ public interface GameInterface {
 	 */
 	void notifyDiscardedObject();
 
+	/**
+	 * Shows the winners of the ended match
+	 * @param command is an array of Strings containing name and character of each winner
+	 */
 	void showMatchResults(String[] command);
 
+	/**
+	 * Shows the coordinates in which the attack has taken place
+	 * @param attackCoordinates are the coordinates of the attack
+	 */
 	void showAttackCoordinates(Coordinates attackCoordinates);
 
+	/**
+	 * Shows the username and character of a player who has been killed
+	 * @param username is the username of the player
+	 * @param character is the character assigned to the dead player
+	 */
 	void showKill(String username, String character);
 
+	/**
+	 * Shows the username of a player who survived an attack
+	 * @param username
+	 */
 	void showSurvived(String username);
 
 }

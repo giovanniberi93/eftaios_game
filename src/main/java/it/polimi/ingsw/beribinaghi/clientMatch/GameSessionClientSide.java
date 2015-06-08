@@ -70,9 +70,19 @@ public interface GameSessionClientSide {
 	 */
 	public void signalDiscardedObjectCard(ObjectCard discarded);
 
+	/**
+	 * check if the match is finished or not
+	 * @return true if the match is finished
+	 */
 	public boolean isMatchFinished();
 
+	/**
+	 * Listens from ServerSession the winners of the ended match
+	 */
 	public void listenMatchResult();
 
+	/**
+	 * listens from ServerSession the result of an attempted escape; the server communicates if the escape has been successful and the coordinates of the attempted escape
+	 */
 	public void listenEscapeResult();
 }

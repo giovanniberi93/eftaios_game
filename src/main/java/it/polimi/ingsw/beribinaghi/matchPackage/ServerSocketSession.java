@@ -175,22 +175,22 @@ public class ServerSocketSession extends GameSessionServerSide implements Runnab
 
 	@Override
 	protected void notifyCard() {
-		if(!match.getMatchDataUpdate().getCurrentPlayer().equals(this.player)){
-			String usedCard = match.getLastUsedCard().toString();
+		String usedCard = match.getLastUsedCard().toString();
+		if(usedCard.equals("spotlight"))
+				notifySpotted();
+		else if(!match.getMatchDataUpdate().getCurrentPlayer().equals(this.player)){
+			usedCard = match.getLastUsedCard().toString();
 			out.println("card="+usedCard);
 			out.flush();
-			if(usedCard.equals("spotlight")){
-				out.println(match.getSpotlightCoordinates());
-				out.flush();
+			
 			}
-		}
 	}
 
 
 	@Override 
 	protected void notifySpotted() {
 		ArrayList<Player> spotted = match.getSpotted();
-		String result = "spotlight=";
+		String result = "card=spotlight="+match.getSpotlightCoordinates()+"=";
 		for(Player player : spotted){
 			Coordinates playerCoordinates = player.getCharacter().getCurrentPosition();
 			result += player.getUser() + "&" + playerCoordinates + "=";

@@ -76,6 +76,11 @@ public class ServerRMISession extends GameSessionServerSide implements RemoteGam
 	}
 
 	@Override
+	public int getTurnNumber() throws RemoteException {
+		return match.getTurnNumber();
+	}
+
+	@Override
 	public Boolean isTurnNotificable() throws RemoteException {
 		return this.notificableNewTurn;
 	}
@@ -87,7 +92,7 @@ public class ServerRMISession extends GameSessionServerSide implements RemoteGam
 	}
 
 	@Override
-	public String getPlayerTurn() throws RemoteException {
+	public String getCurrentPlayer() throws RemoteException {
 		this.notificableNewTurn = false;
 		return this.playerTurn;
 	}

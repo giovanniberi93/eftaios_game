@@ -120,6 +120,10 @@ public class MatchController {
 			session.listenEscapeResult();
 	}
 	
+	/**
+	 * Pass to clientSession the coordinates of the noise
+	 * @param noiseCoordinates are the coordinates of the noise
+	 */
 	public void makeNoise(Coordinates noiseCoordinates){
 		session.noise(noiseCoordinates);
 	}
@@ -170,6 +174,9 @@ public class MatchController {
 		this.turnNumber = turnNumber;
 	}
 
+	/**
+	 *  sets the boolean matchFinished at true
+	 */
 	public void endMatch() {
 		setMatchFinished(true);
 		System.out.println("siamo riusciti ad arrivare fin qua");

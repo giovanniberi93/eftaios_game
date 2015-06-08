@@ -33,7 +33,7 @@ public interface RemoteGameSession extends Remote {
 	 * @return the name of player that is in turn
 	 * @throws RemoteException
 	 */
-	public String getPlayerTurn() throws RemoteException;
+	public String getCurrentPlayer() throws RemoteException;
 	/**
 	 * @return true if map is ready to be notify
 	 * @throws RemoteException
@@ -81,6 +81,13 @@ public interface RemoteGameSession extends Remote {
 	 * get Coordinates of noise
 	 */
 	public Coordinates getNoiseCoordinates() throws RemoteException;
+	
+	/**
+	 * get the number of the turn
+	 * @return the turn number
+	 * @throws RemoteException
+	 */
+	public int getTurnNumber() throws RemoteException;
 	
 	/**
 	 * @throws RemoteException
