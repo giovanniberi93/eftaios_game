@@ -251,8 +251,10 @@ public class GameCLI implements GameInterface {
 
 	@Override
 	public void showSpottedPlayer(String username, Coordinates position) {
-		System.out.println("Spotlight!");
-		System.out.println(username + " si trova in " + position);	
+		if (username.equals(controller.getMyPlayerName()))
+				System.out.println("Sei stato visto!");
+		else
+			System.out.println(username + " si trova in " + position);	
 	}
 
 

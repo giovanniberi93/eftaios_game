@@ -176,11 +176,12 @@ public class ServerSocketSession extends GameSessionServerSide implements Runnab
 	@Override
 	protected void notifyCard() {
 		String usedCard = match.getLastUsedCard().toString();
-		if(usedCard.equals("spotlight"))
-				notifySpotted();
-		else if(!match.getMatchDataUpdate().getCurrentPlayer().equals(this.player)){
+		if(!match.getMatchDataUpdate().getCurrentPlayer().equals(this.player)){
 			usedCard = match.getLastUsedCard().toString();
-			out.println("card="+usedCard);
+			String string = "card="+usedCard;
+			if(usedCard.equals("spotlight"))
+				string+= "="+match.getSpotlightCoordinates();
+			out.println(string);
 			out.flush();
 			
 			}
@@ -190,7 +191,7 @@ public class ServerSocketSession extends GameSessionServerSide implements Runnab
 	@Override 
 	protected void notifySpotted() {
 		ArrayList<Player> spotted = match.getSpotted();
-		String result = "card=spotlight="+match.getSpotlightCoordinates()+"=";
+		String result = "spotlight=";
 		for(Player player : spotted){
 			Coordinates playerCoordinates = player.getCharacter().getCurrentPosition();
 			result += player.getUser() + "&" + playerCoordinates + "=";
