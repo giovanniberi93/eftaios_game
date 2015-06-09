@@ -77,7 +77,7 @@ public class MatchTest {
 		}
 		while(match.getShallopsDeck().getValidCardsSize()>0){
 			match.move(new Coordinates('v',2));
-			if(match.isSuccessfulEscape())
+			if(match.isEscapeSuccessful())
 				countSuccess++;
 			else
 				countFail++;

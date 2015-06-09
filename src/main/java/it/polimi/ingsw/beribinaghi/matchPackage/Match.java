@@ -192,7 +192,7 @@ public class Match {
 	}
 	
 	
-	public Boolean isSuccessfulEscape() {
+	public Boolean isEscapeSuccessful() {
 		return successfulEscape;
 	}
 
@@ -318,6 +318,7 @@ public class Match {
 			if(currentPlayerIndex == firstPlayerIndex)
 				turnNumber++;
 			usedCards.clear();
+			spotted.clear();
 			getMatchDataUpdate().clear(players.get(currentPlayerIndex));
 		}
 		else{

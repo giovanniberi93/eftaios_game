@@ -18,9 +18,8 @@ import it.polimi.ingsw.beribinaghi.playerPackage.Character;
  * class that manages all communication with server during the game using RMI
  *
  */
-public class ClientRMISession implements GameSessionClientSide {
+public class ClientRMISession extends GameSessionClientSide {
 	private RemoteGameSession session;
-	private MatchController controller;
 	private long waitNewNotify = 100;
 
 	public ClientRMISession(RemoteGameSession remoteGameSession) {
@@ -107,7 +106,7 @@ public class ClientRMISession implements GameSessionClientSide {
 			else
 				session.executeCardAction(ObjectCard.stringToCard(command.get(0)),null);
 			if(command.get(0).equals("attack")){
-				analyzeAndShowAttack(session.getAttackResult());
+				super.analyzeAndShowAttack(session.getAttackResult());
 			}
 			else 
 				if (command.get(0).equals("spotlight")){
@@ -140,13 +139,8 @@ public class ClientRMISession implements GameSessionClientSide {
 							controller.getGraphicInterface().showNoise(noiseCoord);
 						break;
 					case "escaped":
-						boolean result;
-						ArrayList<String> passed = session.getAttackResult();
-						if(passed.get(0).equals("true"))
-							result = true;
-						else
-							result = false;
-						Coordinates coord = Coordinates.stringToCoordinates(passed.get(1));
+						boolean result = session.isEscapeSuccessful();
+						Coordinates coord = session.getUsedShallopCoordinates();
 						controller.getGraphicInterface().showEscapeResult(result, coord);
 						break;
 					case "card":
@@ -176,49 +170,7 @@ public class ClientRMISession implements GameSessionClientSide {
 		controller.turn(true);
 	}
 
-	private void analyzeAndShowSpotlight(ArrayList<String> spottedPlayer) {
-		for(int i=1; i<spottedPlayer.size()-1; i+=2){
-			String username = spottedPlayer.get(i);
-			Coordinates position = Coordinates.stringToCoordinates(spottedPlayer.get(i+1));
-			controller.getGraphicInterface().showSpottedPlayer(username, position);
-		}	
-	}
-
-	private void analyzeAndShowAttack(ArrayList<String> attackResult) {
-		/*ArrayList<String> killed;
-		ArrayList<String> survived;
-		Coordinates attackCoordinates = Coordinates.stringToCoordinates(attackResult.get(0));
-		killed = this.selectKilled(attackResult);
-		survived = this.selectSurvived(attackResult);
-		controller.getGraphicInterface().showAttackResult(attackCoordinates, killed, survived);*/
-	}
 	
-	private ArrayList<String> selectSurvived(ArrayList<String> result) {
-		ArrayList<String> survived = new ArrayList<String>();
-		int i = 0;
-		String string = result.get(i);
-		while(!string.equals("survived")){
-			i++;
-			string = result.get(i);
-		}
-		i++;
-		while (i < result.size()){
-			survived.add(result.get(i));
-			i++;
-		}
-		return survived;
-	}
-
-	private ArrayList<String> selectKilled(ArrayList<String> result) {
-		ArrayList<String> killed = new ArrayList<String>();
-		int i = 2;
-		while(!result.get(i).equals("survived")){
-			killed.add(result.get(i));
-			i++;
-		}
-		return killed;		
-	}
-
 	@Override
 	public void signalDiscardedObjectCard(ObjectCard discarded) {
 		// TODO Auto-generated method stub

@@ -37,12 +37,11 @@ import java.util.Scanner;
  * class that manages all communication with server during the game using socket
  *
  */
-public class ClientSocketSession implements GameSessionClientSide {
+public class ClientSocketSession extends GameSessionClientSide {
 	private Socket socket;
 	private PrintWriter out;
 	private Scanner in;
 	private ObjectInputStream objectInputStream;
-	private MatchController controller;
 
 	
 	/**
@@ -222,97 +221,12 @@ public class ClientSocketSession implements GameSessionClientSide {
 		else 
 			if (command.get(0).equals("spotlight")){
 				String[] spotlightResult = in.nextLine().split("=");
-				analyzeAndShowSpotlight(spotlightResult);
+				super.analyzeAndShowSpotlight(spotlightResult);
 			}
 				
 			
 	}
 
-
-	/**
-	 * analyzes the spotlight and invokes the graphic interface methods to show the spotted players 
-	 * @param spotlightResult is  an array of strings containing the coordinates of the spotlight and the spotted players
-	 */
-	private void analyzeAndShowSpotlight(String[] spotlightResult) {
-		for(int i=1; i<spotlightResult.length; i++){
-			String[] spottedPlayer = spotlightResult[i].split("&");
-			String username = spottedPlayer[0];
-			Coordinates position = Coordinates.stringToCoordinates(spottedPlayer[1]);
-			controller.getGraphicInterface().showSpottedPlayer(username, position);
-		}
-	}
-
-	/**
-	 * analyzes the attack result, and if an alien has killed an human in his attack, the boolean isStrong in the AlienCharacter is setted true
-	 * @param attackResult is an array of strings containing the coordinates of the attack, the killed players' username and character, the survived players' username
-	 */
-	public void analyzeAndShowAttack(String[] attackResult) {
-
-		Coordinates attackCoordinates = Coordinates.stringToCoordinates(attackResult[1]);
-		boolean humanKilled = this.showKilledAndAttackPosition(attackResult, attackCoordinates);
-		showSurvived(attackResult);
-		if(controller.isMyTurn() && humanKilled && controller.getMyCharacter().getSide().equals(SideName.ALIEN)){
-			AlienCharacter myCharacter = (AlienCharacter) controller.getMyCharacter();
-			myCharacter.setStrong(true);
-		}
-	}
-	
-	/**
-	 * analyzes the attack result and invokes the graphic interface methods to show username and character of the killed players 
-	 * @param command is an array of strings containing the coordinates of the attack, the killed players' username and character, the survived players' username
-	 * @param attackCoordinates are the coordinates of the attack
-	 * @return true if an human was killed by an alien
-	 */
-	private boolean showKilledAndAttackPosition(String[] command, Coordinates attackCoordinates) {
-		String[] killed;
-		boolean humanKilled = false;
-		int i = 0;
-		while(!command[i].equals("killed"))
-			i++;
-		i++;
-		int start = i;
-		while(!command[i].equals("survived"))
-			i++;
-		int end = i;
-		killed = Arrays.copyOfRange(command, start, end);
-		controller.getGraphicInterface().showAttackCoordinates(attackCoordinates);
-		if(killed.length == 0){
-			controller.getGraphicInterface().showKill(null, null);
-			return false;
-		}	
-		for(String singleKilled : killed){
-			String[] killedCharacter = singleKilled.split("&");
-			controller.getGraphicInterface().showKill(killedCharacter[0], killedCharacter[1]);
-			if(killedCharacter[2].equals(SideName.HUMAN.toString()))
-				humanKilled = true;
-
-		}
-		return humanKilled;		
-	}
-
-	/**
-	 * analyzes the s result and invokes the graphic interface methods to show username of the survived players 
-	 * @param command is an array of strings containing the coordinates of the attack, the killed players' username and character, the survived players' username
-	 */
-	private void showSurvived (String[] command) {
-		String[] survived;
-		boolean humanKilled = false;
-		int i = 0;
-		while(!command[i].equals("survived"))
-			i++;
-		i++;
-		int start = i;
-		int end = command.length;
-		survived = Arrays.copyOfRange(command, start, end);
-		if(survived.length != 0){
-			for(String singleSurvived : survived){
-				String[] survivedCharacter = singleSurvived.split("&");
-				controller.getGraphicInterface().showSurvived(survivedCharacter[0]);
-				if(survivedCharacter[0].equals(controller.getMyPlayerName()))
-					controller.getMyCharacter().removeCardFromBag(new Defense());
-			}
-		}	
-	}
 
 	@Override	
 	public void listenUpdate() {
