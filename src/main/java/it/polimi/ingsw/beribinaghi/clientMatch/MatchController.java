@@ -27,8 +27,6 @@ public class MatchController {
 	private Character myCharacter;
 	private String currentPlayer;
 	private Map map;
-	private ArrayList<Player> deadPlayers = new ArrayList<Player>();
-	private ArrayList<Player> escapedPlayers = new ArrayList<Player>();
 	private boolean myTurn;
 	private int turnNumber;
 	private boolean attemptedEscape;

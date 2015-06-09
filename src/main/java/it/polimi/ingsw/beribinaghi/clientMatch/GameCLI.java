@@ -250,7 +250,9 @@ public class GameCLI implements GameInterface {
 
 	@Override
 	public void showSpottedPlayer(String username, Coordinates position) {
-		if (username.equals(controller.getMyPlayerName()))
+		if(username == null)
+			System.out.println("Nessun giocatore è stato scoperto");
+		else if (username.equals(controller.getMyPlayerName()))
 				System.out.println("Sei stato visto!");
 		else
 			System.out.println(username + " si trova in " + position);	

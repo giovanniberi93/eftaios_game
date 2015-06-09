@@ -95,12 +95,13 @@ public interface RemoteGameSession extends Remote {
 	 */
 	public ObjectCard getUsedCard() throws RemoteException;
 	
+
 	/**
+	 * get spotted players
+	 * @return array of strings containing usernames of players and their position
 	 * @throws RemoteException
-	 * get spotted player
-	 * arrayList contains the user name of players and his position
 	 */
-	public ArrayList<String> getSpottedPlayer() throws RemoteException;
+	public String[] getSpottedPlayer() throws RemoteException;
 	
 	/**
 	 * @throws RemoteException
@@ -116,11 +117,32 @@ public interface RemoteGameSession extends Remote {
 	 * and the character name of player killed
 	 * after that contains "survived=" follow by the user name and the character name of player survived
 	 */
-	public ArrayList<String> getAttackResult() throws RemoteException;
+	public String[] getAttackResult() throws RemoteException;
 
 	/**
 	 * @throws RemoteException
 	 * if last used card is spotted, this function get the coordinates of spotted result
 	 */
 	public Coordinates getSpottedCoordinates() throws RemoteException;
+	
+	/**
+	 * returns the coordinates of the last attempted escape
+	 * @return the coordinates of the tried shallop
+	 * @throws RemoteException
+	 */
+	public Coordinates getUsedShallopCoordinates() throws RemoteException;
+	
+	
+	/**
+	 * @return true if the last escape attempt has been successful
+	 * @throws RemoteException
+	 */
+	public boolean isEscapeSuccessful() throws RemoteException;
+	
+	
+	
+	
+	
+	
+	
 }

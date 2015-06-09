@@ -206,7 +206,7 @@ public class Match {
 	}
 	
 	
-	public Boolean isSuccessfulEscape() {
+	public Boolean isEscapeSuccessful() {
 		return successfulEscape;
 	}
 

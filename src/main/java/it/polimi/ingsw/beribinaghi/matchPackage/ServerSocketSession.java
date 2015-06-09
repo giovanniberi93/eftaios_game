@@ -156,7 +156,7 @@ public class ServerSocketSession extends GameSessionServerSide implements Runnab
 			match.setNoiseCoordinates(Coordinates.stringToCoordinates(noise[1]));
 			match.getMatchDataUpdate().setNoiseCoordinates();
 		}
-		if(match.isSuccessfulEscape() != null){
+		if(match.isEscapeSuccessful() != null){
 			match.getMatchDataUpdate().setEscaped();
 			match.setSuccessfulEscape(null);
 			}
@@ -216,7 +216,7 @@ public class ServerSocketSession extends GameSessionServerSide implements Runnab
 	@Override
 	protected void notifyEscape() {
 			Coordinates shallopPosition = match.getUsedShallopCoordinates();
-			String escapeResult = new String("escaped="+match.isSuccessfulEscape()+"="+shallopPosition);
+			String escapeResult = new String("escaped="+match.isEscapeSuccessful()+"="+shallopPosition);
 			out.println(escapeResult);
 			out.flush();
 	}

@@ -117,7 +117,8 @@ public class ServerRMISession extends GameSessionServerSide implements RemoteGam
 			break;
 		case "attack" :
 			match.attack();
-			update.add("attack");
+			if(!match.getMatchDataUpdate().getCurrentPlayer().equals(this.player))
+				update.add("attack");
 			break;
 		case "sedatives" :
 			match.sedatives();
@@ -139,17 +140,19 @@ public class ServerRMISession extends GameSessionServerSide implements RemoteGam
 
 	@Override
 	protected void notifyCard() {
+		if(!match.getMatchDataUpdate().getCurrentPlayer().equals(this.player)){
 		update.add("card");
+		}
 	}
 
 	@Override
 	protected void notifySpotted() {
-		update.add("spotted");
+		update.add("spotlight");
 	}
 
 	@Override
 	protected void notifyNoise() {
-		if(!match.getMatchDataUpdate().getCurrentPlayer().equals(this.player)){
+		if(!match.getMatchDataUpdate().getCurrentPlayer().getUser().equals(this.player.getUser())){
 			update.add("noise");
 		}
 	}
@@ -157,7 +160,7 @@ public class ServerRMISession extends GameSessionServerSide implements RemoteGam
 	@Override
 	protected void notifyEscape() {
 		if(!match.getMatchDataUpdate().getCurrentPlayer().equals(this.player)){
-			update.add("escape");
+			update.add("escaped");
 		}
 	}
 
@@ -198,16 +201,15 @@ public class ServerRMISession extends GameSessionServerSide implements RemoteGam
 	}
 
 	@Override
-	public ArrayList<String> getSpottedPlayer() throws RemoteException {
+	public String[] getSpottedPlayer() throws RemoteException {
 		if (update.remove("spotted")){
 			ArrayList<Player> spotted = match.getSpotted();
-			ArrayList<String> result = new ArrayList<String>();
+			String result = "spotlight=";
 			for(Player player : spotted){
 				Coordinates playerCoordinates = player.getCharacter().getCurrentPosition();
-				result.add(player.getUser());
-				result.add(playerCoordinates.toString());
+				result += player.getUser() + "&" + playerCoordinates + "=";
 			}
-			return result;
+			return result.split("=");
 		}
 		return null;
 	}
@@ -217,31 +219,28 @@ public class ServerRMISession extends GameSessionServerSide implements RemoteGam
 		ArrayList<String> escapeResult = new ArrayList<String>();
 		if (update.remove("escape")){
 			Coordinates shallopPosition = match.getMatchDataUpdate().getCurrentPlayer().getCharacter().getCurrentPosition();
-			escapeResult.add(""+match.isSuccessfulEscape());
+			escapeResult.add(""+match.isEscapeSuccessful());
 			escapeResult.add(shallopPosition.toString());
 		}
 		return escapeResult;
 	}
 
 	@Override
-	public ArrayList<String> getAttackResult() throws RemoteException {
-		ArrayList<String> attackResult = new ArrayList<String>();
-		attackResult.add(match.getMatchDataUpdate().getCurrentPlayer().getCharacter().getCurrentPosition().toString());
+	public String[] getAttackResult() throws RemoteException {
+		String attackResult = null;
 		if (update.remove("attack")){
 			ArrayList<Player> killed = match.getKilled();
-			attackResult.add("killed");
-			for(Player player : killed){
-				attackResult.add(player.getUser());
-				attackResult.add(player.getCharacter().toString());
-			}
+			Coordinates attackPosition = match.getMatchDataUpdate().getCurrentPlayer().getCharacter().getCurrentPosition();
+			attackResult = "attack=" + attackPosition+ "=";
+			attackResult += "killed=";		
+			for(Player player : killed)
+				attackResult += player.getUser() + "&" + player.getCharacter() + "&" +player.getCharacter().getSide()+"="; 
 			ArrayList<Player> survived = match.getSurvived();
-			attackResult.add("survived");
-			for(Player player : survived){
-				attackResult.add(player.getUser());
-				attackResult.add(player.getCharacter().toString());
-			}
+			attackResult += "survived=";
+			for(Player player : survived)
+				attackResult += player.getUser() + "="; 
 		}
-		return attackResult;
+		return attackResult.split("=");
 	}
 
 
@@ -251,6 +250,16 @@ public class ServerRMISession extends GameSessionServerSide implements RemoteGam
 			return match.getSpotlightCoordinates();
 		}
 		return null;
+	}
+
+	@Override
+	public Coordinates getUsedShallopCoordinates() throws RemoteException {
+		return match.getUsedShallopCoordinates();
+	}
+
+	@Override
+	public boolean isEscapeSuccessful() throws RemoteException {
+		return match.isEscapeSuccessful();
 	}
 
 
