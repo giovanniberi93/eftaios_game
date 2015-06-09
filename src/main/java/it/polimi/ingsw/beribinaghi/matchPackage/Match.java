@@ -30,10 +30,14 @@ import it.polimi.ingsw.beribinaghi.playerPackage.HumanCharacter;
 import it.polimi.ingsw.beribinaghi.playerPackage.Player;
 import it.polimi.ingsw.beribinaghi.serverSetup.PreMatch;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.Timer;
+
 
 /**
  * Manages a match
@@ -64,6 +68,8 @@ public class Match {
 	private MatchDataUpdate matchDataUpdate;
 	private Coordinates usedShallopCoordinates;
 	private PreMatch preMatch;
+	private Timer timer;
+	private TimerManager timerManager;
 	
 	
 	/**
@@ -82,6 +88,9 @@ public class Match {
 		Collections.shuffle(players);
 		currentPlayerIndex = 0;
 		firstPlayerIndex = 0;
+		timer = new Timer();
+		timerManager = new TimerManager(this);
+		timer.schedule(timerManager, App.WAITFINISHTURN);
 		turnNumber = 1;
 		setMatchDataUpdate(new MatchDataUpdate(players.get(currentPlayerIndex)));
 		for (GameSessionServerSide gameSession: sessions)
@@ -91,6 +100,8 @@ public class Match {
 		setInitialPositions(players);
 		for(GameSessionServerSide gameSession: sessions)
 			gameSession.notifyCharacter();
+		timer = new Timer();
+		timer.schedule(new TimerManager(this), App.WAITFINISHTURN);
 	}
 	
 	
@@ -160,17 +171,26 @@ public class Match {
 		getMatchDataUpdate().setDiscardedObject();
 	}
 	
+	/**
+	 * @return array list of player killed to attack
+	 */
 	public ArrayList<Player> getKilled() {
 		return killed;
 	}
 
-
+	/**
+	 * @return array list of player survived (using defense card) to attack
+	 */
 	public ArrayList<Player> getSurvived() {
 		return survived;
 	}
 
 	
 
+	/**
+	 * @param successfulEscape
+	 * set success full escape
+	 */
 	public void setSuccessfulEscape(Boolean successfulEscape) {
 		this.successfulEscape = successfulEscape;
 	}
@@ -320,8 +340,12 @@ public class Match {
 			usedCards.clear();
 			spotted.clear();
 			getMatchDataUpdate().clear(players.get(currentPlayerIndex));
+			timer.cancel();
+			timer = new Timer();
+			timer.schedule(timerManager, App.WAITFINISHTURN);
 		}
 		else{
+			timer.cancel();
 			getMatchDataUpdate().setMatchFinished();
 			preMatch.finish();
 		}
@@ -478,6 +502,7 @@ public class Match {
 	private void setMatchDataUpdate(MatchDataUpdate matchDataUpdate) {
 		this.matchDataUpdate = matchDataUpdate;
 	}
+
 
 	
 	
