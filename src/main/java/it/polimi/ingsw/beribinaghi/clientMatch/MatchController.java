@@ -180,8 +180,6 @@ public class MatchController {
 	 */
 	public void endMatch() {
 		setMatchFinished(true);
-		System.out.println("siamo riusciti ad arrivare fin qua");
-		
 	}
 
 	

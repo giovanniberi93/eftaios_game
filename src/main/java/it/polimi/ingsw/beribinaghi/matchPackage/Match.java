@@ -30,8 +30,6 @@ import it.polimi.ingsw.beribinaghi.playerPackage.HumanCharacter;
 import it.polimi.ingsw.beribinaghi.playerPackage.Player;
 import it.polimi.ingsw.beribinaghi.serverSetup.PreMatch;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -69,7 +67,6 @@ public class Match {
 	private Coordinates usedShallopCoordinates;
 	private PreMatch preMatch;
 	private Timer timer;
-	private TimerManager timerManager;
 	
 	
 	/**
@@ -88,9 +85,6 @@ public class Match {
 		Collections.shuffle(players);
 		currentPlayerIndex = 0;
 		firstPlayerIndex = 0;
-		timer = new Timer();
-		timerManager = new TimerManager(this);
-		timer.schedule(timerManager, App.WAITFINISHTURN);
 		turnNumber = 1;
 		setMatchDataUpdate(new MatchDataUpdate(players.get(currentPlayerIndex)));
 		for (GameSessionServerSide gameSession: sessions)
@@ -338,10 +332,12 @@ public class Match {
 			if(currentPlayerIndex == firstPlayerIndex)
 				turnNumber++;
 			usedCards.clear();
+			spotted.clear();
 			getMatchDataUpdate().clear(players.get(currentPlayerIndex));
 			timer.cancel();
+			timer.purge();
 			timer = new Timer();
-			timer.schedule(timerManager, App.WAITFINISHTURN);
+			timer.schedule(new TimerManager(this), App.WAITFINISHTURN);
 		}
 		else{
 			timer.cancel();

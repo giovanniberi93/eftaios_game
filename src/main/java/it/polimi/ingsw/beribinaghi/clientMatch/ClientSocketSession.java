@@ -347,6 +347,7 @@ public class ClientSocketSession implements GameSessionClientSide {
 					break;
 				case "endMatch":
 					controller.getGraphicInterface().showMatchResults(command);
+					controller.setMatchFinished(true);
 					break;
 				case "spotlight":
 					analyzeAndShowSpotlight(command);

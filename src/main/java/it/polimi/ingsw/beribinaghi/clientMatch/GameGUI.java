@@ -35,7 +35,6 @@ import javax.media.Manager;
 import javax.media.MediaLocator;
 import javax.media.NoPlayerException;
 import javax.media.Player;
-import javax.swing.JOptionPane;
 import javax.swing.Timer;
 
 /**
@@ -76,6 +75,7 @@ public class GameGUI implements GameInterface,MouseListener,Runnable {
 	private boolean isHuman;
 	private Coordinates rumorsCoordinates = null;
 	private Coordinates attackCoordinates = null;
+	private ArrayList<Coordinates> spottedCoordinates = new ArrayList<Coordinates>();
 	private boolean spotted;
 	private int row;
 	private int xRect,yRect,heightRect,widthRect;
@@ -86,8 +86,8 @@ public class GameGUI implements GameInterface,MouseListener,Runnable {
 	private PlayerHandler playerAttack;
 	private PlayerHandler playerSilence;
 	private int posEscape=-1;
-	private int numspot;
 	private boolean isFinish;
+	private boolean discard;
 	
 	
 	public GameGUI(GUI frame) {
@@ -232,6 +232,7 @@ public class GameGUI implements GameInterface,MouseListener,Runnable {
 		this.hasAttacked = false;
 		this.selectany = false;
 		this.spotted = false;
+		this.discard = false;
 		g.setFont(new Font(frame.getFontName(), Font.BOLD, 16));
 		g.drawString("E' il tuo turno", xRect+5,yRect+17);
 		row++;
@@ -275,15 +276,26 @@ public class GameGUI implements GameInterface,MouseListener,Runnable {
 				this.printSector(i, j, graphicMap[i][j], 0);
 			else
 				this.printSector(i, j, graphicMap[i][j], 2);
-		}
+		} 
+		if (this.spottedCoordinates.size()>0){
+			SectorName[][] graphicMap = map.getGraphicMap();
+			for (Coordinates singleSpot:spottedCoordinates){
+				int i = singleSpot.getNumber()-1;
+				int j = Coordinates.getNumberFromLetter(singleSpot.getLetter());
+				if (!singleSpot.equals(controller.getMyPosition()))
+					this.printSector(i, j, graphicMap[i][j], 0);
+				else
+					this.printSector(i, j, graphicMap[i][j], 2);
+			}
+		} 
 		this.rumorsCoordinates = null;
 		this.attackCoordinates = null;
+		this.spottedCoordinates.clear();
 		g.setColor(Color.BLACK);
 		g.fillRect(xRect, yRect, widthRect, heightRect);
 		g.setColor(Color.WHITE);
 		g.drawRect(xRect, yRect, widthRect, heightRect);
 		this.row = 1;
-		this.numspot = 0;
 		if (this.posEscape!=-1){
 			Coordinates coordToClose = posShallop.get(posEscape);
 			sitShallop.set(posEscape, 2);
@@ -435,7 +447,7 @@ public class GameGUI implements GameInterface,MouseListener,Runnable {
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		if (controller.isMyTurn()){
+		if (controller.isMyTurn() || this.isFinish){
 			int x = e.getX()-this.mapMarginWidth;
 			int y = e.getY()-this.mapMarginHeight;
 			int q = (int) (x/lw)/3;
@@ -464,35 +476,48 @@ public class GameGUI implements GameInterface,MouseListener,Runnable {
 					this.selectRumorCoordinates(new Coordinates(Coordinates.getLetterFromNumber(q),r+1));
 				else if (spotted)
 					this.selectSpottedCoordinates(new Coordinates(Coordinates.getLetterFromNumber(q),r+1));
-			} else if (e.getX()>this.mapMarginWidth+this.mapWidth-200 && e.getX()<this.mapMarginWidth+this.mapWidth-138 && e.getY()>2 && e.getY()<70 && ((hasMoved && !selectany && !this.spotted) || isFinish)){
+			} else if (e.getX()>this.mapMarginWidth+this.mapWidth-200 && e.getX()<this.mapMarginWidth+this.mapWidth-138 && e.getY()>2 && e.getY()<70 && ((hasMoved && !selectany && !spotted && !discard) || isFinish)){
 					this.endTurn();
 			}
-			else if (e.getX()>this.mapMarginWidth+this.mapWidth-400 && e.getX()<this.mapMarginWidth+this.mapWidth-338 && e.getY()>2 && e.getY()<70 && hasMoved && !selectany && !isHuman && !hasAttacked){
+			else if (e.getX()>this.mapMarginWidth+this.mapWidth-400 && e.getX()<this.mapMarginWidth+this.mapWidth-338 && e.getY()>2 && e.getY()<70 && hasMoved && !selectany && !isHuman && !hasAttacked && !discard){
 				this.attack();
-			} else if (isHuman && !selectany){
+			} else if ((isHuman || discard) && !selectany){
 				for (int i=1; i<=controller.getMyCharacter().getBagSize();i++){
-					if ((e.getX()>this.mapMarginWidth+this.mapWidth+i*(imgx+10)-30) && (e.getX()<this.mapMarginWidth+this.mapWidth+i*(imgx+10)-30+imgx) && (e.getY()>this.mapMarginHeight + 3*(separate+60)) && (e.getY()<this.mapMarginHeight + 3*(separate+60)+imgy)){
-						this.useObjectCard(controller.getMyCharacter().getBag().get(i-1));
+					if (i<=3 && (e.getX()>this.mapMarginWidth+this.mapWidth+i*(imgx+10)-30) && (e.getX()<this.mapMarginWidth+this.mapWidth+i*(imgx+10)-30+imgx) && (e.getY()>this.mapMarginHeight + 3*(separate+60)) && (e.getY()<this.mapMarginHeight + 3*(separate+60)+imgy)){
+						if (!discard)
+							this.useObjectCard(controller.getMyCharacter().getBag().get(i-1));
+						else
+							this.discardCard(controller.getMyCharacter().getBag().get(i-1));
 						this.clearCard();
 						break;
+					} else if (i==4 && discard && (e.getX()>this.mapMarginWidth+this.mapWidth+imgx-20) && (e.getX()<this.mapMarginWidth+this.mapWidth+imgx-20+imgx) && (e.getY()>this.mapMarginHeight + 2*(separate+60)) && (e.getY()<this.mapMarginHeight + 2*(separate+60)+imgy)){
+						this.discardCard(controller.getMyCharacter().getBag().get(i-1));
 					}
 				}
 			}
 		}
 	}
 
-
 	private void selectSpottedCoordinates(Coordinates coordinates) {
 		SectorName[][] graphicMap = map.getGraphicMap();
 		int i = coordinates.getNumber()-1;
 		int j = Coordinates.getNumberFromLetter(coordinates.getLetter());
 		if (!graphicMap[i][j].equals(SectorName.BLANK)){
+			this.printSector(i,j,graphicMap[i][j],5);
+			this.spottedCoordinates.add(coordinates);
+			g.setColor(Color.WHITE);
+			g.setFont(new Font(frame.getFontName(), Font.BOLD, 16));
+			g.drawString("Spotlight nel settore", xRect+5,yRect+17*row);
+			this.row++;
+			g.drawString("indicato, giocatori:", xRect+5,yRect+17*row);
+			this.row++;
 			ArrayList<String> command = new ArrayList<String>();
 			command.add("spotlight");
 			command.add(coordinates.toString());
 			controller.callObjectCard(command);
 			this.spotted = false;
-			this.showEndButton();
+			if (this.hasMoved)
+				this.showEndButton();
 			this.clearCard();
 		}
 	}
@@ -566,10 +591,12 @@ public class GameGUI implements GameInterface,MouseListener,Runnable {
 		if (!isFinish)
 			new Thread(this).start();
 		else{
-			this.playerAttack.stop();
-			this.playerRumors.stop();
-			this.playerSilence.stop();
+			frame.removeMouseListener(this);
 			controller.endMatch();
+			g.setColor(Color.BLACK);
+			g.fillRect(0, 0, frame.getWidth(), frame.getHeight());
+			frame.paintComponents(g);
+			frame.printMatchesName();
 		}
 	}
 
@@ -578,10 +605,12 @@ public class GameGUI implements GameInterface,MouseListener,Runnable {
 			this.playerRumors.start();
 			this.selectany = false;
 			this.selector.makeNoise(coordinates);
-			if(!isHuman && !hasAttacked && hasMoved){
-				this.showAttackButton();
+			if (controller.getMyCharacter().getBagSize()<4){
+				if(!isHuman && !hasAttacked && hasMoved){
+					this.showAttackButton();
+				}
+				this.showEndButton();
 			}
-			this.showEndButton();
 		}
 		
 	}
@@ -612,7 +641,10 @@ public class GameGUI implements GameInterface,MouseListener,Runnable {
 		if (pickedCards.size()>1){
 			card = pickedCards.get(1);
 			Image img = hashCard.get(card.toString());
-			this.printSingleCard(img,3,controller.getMyCharacter().getBagSize(),imgx,imgy,0);
+			if (controller.getMyCharacter().getBagSize()<4)
+				this.printSingleCard(img,3,controller.getMyCharacter().getBagSize(),imgx,imgy,0);
+			else
+				this.printSingleCard(img,2,1,imgx,imgy,0);
 		}
 		if (!pickedCards.get(0).toString().equals("anySector")){
 			g.setColor(Color.WHITE);
@@ -625,10 +657,12 @@ public class GameGUI implements GameInterface,MouseListener,Runnable {
 				this.playerSilence.start();
 			}
 			this.row++;
-			if(!isHuman && !hasAttacked && hasMoved ){
-				this.showAttackButton();
+			if (controller.getMyCharacter().getBagSize()<4){
+				if(!isHuman && !hasAttacked && hasMoved ){
+					this.showAttackButton();
+				}
+				this.showEndButton();
 			}
-			this.showEndButton();
 			
 		}
 		if (pickedCards.size()>1){
@@ -770,23 +804,15 @@ public class GameGUI implements GameInterface,MouseListener,Runnable {
 
 	@Override
 	public void showSpottedPlayer(String username, Coordinates position) {
-		if (numspot==0){
-			SectorName[][] graphicMap = map.getGraphicMap();
-			int i = position.getNumber()-1;
-			int j = Coordinates.getNumberFromLetter(position.getLetter());
-			this.printSector(i,j,graphicMap[i][j],5);
-			g.setColor(Color.WHITE);
-			g.setFont(new Font(frame.getFontName(), Font.BOLD, 16));
-			g.drawString("Spotlight nel settore", xRect+5,yRect+17*row);
-			this.row++;
-			g.drawString("indicato, giocatori:", xRect+5,yRect+17*row);
-			this.row++;
-		}
 		g.setColor(Color.WHITE);
 		g.setFont(new Font(frame.getFontName(), Font.BOLD, 16));
-		g.drawString(username, xRect+5,yRect+17*row);
+		if (username==null)
+			g.drawString("nessuno", xRect+5,yRect+17*row);
+		else if (username.equals(controller.getMyPlayerName()))
+			g.drawString("te", xRect+5,yRect+17*row);
+		else
+			g.drawString(username, xRect+5,yRect+17*row);
 		this.row++;
-		numspot++;
 	}
 
 	public void startRapresenting() {
@@ -806,20 +832,63 @@ public class GameGUI implements GameInterface,MouseListener,Runnable {
 		this.row++;
 		g.drawString(card.toString(), xRect+5,yRect+17*row);
 		this.row++;
+		if (card.toString().equals("spotlight")){
+			SectorName[][] graphicMap = map.getGraphicMap();
+			int i = coord.getNumber()-1;
+			int j = Coordinates.getNumberFromLetter(coord.getLetter());
+			this.printSector(i,j,graphicMap[i][j],5);
+			g.setColor(Color.WHITE);
+			g.setFont(new Font(frame.getFontName(), Font.BOLD, 16));
+			g.drawString("Spotlight nel settore", xRect+5,yRect+17*row);
+			this.row++;
+			g.drawString("indicato, giocatori:", xRect+5,yRect+17*row);
+			this.row++;
+			this.spottedCoordinates.add(coord);
+		}
 	}
 
 	@Override
 	public void printTurnNumber(int turnNumber) {
 	}
+	
+	private void discardCard(ObjectCard objectCard) {
+		controller.getSession().signalDiscardedObjectCard(objectCard);
+		controller.getMyCharacter().getBag().remove(objectCard);
+		this.discard =false;
+		if (!selectany){
+			this.showEndButton();
+			if (!isHuman){
+				this.showAttackButton();
+			}
+		}
+		this.clearCard();
+		g.setColor(Color.BLACK);
+		g.fillRect(this.mapMarginWidth+this.mapWidth+imgx-20, this.mapMarginHeight + 2*(separate+60), imgx, imgy);
+	}
 
 	@Override
 	public void selectObjectToDiscard() {
-		// TODO Auto-generated method stub
+		g.setColor(Color.BLACK);
+		g.fillRect(this.mapMarginWidth+this.mapWidth-200, 2, 68, 60);
+		g.setColor(Color.WHITE);
+		g.setFont(new Font(frame.getFontName(), Font.BOLD, 16));
+		g.drawString("Hai troppe carte,", xRect+5,yRect+17*row);
+		this.row++;
+		g.drawString("seleziona la carta", xRect+5,yRect+17*row);
+		this.row++;
+		g.drawString("da scartare", xRect+5,yRect+17*row);
+		this.row++;
+		this.discard = true;
 	}
 
 	@Override
 	public void notifyDiscardedObject() {
-		
+		g.setColor(Color.WHITE);
+		g.setFont(new Font(frame.getFontName(), Font.BOLD, 16));
+		g.drawString("Il giocatore ha", xRect+5,yRect+17*row);
+		this.row++;
+		g.drawString("scartato una carta", xRect+5,yRect+17*row);
+		this.row++;
 	}
 
 		

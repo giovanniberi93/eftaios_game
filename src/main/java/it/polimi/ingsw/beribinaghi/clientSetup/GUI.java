@@ -494,7 +494,7 @@ public class GUI extends JFrame implements GraphicInterface {
 		}
 	}
 	
-	private void printMatchesName() {
+	public void printMatchesName() {
 		ArrayList<String> matchesName = this.setupController.getMatchesName();
 		listModel = new DefaultListModel<String>();
 		if (matchesName.size()>0)

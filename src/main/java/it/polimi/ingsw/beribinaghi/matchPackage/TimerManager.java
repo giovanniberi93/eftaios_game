@@ -20,8 +20,7 @@ public class TimerManager extends TimerTask {
 
 	@Override
 	public void run() {
-		// TODO Auto-generated method stub
-
+		System.out.println("pene");
 	}
 
 }
