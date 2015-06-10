@@ -83,7 +83,7 @@ public class MatchController {
 			this.myTurn = false;
 		if (type){
 			graphicInterface.changedTurn();
-			if (!this.isMyTurn())	//TODO prova asda
+			if (!this.isMyTurn() && !matchFinished)	//TODO prova asda
 				session.listenUpdate();	
 		}
 	}
