@@ -35,6 +35,8 @@ import javax.media.Manager;
 import javax.media.MediaLocator;
 import javax.media.NoPlayerException;
 import javax.media.Player;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.Timer;
 
 /**
@@ -77,7 +79,6 @@ public class GameGUI implements GameInterface,MouseListener,Runnable {
 	private Coordinates attackCoordinates = null;
 	private ArrayList<Coordinates> spottedCoordinates = new ArrayList<Coordinates>();
 	private boolean spotted;
-	private int row;
 	private int xRect,yRect,heightRect,widthRect;
 	private int nKill,nSurvived;
 	private Image imgShallopOk;
@@ -88,6 +89,7 @@ public class GameGUI implements GameInterface,MouseListener,Runnable {
 	private int posEscape=-1;
 	private boolean isFinish;
 	private boolean discard;
+	private JTextArea notArea;
 	
 	
 	public GameGUI(GUI frame) {
@@ -206,6 +208,16 @@ public class GameGUI implements GameInterface,MouseListener,Runnable {
 			} else {
 				printMap(controller.getMap(),controller.getMyPosition());
 				printCards();
+				notArea = new JTextArea();
+				JScrollPane scroll = new JScrollPane (notArea, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+				frame.getContentPane().add(scroll);
+				scroll.setVisible(true);
+				notArea.setBounds(xRect, yRect, widthRect, heightRect);
+				notArea.setLineWrap(true);
+				notArea.setWrapStyleWord(true);
+				scroll.setBounds(xRect, yRect, widthRect, heightRect);
+				notArea.setFont(new Font(frame.getFontName(), Font.BOLD, 14));
+				notArea.setEditable(false);
 				changedTurn();
 			}
 		}	
@@ -233,20 +245,14 @@ public class GameGUI implements GameInterface,MouseListener,Runnable {
 		this.selectany = false;
 		this.spotted = false;
 		this.discard = false;
-		g.setFont(new Font(frame.getFontName(), Font.BOLD, 16));
-		g.drawString("E' il tuo turno", xRect+5,yRect+17);
-		row++;
-		g.drawString("turno numero " + controller.getTurnNumber(), xRect+5,yRect+17*row);
-		row++;
+		notArea.append("\nE' il tuo turno\n");
+		notArea.append("turno numero " + controller.getTurnNumber()+"\n");
 		this.printSelectableCoordinates(this.controller.getMyCharacter().getCurrentPosition(),controller.getMyCharacter().getPercorrableDistance());
-		g.setFont(new Font(frame.getFontName(), Font.BOLD, 16));
-		g.setColor(Color.WHITE);
-		g.drawString("Effettua spostamento", xRect+5,yRect+17*row);
-		row++;
+		notArea.append("clicca sulla coordinata desiderata\n");
 		if (isHuman && controller.getMyCharacter().getBagSize()>0){
-			g.drawString("o usa carta oggetto", xRect+5,yRect+17*row);
-			row++;
+			notArea.append("o usa le carte oggetto\n");
 		}
+		notArea.setCaretPosition(notArea.getDocument().getLength());
 	}
 	
 	public void notifyOthersTurn(String playerTurn) {
@@ -255,11 +261,9 @@ public class GameGUI implements GameInterface,MouseListener,Runnable {
 		g.setColor(Color.WHITE);
 		g.setFont(new Font(frame.getFontName(), Font.BOLD, 24));
 		iniTurn();
-		g.setFont(new Font(frame.getFontName(), Font.BOLD, 16));
-		g.drawString("Turno di " + playerTurn, xRect+5,yRect+17);
-		row++;
-		g.drawString("turno numero " + controller.getTurnNumber(), xRect+5,yRect+17*row);
-		row++;
+		notArea.append("\nTurno di " + playerTurn + "\n");
+		notArea.append("turno numero " + controller.getTurnNumber() + "\n");
+		notArea.setCaretPosition(notArea.getDocument().getLength());
 	}
 	
 	private void iniTurn(){
@@ -293,15 +297,13 @@ public class GameGUI implements GameInterface,MouseListener,Runnable {
 		this.spottedCoordinates.clear();
 		g.setColor(Color.BLACK);
 		g.fillRect(xRect, yRect, widthRect, heightRect);
-		g.setColor(Color.WHITE);
-		g.drawRect(xRect, yRect, widthRect, heightRect);
-		this.row = 1;
 		if (this.posEscape!=-1){
 			Coordinates coordToClose = posShallop.get(posEscape);
 			sitShallop.set(posEscape, 2);
 			this.printSector(coordToClose.getNumber()-1, Coordinates.getNumberFromLetter(coordToClose.getLetter()), SectorName.SHALLOP, 0);
 			posEscape = -1;
 		}
+		notArea.setCaretPosition(notArea.getDocument().getLength());
 	}
 	
 	private void printSelectableCoordinates(Coordinates currentPosition, int percorrableDistance) {
@@ -476,10 +478,10 @@ public class GameGUI implements GameInterface,MouseListener,Runnable {
 					this.selectRumorCoordinates(new Coordinates(Coordinates.getLetterFromNumber(q),r+1));
 				else if (spotted)
 					this.selectSpottedCoordinates(new Coordinates(Coordinates.getLetterFromNumber(q),r+1));
-			} else if (e.getX()>this.mapMarginWidth+this.mapWidth-200 && e.getX()<this.mapMarginWidth+this.mapWidth-138 && e.getY()>2 && e.getY()<70 && ((hasMoved && !selectany && !spotted && !discard) || isFinish)){
+			} else if (e.getX()>this.mapMarginWidth+this.mapWidth-200 && e.getX()<this.mapMarginWidth+this.mapWidth-80 && e.getY()>2 && e.getY()<70 && ((hasMoved && !selectany && !spotted && !discard) || isFinish)){
 					this.endTurn();
 			}
-			else if (e.getX()>this.mapMarginWidth+this.mapWidth-400 && e.getX()<this.mapMarginWidth+this.mapWidth-338 && e.getY()>2 && e.getY()<70 && hasMoved && !selectany && !isHuman && !hasAttacked && !discard){
+			else if (e.getX()>this.mapMarginWidth+this.mapWidth-400 && e.getX()<this.mapMarginWidth+this.mapWidth-280 && e.getY()>2 && e.getY()<70 && hasMoved && !selectany && !isHuman && !hasAttacked && !discard){
 				this.attack();
 			} else if ((isHuman || discard) && !selectany){
 				for (int i=1; i<=controller.getMyCharacter().getBagSize();i++){
@@ -505,12 +507,7 @@ public class GameGUI implements GameInterface,MouseListener,Runnable {
 		if (!graphicMap[i][j].equals(SectorName.BLANK)){
 			this.printSector(i,j,graphicMap[i][j],5);
 			this.spottedCoordinates.add(coordinates);
-			g.setColor(Color.WHITE);
-			g.setFont(new Font(frame.getFontName(), Font.BOLD, 16));
-			g.drawString("Spotlight nel settore", xRect+5,yRect+17*row);
-			this.row++;
-			g.drawString("indicato, giocatori:", xRect+5,yRect+17*row);
-			this.row++;
+			notArea.append("Spotlight nel settore " + coordinates.toString() +  ", giocatori:\n");
 			ArrayList<String> command = new ArrayList<String>();
 			command.add("spotlight");
 			command.add(coordinates.toString());
@@ -527,13 +524,8 @@ public class GameGUI implements GameInterface,MouseListener,Runnable {
 		if(!card.toString().equals("defense")){
 			if(card.toString().equals("spotlight")){
 				g.setColor(Color.BLACK);
-				g.fillRect(this.mapMarginWidth+this.mapWidth-200, 2, 68, 60);
-				g.setColor(Color.WHITE);
-				g.setFont(new Font(frame.getFontName(), Font.BOLD, 17));
-				g.drawString("Selezionare la", xRect+5,yRect+17*row);
-				this.row++;
-				g.drawString("coordinata spotted", xRect+5,yRect+17*row);
-				this.row++;
+				g.fillRect(this.mapMarginWidth+this.mapWidth-200, 2, 120, 60);
+				notArea.append("Selezionare la coordinata su cui eseguire lo spotlight\n");
 				this.spotted = true;
 			} else {
 				Coordinates oldcoord = controller.getMyPosition();
@@ -576,6 +568,7 @@ public class GameGUI implements GameInterface,MouseListener,Runnable {
 					
 			}
 		}
+		notArea.setCaretPosition(notArea.getDocument().getLength());
 	}
 
 	private void attack() {
@@ -584,7 +577,7 @@ public class GameGUI implements GameInterface,MouseListener,Runnable {
 		command.add("attack");
 		controller.callObjectCard(command);
 		g.setColor(Color.BLACK);
-		g.fillRect(this.mapMarginWidth+this.mapWidth-400, 2, 62, 68);
+		g.fillRect(this.mapMarginWidth+this.mapWidth-400, 2, 120, 68);
 	}
 
 	private void endTurn() {
@@ -595,6 +588,7 @@ public class GameGUI implements GameInterface,MouseListener,Runnable {
 			controller.endMatch();
 			g.setColor(Color.BLACK);
 			g.fillRect(0, 0, frame.getWidth(), frame.getHeight());
+			frame.getContentPane().removeAll();
 			frame.paintComponents(g);
 			frame.printMatchesName();
 		}
@@ -647,16 +641,13 @@ public class GameGUI implements GameInterface,MouseListener,Runnable {
 				this.printSingleCard(img,2,1,imgx,imgy,0);
 		}
 		if (!pickedCards.get(0).toString().equals("anySector")){
-			g.setColor(Color.WHITE);
-			g.setFont(new Font(frame.getFontName(), Font.BOLD, 16));
 			if (pickedCards.get(0).toString().equals("yourSector")){
-				g.drawString("Rumore nel tuo settore", xRect+5,yRect+17*row);
+				notArea.append("Hai pescato la carta: rumore nel tuo settore\n");
 				this.playerRumors.start();
 			}else if (!card.toString().equals("nothing")){
-				g.drawString("Silenzio", xRect+5,yRect+17*row);
+				notArea.append("Hai pescato la carta: Silenzio\n");
 				this.playerSilence.start();
 			}
-			this.row++;
 			if (controller.getMyCharacter().getBagSize()<4){
 				if(!isHuman && !hasAttacked && hasMoved ){
 					this.showAttackButton();
@@ -666,22 +657,18 @@ public class GameGUI implements GameInterface,MouseListener,Runnable {
 			
 		}
 		if (pickedCards.size()>1){
-			g.setColor(Color.WHITE);
-			g.setFont(new Font(frame.getFontName(), Font.BOLD, 16));
-			g.drawString("Hai pescato una carta", xRect+5,yRect+17*row);
-			this.row++;
-			g.drawString("oggetto", xRect+5,yRect+17*row);
-			this.row++;
+			notArea.append("Hai pescato una carta oggetto\n");
 		}
+		notArea.setCaretPosition(notArea.getDocument().getLength());
 	}
 
 
 	private void showEndButton() {
-		g.drawImage(this.imgFinishTurn,this.mapMarginWidth+this.mapWidth-200, 2, 68, 60,null);
+		g.drawImage(this.imgFinishTurn,this.mapMarginWidth+this.mapWidth-200, 2, 120, 60,null);
 	}
 
 	private void showAttackButton() {
-		g.drawImage(this.imgAttackButton,this.mapMarginWidth+this.mapWidth-400, 2, 68, 60,null);
+		g.drawImage(this.imgAttackButton,this.mapMarginWidth+this.mapWidth-400, 2, 120, 60,null);
 	}
 
 	@Override
@@ -692,12 +679,9 @@ public class GameGUI implements GameInterface,MouseListener,Runnable {
 	public void chooseAnyCoordinates(WatcherNoiseCoordinatesSelector selector) {
 		this.selectany = true;
 		this.selector = selector;
-		g.setColor(Color.WHITE);
-		g.setFont(new Font(frame.getFontName(), Font.BOLD, 16));
-		g.drawString("Seleziona la coordinata", xRect+5,yRect+17*row);
-		this.row++;
-		g.drawString("dove fare rumore", xRect+5,yRect+17*row);
-		this.row++;
+		notArea.append("Hai pescato la carta: rumore in qualunque settore\n");
+		notArea.append("Seleziona la coordinata dove fare rumore\n");
+		notArea.setCaretPosition(notArea.getDocument().getLength());
 	}
 
 	@Override
@@ -705,28 +689,18 @@ public class GameGUI implements GameInterface,MouseListener,Runnable {
 		g.setFont(new Font(frame.getFontName(), Font.BOLD, 16));
 		if(controller.isMyTurn())
 			if (result){
-				g.drawString("Sei riuscito a scappare!", xRect+5,yRect+17*row);
-				this.row++;
-				g.drawString("La tua partita è finita", xRect+5,yRect+17*row);
-				this.row++;
+				notArea.append("Sei riuscito a scappare!\n");
+				notArea.append("La tua partita è finita\n");
 			}else{
-				g.drawString("Non sei riuscito a scappare,", xRect+5,yRect+17*row);
-				this.row++;
-				g.drawString("Prova un'altra scialuppa", xRect+5,yRect+17*row);
-				this.row++;
+				notArea.append("Non sei riuscito a scappare,\n");
+				notArea.append("Prova un'altra scialuppa!\n");
 			}
 		else{
 			String currentPlayerUsername = controller.getCurrentPlayer();
 			if (result){
-				g.drawString("Il giocatore " + currentPlayerUsername, xRect+5,yRect+17*row);
-				this.row++;
-				g.drawString("è riuscito a scappare", xRect+5,yRect+17*row);
-				this.row++;
+				notArea.append("Il giocatore " + currentPlayerUsername + " è riuscito a scappare!\n");
 			}else{
-				g.drawString("Il giocatore " + currentPlayerUsername, xRect+5,yRect+17*row);
-				this.row++;
-				g.drawString(" non è riuscito a scappare", xRect+5,yRect+17*row);
-				this.row++;
+				notArea.append("Il giocatore " + currentPlayerUsername + " non è riuscito a scappare\n");
 			}
 		}
 		posEscape = posShallop.indexOf(coord);
@@ -736,6 +710,7 @@ public class GameGUI implements GameInterface,MouseListener,Runnable {
 			sitShallop.set(posEscape,2);
 		
 		this.printSector(coord.getNumber()-1, Coordinates.getNumberFromLetter(coord.getLetter()), SectorName.SHALLOP, 0);
+		notArea.setCaretPosition(notArea.getDocument().getLength());
 	}
 	
 	private class PlayerHandler implements ControllerListener{
@@ -787,32 +762,26 @@ public class GameGUI implements GameInterface,MouseListener,Runnable {
 			this.playerRumors.start();
 			this.rumorsCoordinates = noiseCoord;
 			this.printSector(i,j,graphicMap[i][j],3);
-			g.setColor(Color.WHITE);
-			g.setFont(new Font(frame.getFontName(), Font.BOLD, 16));
-			g.drawString("Hai sentito un rumore", xRect+5,yRect+17*row);
-			this.row++;
+			notArea.append("Hai sentito un rumore nella coordinata " + noiseCoord +"\n");
 		} else{
 			this.playerSilence.start();
-			g.setColor(Color.WHITE);
-			g.setFont(new Font(frame.getFontName(), Font.BOLD, 16));
-			g.drawString("Silenzio", xRect+5,yRect+17*row);
-			this.row++;
+			notArea.append("Silenzio!\n");
 		}
+		notArea.setCaretPosition(notArea.getDocument().getLength());
 	}
 
 	
 
 	@Override
 	public void showSpottedPlayer(String username, Coordinates position) {
-		g.setColor(Color.WHITE);
-		g.setFont(new Font(frame.getFontName(), Font.BOLD, 16));
 		if (username==null)
-			g.drawString("nessuno", xRect+5,yRect+17*row);
+			notArea.append("nessuno\n");
 		else if (username.equals(controller.getMyPlayerName()))
-			g.drawString("te", xRect+5,yRect+17*row);
-		else
-			g.drawString(username, xRect+5,yRect+17*row);
-		this.row++;
+			notArea.append("te\n");
+		else{
+			notArea.append(username + " nella posizione: " + position + "\n");
+		}
+		notArea.setCaretPosition(notArea.getDocument().getLength());
 	}
 
 	public void startRapresenting() {
@@ -826,25 +795,16 @@ public class GameGUI implements GameInterface,MouseListener,Runnable {
 
 	@Override
 	public void showUsedCard(ObjectCard card, Coordinates coord) {
-		g.setColor(Color.WHITE);
-		g.setFont(new Font(frame.getFontName(), Font.BOLD, 16));
-		g.drawString("è stata usata la carta:", xRect+5,yRect+17*row);
-		this.row++;
-		g.drawString(card.toString(), xRect+5,yRect+17*row);
-		this.row++;
+		notArea.append("è stata usata la carta: " + card.toString() + "\n");
 		if (card.toString().equals("spotlight")){
 			SectorName[][] graphicMap = map.getGraphicMap();
 			int i = coord.getNumber()-1;
 			int j = Coordinates.getNumberFromLetter(coord.getLetter());
 			this.printSector(i,j,graphicMap[i][j],5);
-			g.setColor(Color.WHITE);
-			g.setFont(new Font(frame.getFontName(), Font.BOLD, 16));
-			g.drawString("Spotlight nel settore", xRect+5,yRect+17*row);
-			this.row++;
-			g.drawString("indicato, giocatori:", xRect+5,yRect+17*row);
-			this.row++;
+			notArea.append("Spotlight nel settore " + coord.toString() + "giocatori:\n");
 			this.spottedCoordinates.add(coord);
 		}
+		notArea.setCaretPosition(notArea.getDocument().getLength());
 	}
 
 	@Override
@@ -869,26 +829,18 @@ public class GameGUI implements GameInterface,MouseListener,Runnable {
 	@Override
 	public void selectObjectToDiscard() {
 		g.setColor(Color.BLACK);
-		g.fillRect(this.mapMarginWidth+this.mapWidth-200, 2, 68, 60);
-		g.setColor(Color.WHITE);
-		g.setFont(new Font(frame.getFontName(), Font.BOLD, 16));
-		g.drawString("Hai troppe carte,", xRect+5,yRect+17*row);
-		this.row++;
-		g.drawString("seleziona la carta", xRect+5,yRect+17*row);
-		this.row++;
-		g.drawString("da scartare", xRect+5,yRect+17*row);
-		this.row++;
+		g.fillRect(this.mapMarginWidth+this.mapWidth-200, 2, 120, 60);
+		notArea.append("Hai troppe carte, seleziona una carta da scartare\n");
 		this.discard = true;
+		notArea.setCaretPosition(notArea.getDocument().getLength());
 	}
 
 	@Override
 	public void notifyDiscardedObject() {
 		g.setColor(Color.WHITE);
 		g.setFont(new Font(frame.getFontName(), Font.BOLD, 16));
-		g.drawString("Il giocatore ha", xRect+5,yRect+17*row);
-		this.row++;
-		g.drawString("scartato una carta", xRect+5,yRect+17*row);
-		this.row++;
+		notArea.append("Il giocatore ha scartato una carta!");
+		notArea.setCaretPosition(notArea.getDocument().getLength());
 	}
 
 		
@@ -903,20 +855,14 @@ public class GameGUI implements GameInterface,MouseListener,Runnable {
 
 	@Override
 	public void showMatchResults(String[] command) {
-		g.setColor(Color.WHITE);
-		g.setFont(new Font(frame.getFontName(), Font.BOLD, 16));
-		g.drawString("La partita è finita", xRect+5,yRect+17*row);
-		row++;
-		g.drawString("I vincitori sono:", xRect+5,yRect+17*row);
-		row++;
+		notArea.append("\nLa partita è finita, I vincitori sono:\n");
 		for(int i=1; i<command.length; i++){
-			g.drawString(command[i], xRect+5,yRect+17*row);
-			row++;
+			notArea.append(command[i] + "\n");
 		}
-		g.drawString("premi fine", xRect+5,yRect+17*row);
+		notArea.append("premi fine per uscire dalla partita\n");
 		this.showEndButton();
-		row++;
 		this.isFinish = true;
+		notArea.setCaretPosition(notArea.getDocument().getLength());
 	}
 
 	@Override
@@ -933,50 +879,40 @@ public class GameGUI implements GameInterface,MouseListener,Runnable {
 		this.printSector(i,j,graphicMap[i][j],4);
 		this.nKill = 0;
 		this.nSurvived = 0;
-		g.setColor(Color.WHITE);
-		g.setFont(new Font(frame.getFontName(), Font.BOLD, 16));
-		g.drawString("Attacco", xRect+5,yRect+17*row);
-		this.row++;
+		notArea.append("Attacco nel settore " + attackCoordinates + "\n");
+		notArea.setCaretPosition(notArea.getDocument().getLength());
 	}
 
 	@Override
 	public void showKill(String username, String character) {
 		this.playerAttack.start();
-		g.setColor(Color.WHITE);
-		g.setFont(new Font(frame.getFontName(), Font.BOLD, 16));
 		if (nKill==0){
-			g.drawString("Morti:", xRect+5,yRect+17*row);
-			this.row++;
+			notArea.append("Morti:\n");
 		}
 		if(username == null)
-			g.drawString("Nessuno morto", xRect+5,yRect+17*row);
+			notArea.append("Nessuno morto\n");
 		else if(username.equals(controller.getMyPlayerName())){
-			g.drawString("Sei stato ucciso", xRect+5,yRect+17*row);
+			notArea.append("Sei stato ucciso\n");
 			controller.getMyCharacter().setCurrentPosition(null);
 		} else{
-			g.drawString(username+", nel ruolo di", xRect+5,yRect+17*row);
-			this.row++;
-			g.drawString(character, xRect+5,yRect+17*row);
+			notArea.append(username+", nel ruolo di " + character + "\n");
 		}
-		this.row++;
 		this.nKill++;
+		notArea.setCaretPosition(notArea.getDocument().getLength());
 	}
 
 	@Override
 	public void showSurvived(String username) {
-		g.setColor(Color.WHITE);
-		g.setFont(new Font(frame.getFontName(), Font.BOLD, 16));
 		if (this.nSurvived==0){
-			g.drawString("Difesi:", xRect+5,yRect+17*row);
-			this.row++;
+			notArea.append("Difesi:\n");
 		}
 		if(username.equals(controller.getMyPlayerName())){
-			g.drawString("Sei riuscito a difenderti!", xRect+5,yRect+17*row);
+			notArea.append("Sei riuscito a difenderti!\n");
 			clearDefenseCard();
 		}else 
-			g.drawString(username, xRect+5,yRect+17*row);
-		this.row++;
+			notArea.append(username + "\n");
 		this.nSurvived++;
+		notArea.setCaretPosition(notArea.getDocument().getLength());
 	}
 
 

@@ -10,7 +10,6 @@ import it.polimi.ingsw.beribinaghi.mapPackage.Coordinates;
 import it.polimi.ingsw.beribinaghi.mapPackage.Map;
 import it.polimi.ingsw.beribinaghi.mapPackage.ShallopSector;
 import it.polimi.ingsw.beribinaghi.playerPackage.Character;
-import it.polimi.ingsw.beribinaghi.playerPackage.Player;
 
 import java.util.ArrayList;
 
@@ -83,7 +82,7 @@ public class MatchController {
 			this.myTurn = false;
 		if (type){
 			graphicInterface.changedTurn();
-			if (!this.isMyTurn())	//TODO prova asda
+			if (!this.isMyTurn())
 				session.listenUpdate();	
 		}
 	}
