@@ -179,4 +179,8 @@ public abstract class GameSessionClientSide {
 		}
 	}
 	
+	protected void analyzeAndShowExitedPlayer(String[] exitedPlayer){
+		controller.getGraphicInterface().showPlayerExit(exitedPlayer[1], exitedPlayer[2]);
+	}
+	
 }

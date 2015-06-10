@@ -268,6 +268,9 @@ public class ClientSocketSession extends GameSessionClientSide {
 					break;
 				case "discarded":
 					controller.getGraphicInterface().notifyDiscardedObject();
+					break;
+				case "exit":
+					analyzeAndShowExitedPlayer(command);
 			}
 			if(!controller.isMatchFinished()){
 				commandString = in.nextLine();

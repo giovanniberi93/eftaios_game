@@ -41,11 +41,17 @@ public abstract class GameSessionServerSide implements Observer {
 		else if (line.equals("endMatch")){
 			this.notifyEndMatch();
 		}
-		else if (line.equals("discarded"))
+		else if (line.equals("discarded")){
 			this.notifyDiscardedObject();
+		}
+		else if (line.equals("exit")){
+			this.notifyPlayerExit();
+		}
 	}
 
-	protected void myTurn() {}
+	protected abstract void notifyPlayerExit();
+
+	protected abstract void myTurn();
 	
 	/**
 	 * Notifies to all players the end of the running match with the String "endMatch"
@@ -67,10 +73,7 @@ public abstract class GameSessionServerSide implements Observer {
 	/**
 	 * Notifies to all players that currentPlayer has discarded an object
 	 */
-	protected void notifyDiscardedObject() {
-		// TODO Auto-generated method stub
-		
-	}
+	protected abstract void notifyDiscardedObject();
 
 	/**
 	 * Notifies to all players the position of the noise signaled by the current player with the string "noise=coordinatesLetter=coordinatesNumber"

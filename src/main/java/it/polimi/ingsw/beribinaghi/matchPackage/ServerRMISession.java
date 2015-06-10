@@ -262,6 +262,24 @@ public class ServerRMISession extends GameSessionServerSide implements RemoteGam
 		return match.isEscapeSuccessful();
 	}
 
+	@Override
+	protected void notifyPlayerExit() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected void myTurn() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected void notifyDiscardedObject() {
+		// TODO Auto-generated method stub
+		
+	}
+
 
 
 }

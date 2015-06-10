@@ -135,4 +135,6 @@ public interface GameInterface {
 	 */
 	void showSurvived(String username);
 
+	void showPlayerExit(String username, String character);
+
 }

@@ -419,15 +419,7 @@ public class Match {
 					else{
 						this.killed.add(analyzedPlayer);
 						analyzedPlayer.getCharacter().setAlive(false);
-						analyzedPlayer.getCharacter().setCurrentPosition(null);
-						remainingHumans = 0;
-						for(Player player : players)
-							if(player.getCharacter().getSide() == SideName.HUMAN && player.getCharacter().getCurrentPosition() != null)
-								remainingHumans++;
-						if(remainingHumans == 0)
-							lastHumanKilled = true;
-						if(i == firstPlayerIndex)
-							firstPlayerIndex = getNextValidPlayerIndex();
+						manageExitedFromGamePlayer(analyzedPlayer);
 					}	
 				}
 			}
@@ -441,6 +433,21 @@ public class Match {
 		survived.clear();
 	}
 	
+	public void manageExitedFromGamePlayer(Player exitedPlayer){
+		exitedPlayer.getCharacter().setCurrentPosition(null);
+		int remainingHumans = 0;
+		if(exitedPlayer.getCharacter().getSide().equals(SideName.HUMAN)){
+			for(Player player : players)
+				if(player.getCharacter().getSide() == SideName.HUMAN && player.getCharacter().getCurrentPosition() != null)
+					remainingHumans++;
+			if(remainingHumans == 0)
+				lastHumanKilled = true;
+		}
+		if(exitedPlayer.equals(players.get(firstPlayerIndex)))
+			firstPlayerIndex = getNextValidPlayerIndex();
+	}
+
+
 	public void teleport(){
 		Coordinates baseCoordinates;
 
@@ -463,7 +470,8 @@ public class Match {
 		objectsDeck.addToDiscardPile(card);
 		getMatchDataUpdate().setUsedObjectCard();
 	}
-
+	
+	
 	public String getMatchName() {
 		return matchName;
 	}

@@ -341,5 +341,11 @@ public class GameCLI implements GameInterface {
 			System.out.println("Il giocatore " + username + " è riuscito a difendersi");
 		
 	}
+
+	@Override
+	public void showPlayerExit(String username, String character) {
+		System.out.println(username+", nel ruolo di "+character+", è uscito dal gioco");
+		
+	}
 }
 

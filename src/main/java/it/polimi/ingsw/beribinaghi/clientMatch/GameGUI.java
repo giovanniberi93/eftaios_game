@@ -979,5 +979,11 @@ public class GameGUI implements GameInterface,MouseListener,Runnable {
 		this.nSurvived++;
 	}
 
+	@Override
+	public void showPlayerExit(String username, String character) {
+		// TODO Auto-generated method stub
+		
+	}
+
 
 }
