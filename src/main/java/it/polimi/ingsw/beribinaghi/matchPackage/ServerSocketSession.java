@@ -241,4 +241,16 @@ public class ServerSocketSession extends GameSessionServerSide implements Runnab
 	public void run() {
 		this.myTurn();
 	}
+
+	@Override
+	protected void notifyPlayerExit() {
+		if(!match.getMatchDataUpdate().getCurrentPlayer().equals(this.player)){
+			Player currentPlayer = match.getMatchDataUpdate().getCurrentPlayer();
+			String user = currentPlayer.getUser();
+			String character = currentPlayer.getCharacter().toString();
+			out.println("exit="+user+"="+character);
+			out.flush();
+		}
+		
+	}
 }

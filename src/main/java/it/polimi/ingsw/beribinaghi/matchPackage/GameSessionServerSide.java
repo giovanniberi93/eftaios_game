@@ -41,9 +41,15 @@ public abstract class GameSessionServerSide implements Observer {
 		else if (line.equals("endMatch")){
 			this.notifyEndMatch();
 		}
-		else if (line.equals("discarded"))
+		else if (line.equals("discarded")){
 			this.notifyDiscardedObject();
+		}
+		else if (line.equals("exit")){
+			this.notifyPlayerExit();
+		}
 	}
+
+	protected abstract void notifyPlayerExit();
 
 	protected abstract void myTurn();
 	

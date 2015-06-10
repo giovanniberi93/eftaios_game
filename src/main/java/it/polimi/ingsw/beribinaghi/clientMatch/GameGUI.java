@@ -915,5 +915,11 @@ public class GameGUI implements GameInterface,MouseListener,Runnable {
 		notArea.setCaretPosition(notArea.getDocument().getLength());
 	}
 
+	@Override
+	public void showPlayerExit(String username, String character) {
+		// TODO Auto-generated method stub
+		
+	}
+
 
 }

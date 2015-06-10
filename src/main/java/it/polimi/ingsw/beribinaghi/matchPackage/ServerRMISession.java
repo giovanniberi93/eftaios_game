@@ -310,6 +310,12 @@ public class ServerRMISession extends GameSessionServerSide implements RemoteGam
 		return winners;
 	}
 
+	protected void notifyPlayerExit() {
+		// TODO Auto-generated method stub
+		
+	}
+
+
 	@Override
 	protected void myTurn() {
 		

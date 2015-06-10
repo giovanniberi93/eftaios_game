@@ -20,6 +20,7 @@ public class TimerManager extends TimerTask {
 
 	@Override
 	public void run() {
+		match.getMatchDataUpdate().setPlayerExit();
 		System.out.println("pene");
 	}
 

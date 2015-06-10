@@ -65,7 +65,10 @@ public class MatchDataUpdate extends Observable {
 		this.notifyObservers("noise");
 	}
 
-	
+	public void setPlayerExit(){
+		this.setChanged();
+		this.notifyObservers("exit");
+	}
 
 	/**
 	 * Notifies to all gamesessions the end of the game; the notified string is "endMatch"

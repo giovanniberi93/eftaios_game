@@ -82,7 +82,7 @@ public class MatchController {
 			this.myTurn = false;
 		if (type){
 			graphicInterface.changedTurn();
-			if (!this.isMyTurn())
+		if (!this.isMyTurn() && !matchFinished)	
 				session.listenUpdate();	
 		}
 	}
