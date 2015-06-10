@@ -255,4 +255,10 @@ public class ServerSocketSession extends GameSessionServerSide implements Runnab
 		}
 		
 	}
+
+	@Override
+	public void disconnect() {
+		// TODO Auto-generated method stub
+		
+	}
 }

@@ -472,6 +472,11 @@ public class Match {
 	}
 	
 	
+	public ArrayList<GameSessionServerSide> getSessions() {
+		return sessions;
+	}
+
+
 	public String getMatchName() {
 		return matchName;
 	}

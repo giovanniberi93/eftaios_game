@@ -49,8 +49,14 @@ public abstract class GameSessionServerSide implements Observer {
 		}
 	}
 
+	/**
+	 * notifies the exit from the game of a player; it's caused by a disconnection, that can be forced or accidental 
+	 */
 	protected abstract void notifyPlayerExit();
 
+	/**
+	 * manages the session during the turn of the correspondent player
+	 */
 	protected abstract void myTurn();
 	
 	/**
@@ -108,5 +114,10 @@ public abstract class GameSessionServerSide implements Observer {
 	 * @param map is a Map object representing the match	 
 	 * */
 	public abstract void sendMap(Map map);
+
+	/**
+	 * disconnect the session
+	 */
+	public abstract void disconnect();
 
 }

@@ -280,6 +280,12 @@ public class ServerRMISession extends GameSessionServerSide implements RemoteGam
 		
 	}
 
+	@Override
+	public void disconnect() {
+		// TODO Auto-generated method stub
+		
+	}
+
 
 
 }
