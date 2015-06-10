@@ -32,10 +32,12 @@ public class TimerManager extends TimerTask {
 		for(GameSessionServerSide s : sessions)
 			if(s.player.equals(currentPlayer))
 				currentSession = s;
-		match.getMatchDataUpdate().deleteObserver(currentSession);
+		match.getMatchDataUpdate().deleteObserver(currentSession);	
+		match.manageExitedFromGamePlayer(currentPlayer);				//
+		match.finishTurn();												// così non funziona
 		currentSession.disconnect();
 		//
-		System.out.println("pene");
+		System.out.println("fiorellini");
 	}
 
 }

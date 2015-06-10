@@ -45,12 +45,16 @@ public class SetupSocketSession extends Thread implements SetupSession {
 			if (in.nextLine().equals("update"))
 				printMatchName();
 			choose();
-		} catch (NoSuchElementException e){
+		} 
+		catch (NoSuchElementException e){
+			this.closeSession();
+		}
+		catch(IndexOutOfBoundsException e){
 			this.closeSession();
 		}
 	}
 
-	private void choose() throws NoSuchElementException {
+	private void choose() throws NoSuchElementException, IndexOutOfBoundsException {
 		Object choose;
 		Boolean exitPre = false;
 		do{

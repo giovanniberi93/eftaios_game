@@ -161,7 +161,7 @@ public class ClientSocketSession extends GameSessionClientSide {
 		ArrayList<Card> pickedCards = new ArrayList<Card>();
 		out.println("move="+destinationCoord.toString());
 		out.flush();
-		pickedCardString = in.nextLine();
+		pickedCardString = in.nextLine();		//TODO
 		String[] command = pickedCardString.split("=");
 			if(!command[0].equals("card"))
 				throw new WrongSyntaxException();
@@ -215,12 +215,12 @@ public class ClientSocketSession extends GameSessionClientSide {
 		out.println(commandString);
 		out.flush();
 		if(command.get(0).equals("attack")){
-			String[] attackResult = in.nextLine().split("=");
+			String[] attackResult = in.nextLine().split("=");	//TODO
 			analyzeAndShowAttack(attackResult);
 		}
 		else 
 			if (command.get(0).equals("spotlight")){
-				String[] spotlightResult = in.nextLine().split("=");
+				String[] spotlightResult = in.nextLine().split("=");	//TODO
 				super.analyzeAndShowSpotlight(spotlightResult);
 			}
 				

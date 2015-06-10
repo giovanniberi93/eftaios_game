@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 /**
@@ -21,7 +22,7 @@ public class ServerSocketSession extends GameSessionServerSide implements Runnab
 	private Socket socket;
 	private Scanner in;
 	private PrintWriter out;
-	private Match match;
+	private boolean disconnected = false;
 	
 	public ServerSocketSession(Socket socket,Scanner in, PrintWriter out, Player player) throws IOException {
 		this.in = in;
@@ -78,18 +79,31 @@ public class ServerSocketSession extends GameSessionServerSide implements Runnab
 		out.flush();
 	}
 
-	protected void myTurn(){
-		String line = in.nextLine();
+	protected void myTurn() {
+		String line = null;
+		try{
+			line = in.nextLine();
+		}
+		catch (NoSuchElementException e){
+			disconnected = true;
+		}
+		
 		String[] command = line.split("=");
 
-		while(!command[0].equals("end")){
+		while(!command[0].equals("end") && !disconnected){
 			if(command[0].equals("move"))
 				executeMove(command[1]);	
 			else if (command[0].equals("discarded"))
 					match.discard(command[1]);
 				else 
 					executeCardAction(command);
-			line = in.nextLine();
+			try{
+				line = in.nextLine();
+			}
+			catch (NoSuchElementException e){
+				disconnected = true;
+			}
+			
 			command = line.split("=");
 		}
 		match.getMatchDataUpdate().setOldCurrentPlayer(this.player);
@@ -258,7 +272,6 @@ public class ServerSocketSession extends GameSessionServerSide implements Runnab
 
 	@Override
 	public void disconnect() {
-		// TODO Auto-generated method stub
-		
+		socket.close();
 	}
 }

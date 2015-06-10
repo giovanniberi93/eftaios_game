@@ -434,6 +434,7 @@ public class Match {
 	}
 	
 	public void manageExitedFromGamePlayer(Player exitedPlayer){
+		getMatchDataUpdate().setOldCurrentPlayer(exitedPlayer);
 		exitedPlayer.getCharacter().setCurrentPosition(null);
 		int remainingHumans = 0;
 		if(exitedPlayer.getCharacter().getSide().equals(SideName.HUMAN)){
