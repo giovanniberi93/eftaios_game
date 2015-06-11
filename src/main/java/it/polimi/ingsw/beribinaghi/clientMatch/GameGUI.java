@@ -405,45 +405,47 @@ public class GameGUI implements GameInterface,MouseListener,Runnable {
 	}
 
 	private void printSector(int i, int j, SectorName sectorName, int type) {
-		Image img;
-		if (type==0)
-			img = hashSector.get(sectorName);
-		else if (type==1)
-			img = hashSelectedSector.get(sectorName);
-		else if (type==2)
-			img = hashMySector.get(sectorName);
-		else if (type==3)
-			img = this.imgRumors;
-		else if (type==4)
-			img = hashAttackSector.get(sectorName);
-		else
-			img = hashSpotSector.get(sectorName);
-		g.drawImage(img, mapMarginWidth+j*3*lw, mapMarginHeight+lh*(i*2+j%2), 4*lw, 2*lh, null);
-		if (sectorName.equals(SectorName.DANGEROUS) || sectorName.equals(SectorName.SAFE)){
-			String num = String.valueOf(i+1);
-			if (num.length()==1)
-				num = "0"+num;
-			g.setColor(Color.GRAY);
-			g.setFont(new Font(frame.getFontName(), Font.BOLD, 14));
-			g.setFont(frame.getFont());
-			g.drawString((Coordinates.getLetterFromNumber(j)+"" + num).toUpperCase(),mapMarginWidth+j*3*lw+2*lw-12 , mapMarginHeight+lh*(i*2+j%2)+lh+5);
-		} else if (sectorName.equals(SectorName.SHALLOP)){
-			Coordinates coordinates = new Coordinates(Coordinates.getLetterFromNumber(j),i+1);
-			if (!posShallop.contains(coordinates)){
-				posShallop.add(coordinates);
-				sitShallop.add(0);
-			} 
-			int pos = posShallop.indexOf(coordinates);
-			g.setColor(Color.WHITE);
-			g.setFont(new Font(frame.getFontName(), Font.BOLD, 18));
-			if (sitShallop.get(pos)==1){
-				img = this.imgShallopOk;
-			} else if (sitShallop.get(pos)==2){
-				img = this.imgShallopKo;
-			}
+		if (!sectorName.equals(SectorName.BLANK)){
+			Image img;
+			if (type==0)
+				img = hashSector.get(sectorName);
+			else if (type==1)
+				img = hashSelectedSector.get(sectorName);
+			else if (type==2)
+				img = hashMySector.get(sectorName);
+			else if (type==3)
+				img = this.imgRumors;
+			else if (type==4)
+				img = hashAttackSector.get(sectorName);
+			else
+				img = hashSpotSector.get(sectorName);
 			g.drawImage(img, mapMarginWidth+j*3*lw, mapMarginHeight+lh*(i*2+j%2), 4*lw, 2*lh, null);
-			g.drawString(""+(posShallop.indexOf(coordinates)+1),mapMarginWidth+j*3*lw+2*lw-3 , mapMarginHeight+lh*(i*2+j%2)+lh+5);
-		}	
+			if (sectorName.equals(SectorName.DANGEROUS) || sectorName.equals(SectorName.SAFE)){
+				String num = String.valueOf(i+1);
+				if (num.length()==1)
+					num = "0"+num;
+				g.setColor(Color.GRAY);
+				g.setFont(new Font(frame.getFontName(), Font.BOLD, 14));
+				g.setFont(frame.getFont());
+				g.drawString((Coordinates.getLetterFromNumber(j)+"" + num).toUpperCase(),mapMarginWidth+j*3*lw+2*lw-12 , mapMarginHeight+lh*(i*2+j%2)+lh+5);
+			} else if (sectorName.equals(SectorName.SHALLOP)){
+				Coordinates coordinates = new Coordinates(Coordinates.getLetterFromNumber(j),i+1);
+				if (!posShallop.contains(coordinates)){
+					posShallop.add(coordinates);
+					sitShallop.add(0);
+				} 
+				int pos = posShallop.indexOf(coordinates);
+				g.setColor(Color.WHITE);
+				g.setFont(new Font(frame.getFontName(), Font.BOLD, 18));
+				if (sitShallop.get(pos)==1){
+					img = this.imgShallopOk;
+				} else if (sitShallop.get(pos)==2){
+					img = this.imgShallopKo;
+				}
+				g.drawImage(img, mapMarginWidth+j*3*lw, mapMarginHeight+lh*(i*2+j%2), 4*lw, 2*lh, null);
+				g.drawString(""+(posShallop.indexOf(coordinates)+1),mapMarginWidth+j*3*lw+2*lw-3 , mapMarginHeight+lh*(i*2+j%2)+lh+5);
+			}	
+		}
 	}
 
 
