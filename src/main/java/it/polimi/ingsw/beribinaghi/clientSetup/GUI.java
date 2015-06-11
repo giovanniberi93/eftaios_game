@@ -614,11 +614,48 @@ public class GUI extends JFrame implements GraphicInterface {
 	public void notifyNewPlayer(String namePlayer) {
 		listPlayer.addElement(namePlayer);
 	}
+	
+	private class OkPress implements ActionListener {
+		private JInternalFrame errorFrame;
+		
+		public OkPress(JInternalFrame errorFrame) {
+			this.errorFrame = errorFrame;
+		}
+		
+		@Override
+		public void actionPerformed(ActionEvent e) {
+		    errorFrame.setVisible(false);
+			errorFrame.dispose();
+		} 
+		
+	}
 
 	@Override
 	public void signalConnectionDown() {
-		// TODO Auto-generated method stub
-		
+		JInternalFrame errorFrame = createInternal("Errore",Color.RED);
+		Container errorCont = errorFrame.getContentPane();
+		Label labelErr = new Label("Errore!");
+		Label labelRe = new Label("Sei stato buttato fuori!");
+		labelErr.setFont(new Font(fontName, Font.BOLD, 22));
+		labelErr.setForeground(Color.WHITE);
+		labelRe.setFont(new Font(fontName, Font.BOLD, 18));
+		labelRe.setForeground(Color.WHITE);
+		errorCont.setBackground(Color.BLACK);
+		JButton bYes = new JButton("Ok");
+		bYes.setFont(new Font(fontName, Font.BOLD, 16));
+		cont.add(errorFrame);
+		Label trys= new Label(); //adding last element
+		trys.setVisible(false);
+		cont.add(trys);
+		errorCont.add(labelErr);
+		errorCont.add(labelRe);
+		errorCont.add(bYes);
+		errorCont.add(new Label());
+		errorFrame.setBounds(this.getWidth()/2-150, this.getHeight()/2-200, 300, 200);
+		labelErr.setBounds(10, 10, 250, 30);
+		labelRe.setBounds(10, 50, 250, 30);
+		bYes.setBounds(100, 100, 80, 40);
+		bYes.addActionListener(new OkPress(errorFrame));
 	}
 
 

@@ -26,6 +26,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.NoSuchElementException;
 
 import javax.imageio.ImageIO;
 import javax.media.ControllerEvent;
@@ -156,6 +157,8 @@ public class GameGUI implements GameInterface,MouseListener,Runnable {
 			hashCard.put("silence", ImageIO.read(new File("media/sectorCard/silence.png").toURI().toURL()));
 			hashCard.put("anySector", ImageIO.read(new File("media/sectorCard/noiseInEverySector.png").toURI().toURL()));
 			hashCard.put("yourSector", ImageIO.read(new File("media/sectorCard/rumorsInYourSector.png").toURI().toURL()));
+			hashCard.put("shallopOk", ImageIO.read(new File("media/shallopOk.png").toURI().toURL()));
+			hashCard.put("shallopKo", ImageIO.read(new File("media/shallopKo.png").toURI().toURL()));
 			hashLogo.put("character", ImageIO.read(new File("media/logoCard/characterLogo.png").toURI().toURL()));
 			hashLogo.put("escape", ImageIO.read(new File("media/logoCard/escapeLogo.png").toURI().toURL()));
 			hashLogo.put("object", ImageIO.read(new File("media/logoCard/objectLogo.png").toURI().toURL()));
@@ -256,8 +259,6 @@ public class GameGUI implements GameInterface,MouseListener,Runnable {
 	}
 	
 	public void notifyOthersTurn(String playerTurn) {
-		g.setColor(Color.BLACK);
-		g.fillRect( this.mapMarginWidth+this.mapWidth+imgx-20, this.mapMarginHeight +(separate+60), imgx, imgy);
 		g.setColor(Color.WHITE);
 		g.setFont(new Font(frame.getFontName(), Font.BOLD, 24));
 		iniTurn();
@@ -267,6 +268,8 @@ public class GameGUI implements GameInterface,MouseListener,Runnable {
 	}
 	
 	private void iniTurn(){
+		g.setColor(Color.BLACK);
+		g.fillRect( this.mapMarginWidth+this.mapWidth+imgx-20, this.mapMarginHeight +(separate+60), imgx, imgy);
 		if (this.rumorsCoordinates!=null)
 			if (!this.rumorsCoordinates.equals(controller.getMyPosition()))
 				this.printSector( this.rumorsCoordinates.getNumber()-1, Coordinates.getNumberFromLetter(this.rumorsCoordinates.getLetter()), SectorName.DANGEROUS, 0);
@@ -437,13 +440,17 @@ public class GameGUI implements GameInterface,MouseListener,Runnable {
 				int pos = posShallop.indexOf(coordinates);
 				g.setColor(Color.WHITE);
 				g.setFont(new Font(frame.getFontName(), Font.BOLD, 18));
+				Image cardImg = null;
 				if (sitShallop.get(pos)==1){
 					img = this.imgShallopOk;
+					cardImg = hashCard.get("shallopOk");
 				} else if (sitShallop.get(pos)==2){
 					img = this.imgShallopKo;
+					cardImg = hashCard.get("shallopKo");
 				}
 				g.drawImage(img, mapMarginWidth+j*3*lw, mapMarginHeight+lh*(i*2+j%2), 4*lw, 2*lh, null);
 				g.drawString(""+(posShallop.indexOf(coordinates)+1),mapMarginWidth+j*3*lw+2*lw-3 , mapMarginHeight+lh*(i*2+j%2)+lh+5);
+				this.printSingleCard(cardImg, 2, 1, imgx, imgy,0);
 			}	
 		}
 	}
@@ -451,6 +458,7 @@ public class GameGUI implements GameInterface,MouseListener,Runnable {
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
+		try{
 		if (controller.isMyTurn() || this.isFinish){
 			int x = e.getX()-this.mapMarginWidth;
 			int y = e.getY()-this.mapMarginHeight;
@@ -499,6 +507,10 @@ public class GameGUI implements GameInterface,MouseListener,Runnable {
 					}
 				}
 			}
+		}
+		}catch (NoSuchElementException e2){
+			this.returnToMenu();
+			controller.connectionProblem();
 		}
 	}
 
@@ -586,14 +598,18 @@ public class GameGUI implements GameInterface,MouseListener,Runnable {
 		if (!isFinish)
 			new Thread(this).start();
 		else{
-			frame.removeMouseListener(this);
 			controller.endMatch();
-			g.setColor(Color.BLACK);
-			g.fillRect(0, 0, frame.getWidth(), frame.getHeight());
-			frame.getContentPane().removeAll();
-			frame.paintComponents(g);
+			this.returnToMenu();
 			frame.printMatchesName();
 		}
+	}
+	
+	private void returnToMenu(){
+		g.setColor(Color.BLACK);
+		frame.removeMouseListener(this);
+		g.fillRect(0, 0, frame.getWidth(), frame.getHeight());
+		frame.getContentPane().removeAll();
+		frame.paintComponents(g);
 	}
 
 	private void selectRumorCoordinates(Coordinates coordinates) {
@@ -869,7 +885,12 @@ public class GameGUI implements GameInterface,MouseListener,Runnable {
 
 	@Override
 	public void run() {
-		controller.callEndTurn();
+		try{
+			controller.callEndTurn();
+		} catch (NoSuchElementException e){
+			this.returnToMenu();
+			controller.connectionProblem();
+		}
 	}
 
 	@Override
@@ -919,8 +940,7 @@ public class GameGUI implements GameInterface,MouseListener,Runnable {
 
 	@Override
 	public void showPlayerExit(String username, String character) {
-		// TODO Auto-generated method stub
-		
+		notArea.append("Il giocatore " + username + " nel ruolo di " + character +" è uscito dalla partita\n");
 	}
 
 

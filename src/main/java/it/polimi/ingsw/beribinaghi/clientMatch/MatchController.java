@@ -3,6 +3,7 @@
  */
 package it.polimi.ingsw.beribinaghi.clientMatch;
 
+import it.polimi.ingsw.beribinaghi.clientSetup.SetupController;
 import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.Card;
 import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.ObjectCard;
 import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.SectorCard;
@@ -30,6 +31,7 @@ public class MatchController {
 	private int turnNumber;
 	private boolean attemptedEscape;
 	private boolean matchFinished;
+	private SetupController setupController;
 
 	public Character getMyCharacter() {
 		return myCharacter;
@@ -37,11 +39,13 @@ public class MatchController {
 
 	/**
 	 * Constructs the matchController assigning the player name, the graphic interface (CLI or GUI) and the gamesession (socket or RMI)
+	 * @param setupController 
 	 * @param playerName is the name of the player
 	 * @param graphicInterface is the graphic interface
 	 * @param session is the gamesession
 	 */
-	public MatchController(String playerName, GameInterface graphicInterface, GameSessionClientSide session) {
+	public MatchController(SetupController setupController, String playerName, GameInterface graphicInterface, GameSessionClientSide session) {
+		this.setupController = setupController;
 		this.graphicInterface = graphicInterface;
 		this.session = session;
 		this.graphicInterface.setController(this);
@@ -198,6 +202,10 @@ public class MatchController {
 
 	public void setMatchFinished(boolean matchFinished) {
 		this.matchFinished = matchFinished;
+	}
+
+	public void connectionProblem() {
+		setupController.handleConectionProblem();
 	}
 
 

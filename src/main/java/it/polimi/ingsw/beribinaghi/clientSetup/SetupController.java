@@ -57,15 +57,10 @@ public class SetupController {
 		{
 		}
 		try{
-			new MatchController(playerName,graphicInterface.beginMatch(),setupSession.startGameComunication());
+			new MatchController(this,playerName,graphicInterface.beginMatch(),setupSession.startGameComunication());
 		}
 		catch(NoSuchElementException e){
-			graphicInterface.signalConnectionDown();
-			if (!this.setupSession.closeAfterError()){
-				firstTime = false;
-				graphicInterface.signalConnessionError();
-			}
-			graphicInterface.printMatchesName();	
+			this.handleConectionProblem();
 		}
 	}
 
@@ -134,6 +129,15 @@ public class SetupController {
 		if (!this.setupSession.closeAfterError()){
 			graphicInterface.signalConnessionError();
 		}
+	}
+
+	public void handleConectionProblem() {
+		graphicInterface.signalConnectionDown();
+		if (!this.setupSession.closeAfterError()){
+			firstTime = false;
+			graphicInterface.signalConnessionError();
+		}
+		graphicInterface.printMatchesName();
 	}
 
 
