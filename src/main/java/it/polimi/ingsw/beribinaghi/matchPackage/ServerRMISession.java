@@ -1,9 +1,11 @@
 
 package it.polimi.ingsw.beribinaghi.matchPackage;
 
+import java.rmi.NoSuchObjectException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.Registry;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 
 import it.polimi.ingsw.beribinaghi.RMIInterface.RemoteGameSession;
@@ -324,7 +326,12 @@ public class ServerRMISession extends GameSessionServerSide implements RemoteGam
 
 	@Override
 	public void disconnect() {
-		// TODO Auto-generated method stub
+		try {
+			UnicastRemoteObject.unexportObject(this,true);
+		} catch (NoSuchObjectException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 	}
 
@@ -368,4 +375,5 @@ public class ServerRMISession extends GameSessionServerSide implements RemoteGam
 		return result.split("=");		
 	}
 
+	
 }
