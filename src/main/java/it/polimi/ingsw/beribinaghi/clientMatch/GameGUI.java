@@ -307,7 +307,7 @@ public class GameGUI implements GameInterface,MouseListener,Runnable {
 	}
 	
 	private void printSelectableCoordinates(Coordinates currentPosition, int percorrableDistance) {
-		boolean isAlien = (controller.getMyCharacter().equals(SideName.ALIEN));
+		boolean isAlien = (controller.getMyCharacter().getSide().equals(SideName.ALIEN));
 		ArrayList<Coordinates> selectableCoordinates = controller.getMap().getReachableCoordinates(currentPosition, percorrableDistance,isAlien);
 		SectorName[][] graphicMap = map.getGraphicMap();
 		for (Coordinates coordinates:selectableCoordinates){	
