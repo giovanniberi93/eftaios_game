@@ -15,6 +15,9 @@ public interface GraphicInterface {
 	/**
 	 * @return the result of connection
 	 */
+	/**
+	 * 
+	 */
 	public void signalConnessionError();
 
 	/**
@@ -48,6 +51,16 @@ public interface GraphicInterface {
 	 * start with the presentation to user pre match. It can contains intro video or something else
 	 */
 	public void start();
+
+	/**
+	 * Signal a connection error
+	 */
+	public void signalConnectionDown();
+
+	/**
+	 * prints the name of the matches
+	 */
+	void printMatchesName();
 
 
 }

@@ -33,7 +33,12 @@ public class CLI implements GraphicInterface {
 		System.out.println("Connessione con il server fallita, riprovare? (Si/No)");
 		String answer = correct(inLine.nextLine());
 		if (answer.equals("si"))
-			setupController.connect();
+			if(setupController.isFirstTime())
+				setupController.connect();
+			else
+				setupController.reconnect();
+		else if (!setupController.isFirstTime())
+			System.exit(0);
 	}
 	
 	private static String correct(String string) {
@@ -49,7 +54,8 @@ public class CLI implements GraphicInterface {
 		printMatchesName();
 	}
 
-	private void printMatchesName() {
+	@Override
+	public void printMatchesName() {
 		ArrayList<String> matchesName = this.setupController.getMatchesName();
 		if (matchesName.size()>0)
 		{
@@ -152,5 +158,11 @@ public class CLI implements GraphicInterface {
 	@Override
 	public void start() {
 	}
+
+	@Override
+	public void signalConnectionDown() {
+		System.out.println("Sei stato disconnesso perché sei stato troppo lento, oppure hai avuto problemi di connessione");
+	}
+	
 
 }

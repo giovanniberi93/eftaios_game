@@ -88,9 +88,11 @@ public class ServerSocketSession extends GameSessionServerSide implements Runnab
 			disconnected = true;
 		}
 		
-		String[] command = line.split("=");
+		String[] command = null;
+		if(!disconnected)
+			command = line.split("=");
 
-		while(!command[0].equals("end") && !disconnected){
+		while( !disconnected &&!command[0].equals("end")){
 			if(command[0].equals("move"))
 				executeMove(command[1]);	
 			else if (command[0].equals("discarded"))
@@ -103,22 +105,24 @@ public class ServerSocketSession extends GameSessionServerSide implements Runnab
 			catch (NoSuchElementException e){
 				disconnected = true;
 			}
-			
-			command = line.split("=");
+			if(!disconnected)
+				command = line.split("=");
 		}
-		match.getMatchDataUpdate().setOldCurrentPlayer(this.player);
-		//provo
-		boolean finished = match.isFinished();
-		if(finished){
-			out.println("endMatch");
-			out.flush();
+		if(!disconnected){
+			match.getMatchDataUpdate().setOldCurrentPlayer(this.player);
+			//provo
+			boolean finished = match.isFinished();
+			if(finished){
+				out.println("endMatch");
+				out.flush();
+			}
+			else{
+				out.println("continue");
+				out.flush();
+			}
+				//
+			match.finishTurn();  
 		}
-		else{
-			out.println("continue");
-			out.flush();
-		}
-			//
-		match.finishTurn();  
 	}
 	
 
@@ -272,6 +276,11 @@ public class ServerSocketSession extends GameSessionServerSide implements Runnab
 
 	@Override
 	public void disconnect() {
-		socket.close();
+		try {					//TODO boh
+			socket.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }

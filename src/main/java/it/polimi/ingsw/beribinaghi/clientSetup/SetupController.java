@@ -6,6 +6,7 @@ package it.polimi.ingsw.beribinaghi.clientSetup;
 import it.polimi.ingsw.beribinaghi.clientMatch.MatchController;
 
 import java.util.ArrayList;
+import java.util.NoSuchElementException;
 
 /**
  * This class manages the setup of game
@@ -16,6 +17,7 @@ public class SetupController {
 	private GraphicInterface graphicInterface;
 	private String playerName;
 	private String matchName;
+	private boolean firstTime = true;
 	
 	public String getMatchName() {
 		return matchName;
@@ -54,7 +56,17 @@ public class SetupController {
 		while (!setupSession.isStarted(this))
 		{
 		}
-		new MatchController(playerName,graphicInterface.beginMatch(),setupSession.startGameComunication());
+		try{
+			new MatchController(playerName,graphicInterface.beginMatch(),setupSession.startGameComunication());
+		}
+		catch(NoSuchElementException e){
+			graphicInterface.signalConnectionDown();
+			if (!this.setupSession.closeAfterError()){
+				firstTime = false;
+				graphicInterface.signalConnessionError();
+			}
+			graphicInterface.printMatchesName();	
+		}
 	}
 
 	/**
@@ -113,5 +125,16 @@ public class SetupController {
 	public void notifyNewPlayer(String nextLine) {
 		graphicInterface.notifyNewPlayer(nextLine);
 	}
+
+	public boolean isFirstTime() {
+		return firstTime;
+	}
+
+	public void reconnect() {
+		if (!this.setupSession.closeAfterError()){
+			graphicInterface.signalConnessionError();
+		}
+	}
+
 
 }
