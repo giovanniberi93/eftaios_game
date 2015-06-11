@@ -3,8 +3,8 @@
  */
 package it.polimi.ingsw.beribinaghi.clientSetup;
 
-import it.polimi.ingsw.beribinaghi.clientMatch.GameSessionClientSide;
 import it.polimi.ingsw.beribinaghi.clientMatch.ClientSocketSession;
+import it.polimi.ingsw.beribinaghi.clientMatch.GameSessionClientSide;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -21,6 +21,7 @@ public class SetupSocketSession implements SetupSession {
 	Socket socket;
 	private PrintWriter out;
 	private Scanner in;
+	private String myName;
 	
 	@Override
 	public Boolean connect() {
@@ -38,6 +39,7 @@ public class SetupSocketSession implements SetupSession {
 	public void login(String userName) {
 		if (in.nextLine().equals("login"))
 		{
+			myName = userName;
 			out.println(userName);
 			out.flush();
 		}
@@ -48,7 +50,8 @@ public class SetupSocketSession implements SetupSession {
 		ArrayList<String> matchesName = new ArrayList<String>();
 		out.println("update");
 		out.flush();
-		if (in.nextLine().equals("print match name"))
+		String p = in.nextLine();
+		if (p.equals("print match name"))
 		{
 			int numberMatches = Integer.parseInt((in.nextLine()));
 			for (int i = 0;i<numberMatches;i++)
@@ -86,6 +89,7 @@ public class SetupSocketSession implements SetupSession {
 		out.println("exit");
 		out.flush();
 		try {
+			
 			socket.close();
 		} catch (IOException e) {
 			
@@ -126,6 +130,28 @@ public class SetupSocketSession implements SetupSession {
 	@Override
 	public GameSessionClientSide startGameComunication() {
 		return new ClientSocketSession(socket,in,out);
+	}
+
+	@Override
+	public Boolean closeAfterError() {
+		try {
+			socket.close();
+		} catch (IOException e) {}
+		return reconnect();
+	}
+
+	@Override
+	public Boolean reconnect() {
+		try {
+			
+			socket = new Socket(EscapeFromTheAliensInOuterSpace.ADDRESS,EscapeFromTheAliensInOuterSpace.SOCKETPORT);
+			in = new Scanner(socket.getInputStream());
+			out = new PrintWriter(socket.getOutputStream());	
+			login(myName);
+			return true;
+		} catch (IOException e) {}
+		return false;
+			
 	}
 
 

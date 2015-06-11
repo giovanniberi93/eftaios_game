@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 /**
@@ -21,7 +22,7 @@ public class ServerSocketSession extends GameSessionServerSide implements Runnab
 	private Socket socket;
 	private Scanner in;
 	private PrintWriter out;
-	private Match match;
+	private boolean disconnected = false;
 	
 	public ServerSocketSession(Socket socket,Scanner in, PrintWriter out, Player player) throws IOException {
 		this.in = in;
@@ -78,32 +79,51 @@ public class ServerSocketSession extends GameSessionServerSide implements Runnab
 		out.flush();
 	}
 
-	protected void myTurn(){
-		String line = in.nextLine();
-		String[] command = line.split("=");
+	protected void myTurn() {
+		String line = null;
+		try{
+			line = in.nextLine();
+		}
+		catch (NoSuchElementException e){
+			disconnected = true;
+		}
+		
+		String[] command = null;
+		if(!disconnected)
+			command = line.split("=");
 
-		while(!command[0].equals("end")){
+		while( !disconnected &&!command[0].equals("end")){
 			if(command[0].equals("move"))
 				executeMove(command[1]);	
 			else if (command[0].equals("discarded"))
 					match.discard(command[1]);
 				else 
 					executeCardAction(command);
-			line = in.nextLine();
-			command = line.split("=");
+			try{
+				line = in.nextLine();
+			}
+			catch (NoSuchElementException e){
+				disconnected = true;
+			}
+			if(!disconnected)
+				command = line.split("=");
 		}
-		match.getMatchDataUpdate().setOldCurrentPlayer(this.player);
-		boolean finished = match.isFinished();
-		if(finished){
-			out.println("endMatch");
-			out.flush();
+
+		if(!disconnected){
+			match.getMatchDataUpdate().setOldCurrentPlayer(this.player);
+			boolean finished = match.isFinished();
+			if(finished){
+				out.println("endMatch");
+				out.flush();
+			}
+			else{
+				out.println("continue");
+				out.flush();
+			}
+			match.finishTurn();  
 		}
-		else{
-			out.println("continue");
-			out.flush();
-		}
-		match.finishTurn();  
 	}
+
 	
 
 
@@ -252,5 +272,15 @@ public class ServerSocketSession extends GameSessionServerSide implements Runnab
 			out.flush();
 		}
 		
+	}
+
+	@Override
+	public void disconnect() {
+		try {					//TODO boh
+			socket.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }

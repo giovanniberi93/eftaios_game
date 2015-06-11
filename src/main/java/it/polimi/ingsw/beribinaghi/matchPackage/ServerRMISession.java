@@ -327,9 +327,15 @@ public class ServerRMISession extends GameSessionServerSide implements RemoteGam
 	}
 
 	@Override
+	public void disconnect() {
+		// TODO Auto-generated method stub
+		
+	}
+
 	public void discard(ObjectCard discarded) {
 		match.discard(discarded.toString());
 	}
+
 
 	@Override
 	public boolean isMatchFinisched() {

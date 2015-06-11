@@ -132,4 +132,16 @@ public class SetupRMISession implements SetupSession {
 		return null;
 	}
 
+	@Override
+	public Boolean closeAfterError() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Boolean reconnect() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

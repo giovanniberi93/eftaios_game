@@ -75,5 +75,13 @@ public interface SetupSession {
 	 */
 	public GameSessionClientSide startGameComunication();
 
+	/**
+	 * Close a connection after a connection error
+	 * @return 
+	 */
+	public Boolean closeAfterError();
+
+	public Boolean reconnect();
+
 
 }

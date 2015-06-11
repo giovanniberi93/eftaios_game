@@ -615,5 +615,11 @@ public class GUI extends JFrame implements GraphicInterface {
 		listPlayer.addElement(namePlayer);
 	}
 
+	@Override
+	public void signalConnectionDown() {
+		// TODO Auto-generated method stub
+		
+	}
+
 
 }

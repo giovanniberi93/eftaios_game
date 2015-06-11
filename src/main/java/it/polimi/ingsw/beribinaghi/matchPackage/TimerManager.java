@@ -3,6 +3,9 @@
  */
 package it.polimi.ingsw.beribinaghi.matchPackage;
 
+import it.polimi.ingsw.beribinaghi.playerPackage.Player;
+
+import java.util.ArrayList;
 import java.util.TimerTask;
 
 /**
@@ -21,7 +24,20 @@ public class TimerManager extends TimerTask {
 	@Override
 	public void run() {
 		match.getMatchDataUpdate().setPlayerExit();
-		System.out.println("pene");
+		//la parte fuori dai commenti funziona tutta
+		//
+		Player currentPlayer = match.getMatchDataUpdate().getCurrentPlayer();
+		GameSessionServerSide currentSession = null;
+		ArrayList<GameSessionServerSide> sessions = match.getSessions();
+		for(GameSessionServerSide s : sessions)
+			if(s.player.equals(currentPlayer))
+				currentSession = s;
+		match.getMatchDataUpdate().deleteObserver(currentSession);	
+		match.manageExitedFromGamePlayer(currentPlayer);				//
+		match.finishTurn();												// così non funziona
+		currentSession.disconnect();
+		//
+		System.out.println("fiorellini");
 	}
 
 }
