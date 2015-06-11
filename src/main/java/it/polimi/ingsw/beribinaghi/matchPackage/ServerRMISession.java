@@ -1,6 +1,4 @@
-/**
- * 
- */
+
 package it.polimi.ingsw.beribinaghi.matchPackage;
 
 import java.rmi.NotBoundException;
@@ -203,6 +201,10 @@ public class ServerRMISession extends GameSessionServerSide implements RemoteGam
 	}
 
 
+	protected void notifyPlayerExit() {
+		update.add("exit");
+	}
+
 	@Override
 	public ArrayList<String> getUpdate() throws RemoteException {
 		return this.update;
@@ -310,12 +312,6 @@ public class ServerRMISession extends GameSessionServerSide implements RemoteGam
 		return winners;
 	}
 
-	protected void notifyPlayerExit() {
-		// TODO Auto-generated method stub
-		
-	}
-
-
 	@Override
 	protected void myTurn() {
 		
@@ -360,6 +356,16 @@ public class ServerRMISession extends GameSessionServerSide implements RemoteGam
 			this.setupRMISession.end();
 		} catch (NotBoundException e) {
 		}
+	}
+
+	@Override
+	public String[] getExitedPlayer() throws RemoteException {
+		update.remove("exit");
+		Player exitedPlayer = match.getExitedPlayer();
+		String user = exitedPlayer.getUser();
+		String character = exitedPlayer.getCharacter().toString();
+		String result = "exit="+user+"="+character;
+		return result.split("=");		
 	}
 
 }

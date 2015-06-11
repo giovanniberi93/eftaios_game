@@ -62,6 +62,7 @@ public class Match {
 	private Boolean successfulEscape;
 	private Coordinates spotlightCoordinates;
 	private boolean lastHumanKilled = false;
+	private Player exitedPlayer;
 	
 	private MatchDataUpdate matchDataUpdate;
 	private Coordinates usedShallopCoordinates;
@@ -510,6 +511,16 @@ public class Match {
 
 	private void setMatchDataUpdate(MatchDataUpdate matchDataUpdate) {
 		this.matchDataUpdate = matchDataUpdate;
+	}
+
+
+	public Player getExitedPlayer() {
+		return exitedPlayer;
+	}
+
+
+	public void setExitedPlayer(Player exitedPlayer) {
+		this.exitedPlayer = exitedPlayer;
 	}
 
 

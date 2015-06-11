@@ -182,5 +182,11 @@ public interface RemoteGameSession extends Remote {
 	 */
 	public void close() throws RemoteException;
 
+	/**
+	 * @return the username and the character of an exited player (separated by symbol "=")
+	 * @throws RemoteException
+	 */
+	public String[] getExitedPlayer() throws RemoteException;
+
 	
 }
