@@ -108,9 +108,9 @@ public class ServerSocketSession extends GameSessionServerSide implements Runnab
 			if(!disconnected)
 				command = line.split("=");
 		}
+
 		if(!disconnected){
 			match.getMatchDataUpdate().setOldCurrentPlayer(this.player);
-			//provo
 			boolean finished = match.isFinished();
 			if(finished){
 				out.println("endMatch");
@@ -120,10 +120,10 @@ public class ServerSocketSession extends GameSessionServerSide implements Runnab
 				out.println("continue");
 				out.flush();
 			}
-				//
 			match.finishTurn();  
 		}
 	}
+
 	
 
 

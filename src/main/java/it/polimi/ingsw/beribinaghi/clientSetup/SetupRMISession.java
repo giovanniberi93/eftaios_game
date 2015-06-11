@@ -22,12 +22,12 @@ import java.util.ArrayList;
 public class SetupRMISession implements SetupSession {
 	private RemoteSetupSession session;
 	private long timeWaiting = 100;
+	private Registry registry;
 
 	@Override
 	public Boolean connect() {
 		String name = "Connection";
 		String assignedSession;
-        Registry registry;
 		try {
 			registry = LocateRegistry.getRegistry(EscapeFromTheAliensInOuterSpace.RMIPORT);
 			RemoteConnectionManager connection = (RemoteConnectionManager) registry.lookup(name);
@@ -120,13 +120,14 @@ public class SetupRMISession implements SetupSession {
 
 	@Override
 	public GameSessionClientSide startGameComunication() {
-		Registry registry;
 		try {
-			registry = LocateRegistry.getRegistry(EscapeFromTheAliensInOuterSpace.RMIPORT);
+			String asda = session.getStringBind();
 			RemoteGameSession remoteGameSession = (RemoteGameSession) registry.lookup(session.getStringBind());
 			return new ClientRMISession(remoteGameSession);
 		} catch (RemoteException e) {
+			System.out.println(e.getMessage());
 		} catch (NotBoundException e) {
+			System.out.println(e.getMessage());
 		}
 		return null;
 	}

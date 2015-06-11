@@ -44,7 +44,7 @@ public class ClientRMISession extends GameSessionClientSide {
 	}
 
 	@Override
-	public String listenTurn() {
+	public synchronized String listenTurn() {
 		try {
 			while (!session.isTurnNotificable())
 				this.wait(this.waitNewNotify);
@@ -121,6 +121,7 @@ public class ClientRMISession extends GameSessionClientSide {
 		ArrayList<String> update;
 		try {
 		Boolean end = false;
+		Boolean endMatch = false;
 		update = session.getUpdate();
 		while (!end){
 			while (update.size()==0){
@@ -143,6 +144,10 @@ public class ClientRMISession extends GameSessionClientSide {
 						Coordinates coord = session.getUsedShallopCoordinates();
 						controller.getGraphicInterface().showEscapeResult(result, coord);
 						break;
+					case "discard":
+						session.discardReceived();
+						controller.getGraphicInterface().notifyDiscardedObject();
+						break;
 					case "card":
 						ObjectCard usedCard = session.getUsedCard();
 						Coordinates destinationCoord = null;
@@ -151,19 +156,23 @@ public class ClientRMISession extends GameSessionClientSide {
 						controller.getGraphicInterface().showUsedCard(usedCard, destinationCoord);
 						break;
 					case "attack":
-							analyzeAndShowAttack(session.getAttackResult());
+							super.analyzeAndShowAttack(session.getAttackResult());
 						break;
 					case "endMatch":
-						// TODO boh.
+						controller.getGraphicInterface().showMatchResults(session.getWinner());
+						controller.setMatchFinished(true);
+						endMatch = true;
 						break;
 					case "spotlight":
-							analyzeAndShowSpotlight(session.getSpottedPlayer());
+							super.analyzeAndShowSpotlight(session.getSpottedPlayer());
 						break;
 					}
 				update = session.getUpdate();
 				} else
 					end = true;
 			}
+			if (endMatch)
+				session.close();
 		}
 		} catch (RemoteException e1) {
 		}
@@ -173,26 +182,41 @@ public class ClientRMISession extends GameSessionClientSide {
 	
 	@Override
 	public void signalDiscardedObjectCard(ObjectCard discarded) {
-		// TODO Auto-generated method stub
-		
+		try {
+			session.discard(discarded);
+		} catch (RemoteException e) {
+		}
 	}
 
 	@Override
 	public boolean isMatchFinished() {
-		// TODO Auto-generated method stub
+		try {
+			return session.isMatchFinisched();
+		} catch (RemoteException e) {
+		}
 		return false;
 	}
 
 	@Override
 	public void listenMatchResult() {
-		// TODO Auto-generated method stub
-		
+		try {
+			controller.getGraphicInterface().showMatchResults(session.getWinner());
+			session.close();
+		} catch (RemoteException e) {
+		}
 	}
 
 	@Override
 	public void listenEscapeResult() {
-		// TODO Auto-generated method stub
-		
+		boolean result;
+		try {
+			result = session.imescaped();
+			Coordinates shallopCoord = session.escapeCoordinates();
+			controller.setAttemptedEscape(true);
+			controller.getMap().addUsedShallop(shallopCoord);
+			controller.getGraphicInterface().showEscapeResult(result, shallopCoord);
+		} catch (RemoteException e) {
+		}	
 	}
 
 

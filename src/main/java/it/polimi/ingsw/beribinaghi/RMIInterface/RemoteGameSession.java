@@ -17,6 +17,11 @@ import java.util.ArrayList;
  * RMI interface that manages the game match communication
  */
 public interface RemoteGameSession extends Remote {
+	
+	/**
+	 * @return the winner's name
+	 */
+	public String[] getWinner() throws RemoteException;
 
 	/**
 	 * @return player's character
@@ -140,9 +145,42 @@ public interface RemoteGameSession extends Remote {
 	public boolean isEscapeSuccessful() throws RemoteException;
 	
 	
-	
-	
-	
-	
+	/**
+	 * @throws RemoteException
+	 * clear the update of discard
+	 */
+	public void discardReceived() throws RemoteException;
+
+	/**
+	 * @throws RemoteException
+	 * @param discarded
+	 * discard the card discarded
+	 */
+	public void discard(ObjectCard discarded) throws RemoteException;
+
+	/**
+	 * @throws RemoteException
+	 * @return true if match is finisched
+	 */
+	public boolean isMatchFinisched()  throws RemoteException;
+
+	/**
+	 * @throws RemoteException
+	 * @return true if my character is escaped
+	 */
+	public boolean imescaped()  throws RemoteException;
+
+	/**
+	 * @throws RemoteException
+	 * @return the coordinates of escape
+	 */
+	public Coordinates escapeCoordinates()  throws RemoteException;
+
+	/**
+	 * @throws RemoteException
+	 * close the game and remove the element from the stub
+	 */
+	public void close() throws RemoteException;
+
 	
 }

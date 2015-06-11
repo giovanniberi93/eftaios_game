@@ -33,6 +33,7 @@ public class SetupRMISession implements SetupSession,RemoteSetupSession {
 	private ArrayList<String> playerNotNotify;
 	private Registry registry;
 	private ServerRMISession rmiSession;
+	private int numGame = 0;
 
 	public SetupRMISession(MatchController controller,String myName,Registry registry) {
 		this.matchController = controller;
@@ -67,13 +68,16 @@ public class SetupRMISession implements SetupSession,RemoteSetupSession {
 	@Override
 	public GameSessionServerSide getGameSession() {
 		try {
-			nameStubGame = "game" + myName.substring(7, myName.length()); //game e il numero di stub
-			rmiSession = new ServerRMISession(player);
+			nameStubGame = "game" + myName.substring(7, myName.length()) + "&" + numGame ; //game e il numero di stub
+			rmiSession = new ServerRMISession(player,registry,nameStubGame,this);
 			RemoteGameSession stub = (RemoteGameSession) UnicastRemoteObject.exportObject(rmiSession, 0); 
 			registry.bind(nameStubGame, stub);
+			numGame++;
 			return rmiSession;
 		} catch (RemoteException e) {
+			System.out.println(e.getMessage());
 		} catch (AlreadyBoundException e) {
+			System.out.println(e.getMessage());
 		}
 		return null;
 	}
@@ -166,6 +170,10 @@ public class SetupRMISession implements SetupSession,RemoteSetupSession {
 	@Override
 	public void setInactive() {
 		this.matchName = null;
+	}
+	
+	public void end(){
+		this.active = false;
 	}
 
 

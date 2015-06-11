@@ -285,7 +285,6 @@ public class ClientSocketSession extends GameSessionClientSide {
 	@Override
 	public boolean isMatchFinished() {
 		String matchStatus = in.nextLine();
-
 		if(matchStatus.equals("endMatch"))
 			 return true;
 		return false;
