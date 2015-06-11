@@ -164,7 +164,10 @@ public class ClientRMISession extends GameSessionClientSide {
 						endMatch = true;
 						break;
 					case "spotlight":
-							super.analyzeAndShowSpotlight(session.getSpottedPlayer());
+						super.analyzeAndShowSpotlight(session.getSpottedPlayer());
+						break;
+					case "exit":
+						super.analyzeAndShowExitedPlayer(session.getExitedPlayer());
 						break;
 					}
 				update = session.getUpdate();

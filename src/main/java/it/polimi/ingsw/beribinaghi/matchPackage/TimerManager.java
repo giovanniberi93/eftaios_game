@@ -27,6 +27,7 @@ public class TimerManager extends TimerTask {
 		//la parte fuori dai commenti funziona tutta
 		//
 		Player currentPlayer = match.getMatchDataUpdate().getCurrentPlayer();
+		match.setExitedPlayer(currentPlayer);
 		GameSessionServerSide currentSession = null;
 		ArrayList<GameSessionServerSide> sessions = match.getSessions();
 		for(GameSessionServerSide s : sessions)

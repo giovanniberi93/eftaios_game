@@ -1,11 +1,11 @@
-/**
- * 
- */
+
 package it.polimi.ingsw.beribinaghi.matchPackage;
 
+import java.rmi.NoSuchObjectException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.Registry;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 
 import it.polimi.ingsw.beribinaghi.RMIInterface.RemoteGameSession;
@@ -203,6 +203,10 @@ public class ServerRMISession extends GameSessionServerSide implements RemoteGam
 	}
 
 
+	protected void notifyPlayerExit() {
+		update.add("exit");
+	}
+
 	@Override
 	public ArrayList<String> getUpdate() throws RemoteException {
 		return this.update;
@@ -310,12 +314,6 @@ public class ServerRMISession extends GameSessionServerSide implements RemoteGam
 		return winners;
 	}
 
-	protected void notifyPlayerExit() {
-		// TODO Auto-generated method stub
-		
-	}
-
-
 	@Override
 	protected void myTurn() {
 		
@@ -328,7 +326,12 @@ public class ServerRMISession extends GameSessionServerSide implements RemoteGam
 
 	@Override
 	public void disconnect() {
-		// TODO Auto-generated method stub
+		try {
+			UnicastRemoteObject.unexportObject(this,true);
+		} catch (NoSuchObjectException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 	}
 
@@ -362,4 +365,15 @@ public class ServerRMISession extends GameSessionServerSide implements RemoteGam
 		}
 	}
 
+	@Override
+	public String[] getExitedPlayer() throws RemoteException {
+		update.remove("exit");
+		Player exitedPlayer = match.getExitedPlayer();
+		String user = exitedPlayer.getUser();
+		String character = exitedPlayer.getCharacter().toString();
+		String result = "exit="+user+"="+character;
+		return result.split("=");		
+	}
+
+	
 }

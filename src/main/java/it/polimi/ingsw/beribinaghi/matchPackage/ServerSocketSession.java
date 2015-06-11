@@ -276,7 +276,7 @@ public class ServerSocketSession extends GameSessionServerSide implements Runnab
 
 	@Override
 	public void disconnect() {
-		try {					//TODO boh
+		try {			
 			socket.close();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
