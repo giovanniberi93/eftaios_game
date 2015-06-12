@@ -509,10 +509,16 @@ public class GameGUI implements GameInterface,MouseListener,Runnable {
 				}
 			}
 		}
-		}catch (NoSuchElementException e2){
+		}
+		catch (NoSuchElementException e2){
 			this.returnToMenu();
 			controller.connectionProblem();
 		}
+		catch (NullPointerException e2){
+			this.returnToMenu();
+			controller.connectionProblem();
+		}
+		
 	}
 
 	private void selectSpottedCoordinates(Coordinates coordinates) {
@@ -888,7 +894,12 @@ public class GameGUI implements GameInterface,MouseListener,Runnable {
 	public void run() {
 		try{
 			controller.callEndTurn();
-		} catch (NoSuchElementException e){
+		} 
+		catch (NoSuchElementException e){
+			this.returnToMenu();
+			controller.connectionProblem();
+		}
+		catch (NullPointerException e){
 			this.returnToMenu();
 			controller.connectionProblem();
 		}

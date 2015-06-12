@@ -119,11 +119,11 @@ public class ClientRMISession extends GameSessionClientSide {
 	@Override
 	public synchronized void listenUpdate() {
 		ArrayList<String> update;
-		try {
 		Boolean end = false;
 		Boolean endMatch = false;
-		update = session.getUpdate();
-		while (!end){
+		try {
+			update = session.getUpdate();
+		while (!end && !endMatch){
 			while (update.size()==0){
 				try {
 					this.wait(100);
@@ -132,7 +132,7 @@ public class ClientRMISession extends GameSessionClientSide {
 				update = session.getUpdate();
 			}
 			for (String single:update){
-				if (!single.equals("end")){
+				if (!single.equals("end") && !endMatch){
 					switch(single){
 					case "noise":
 						Coordinates noiseCoord = session.getNoiseCoordinates();
@@ -170,16 +170,17 @@ public class ClientRMISession extends GameSessionClientSide {
 						super.analyzeAndShowExitedPlayer(session.getExitedPlayer());
 						break;
 					}
-				update = session.getUpdate();
+				if(!endMatch)
+					update = session.getUpdate();
 				} else
 					end = true;
 			}
 			if (endMatch)
 				session.close();
-		}
-		} catch (RemoteException e1) {
-		}
-		controller.turn(true);
+			}
+		} catch (RemoteException e1) {}
+		if(!endMatch)
+			controller.turn(true);
 	}
 
 	

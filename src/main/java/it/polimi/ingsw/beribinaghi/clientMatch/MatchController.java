@@ -226,7 +226,7 @@ public class MatchController {
 	 * manage the connection problem, if the server is disconnected
 	 */
 	public void connectionProblem() {
-		setupController.handleConectionProblem();
+		setupController.handleConnectionProblem();
 	}
 
 

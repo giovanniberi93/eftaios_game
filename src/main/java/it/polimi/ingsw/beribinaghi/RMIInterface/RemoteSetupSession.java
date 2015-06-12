@@ -10,6 +10,14 @@ import java.util.ArrayList;
 /**
  * RMI interface that manages the pre match communication
  */
+/**
+ * @author La Cugina Trans
+ *
+ */
+/**
+ * @author La Cugina Trans
+ *
+ */
 public interface RemoteSetupSession extends Remote  {
 	/**
 	 * @return the names of all inactive match
@@ -69,5 +77,10 @@ public interface RemoteSetupSession extends Remote  {
 	 * close session with client
 	 */
 	public void closeSession() throws RemoteException;
+
+	/**
+	 * close the match after error
+	 */
+	public void stop() throws RemoteException;
 	
 }

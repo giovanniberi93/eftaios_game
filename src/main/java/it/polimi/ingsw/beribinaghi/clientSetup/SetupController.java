@@ -1,6 +1,4 @@
-/**
- * 
- */
+
 package it.polimi.ingsw.beribinaghi.clientSetup;
 
 import it.polimi.ingsw.beribinaghi.clientMatch.MatchController;
@@ -60,7 +58,10 @@ public class SetupController {
 			new MatchController(this,playerName,graphicInterface.beginMatch(),setupSession.startGameComunication());
 		}
 		catch(NoSuchElementException e){
-			this.handleConectionProblem();
+			this.handleConnectionProblem();
+		}
+		catch(NullPointerException e){
+			this.handleConnectionProblem();
 		}
 	}
 
@@ -131,7 +132,7 @@ public class SetupController {
 		}
 	}
 
-	public void handleConectionProblem() {
+	public void handleConnectionProblem() {
 		graphicInterface.signalConnectionDown();
 		if (!this.setupSession.closeAfterError()){
 			firstTime = false;

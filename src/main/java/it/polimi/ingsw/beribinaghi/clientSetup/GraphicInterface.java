@@ -15,9 +15,7 @@ public interface GraphicInterface {
 	/**
 	 * @return the result of connection
 	 */
-	/**
-	 * 
-	 */
+
 	public void signalConnessionError();
 
 	/**

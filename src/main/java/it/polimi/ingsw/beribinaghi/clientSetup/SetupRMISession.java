@@ -134,8 +134,12 @@ public class SetupRMISession implements SetupSession {
 
 	@Override
 	public Boolean closeAfterError() {
-		// TODO Auto-generated method stub
-		return null;
+		try {
+			session.stop();
+			return true;
+		} catch (RemoteException e) {
+		}
+		return false;
 	}
 
 	@Override
