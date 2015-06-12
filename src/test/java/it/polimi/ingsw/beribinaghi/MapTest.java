@@ -1,6 +1,8 @@
 package it.polimi.ingsw.beribinaghi;
 
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import it.polimi.ingsw.beribinaghi.mapPackage.Coordinates;
 import it.polimi.ingsw.beribinaghi.mapPackage.Map;
@@ -47,7 +49,55 @@ public class MapTest {
 				   reachable.remove(new Coordinates('m',9)) && 
 				   reachable.size() == 0);
 	}
-
+	
+	@Test
+	public void notValidCoordinates1(){
+		Coordinates c = Coordinates.stringToCoordinates("7");
+		assertNull(c);
+	}
+	
+	@Test
+	public void notValidCoordinates2(){
+		Coordinates c = Coordinates.stringToCoordinates("a");
+		assertNull(c);
+	}
+	
+	@Test
+	public void notValidCoordinates3(){
+		Coordinates c = Coordinates.stringToCoordinates("as1");
+		assertNull(c);
+	}
+	
+	@Test
+	public void notValidCoordinates4(){
+		Coordinates c = Coordinates.stringToCoordinates("assd");
+		assertNull(c);
+	}
+	
+	@Test
+	public void notValidCoordinates5(){
+		Coordinates c = Coordinates.stringToCoordinates(null);
+		assertNull(c);
+	}
+	
+	@Test
+	public void validCoordinates1(){
+		Coordinates c = Coordinates.stringToCoordinates("a1");
+		assertNotNull(c);
+	}
+	
+	@Test
+	public void validCoordinates2(){
+		Coordinates c = Coordinates.stringToCoordinates("a01");
+		assertNotNull(c);
+	}
+	
+	@Test
+	public void validCoordinates3(){
+		Coordinates c = Coordinates.stringToCoordinates("a13");
+		assertNotNull(c);
+	}
+	
 	
 }
 	

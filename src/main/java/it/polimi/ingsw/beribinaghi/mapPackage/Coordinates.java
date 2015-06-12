@@ -94,12 +94,24 @@ public final class Coordinates implements Serializable{
 	 * @return the calculated Coordinates, or null if the string is not compatible with a coordinate
 	 */
 	public static Coordinates stringToCoordinates(String string){
+		if(string == null)
+			return null;
 		if(string.equals("silence"))
 			return Coordinates.SILENCE;
-		if(string.length() > 3)
+		if(string.length() > 3 || string.length() < 2)
 			return null;
 		char letter  = string.charAt(0);
-		int number = Integer.parseInt(string.substring(1, string.length()));
+		if(Character.isLetter(letter))
+			letter = Character.toLowerCase(letter);
+		else
+			return null;
+		int number;
+		try{
+			number = Integer.parseInt(string.substring(1, string.length()));
+		}
+		catch(NumberFormatException e){
+			return null;
+		}
 		return new Coordinates(letter,number);
 	}
 	
