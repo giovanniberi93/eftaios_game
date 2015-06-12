@@ -32,7 +32,6 @@ public abstract class Character implements Serializable{
 		this.setSide(character.getSide());
 		this.setAlive(true);
 		isAlive = true;
-		bag.add(new Spotlight());
 	}
 
 	

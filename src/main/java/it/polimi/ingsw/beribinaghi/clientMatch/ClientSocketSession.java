@@ -23,14 +23,11 @@ import it.polimi.ingsw.beribinaghi.mapPackage.Map;
 import it.polimi.ingsw.beribinaghi.playerPackage.AlienCharacter;
 import it.polimi.ingsw.beribinaghi.playerPackage.Character;
 import it.polimi.ingsw.beribinaghi.playerPackage.HumanCharacter;
-import it.polimi.ingsw.beribinaghi.playerPackage.Player;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
+
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Scanner;
 
 /**
@@ -38,10 +35,8 @@ import java.util.Scanner;
  *
  */
 public class ClientSocketSession extends GameSessionClientSide {
-	private Socket socket;
 	private PrintWriter out;
 	private Scanner in;
-	private ObjectInputStream objectInputStream;
 
 	
 	/**
@@ -51,7 +46,6 @@ public class ClientSocketSession extends GameSessionClientSide {
 	 * @param out
 	 */
 	public ClientSocketSession(Socket socket, Scanner in, PrintWriter out) {
-			this.socket = socket;
 			this.in = in;
 		    this.out = out;
 	}

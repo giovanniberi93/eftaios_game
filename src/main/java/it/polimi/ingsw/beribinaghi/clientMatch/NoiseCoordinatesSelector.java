@@ -6,7 +6,6 @@ import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.NothingToPick;
 import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.SectorCard;
 import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.ShallopCard;
 import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.Silence;
-import it.polimi.ingsw.beribinaghi.mapPackage.Coordinates;
 
 /**
  * is the visitor of a visitor pattern, in order to call the right procedure for the picked sector card 

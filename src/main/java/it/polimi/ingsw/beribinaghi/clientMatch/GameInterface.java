@@ -135,6 +135,11 @@ public interface GameInterface {
 	 */
 	void showSurvived(String username);
 
+	/**
+	 * @param username
+	 * @param character
+	 * show to user that a player exit from the game
+	 */
 	void showPlayerExit(String username, String character);
 
 }

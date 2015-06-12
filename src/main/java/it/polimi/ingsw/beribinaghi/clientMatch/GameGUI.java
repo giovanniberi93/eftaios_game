@@ -41,7 +41,7 @@ import javax.swing.JTextArea;
 import javax.swing.Timer;
 
 /**
- * This class manages the gui in match
+ * This class manages the graphic user interface in match
  *
  */
 public class GameGUI implements GameInterface,MouseListener,Runnable {
@@ -258,6 +258,7 @@ public class GameGUI implements GameInterface,MouseListener,Runnable {
 		notArea.setCaretPosition(notArea.getDocument().getLength());
 	}
 	
+	@Override
 	public void notifyOthersTurn(String playerTurn) {
 		g.setColor(Color.WHITE);
 		g.setFont(new Font(frame.getFontName(), Font.BOLD, 24));

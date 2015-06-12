@@ -60,10 +60,16 @@ public class MatchController {
 	}
 
 	
+	/**
+	 * @return the map
+	 */
 	public Map getMap() {
 		return map;
 	}
 	
+	/**
+	 * @return the position of my character
+	 */
 	public Coordinates getMyPosition() {
 		return myCharacter.getCurrentPosition();
 	}
@@ -92,6 +98,9 @@ public class MatchController {
 	}
 	
 	
+	/**
+	 * @return the game session
+	 */
 	public GameSessionClientSide getSession() {
 		return session;
 	}
@@ -157,6 +166,9 @@ public class MatchController {
 			session.listenMatchResult();
 	}
 
+	/**
+	 * @return the name of player that is currently in turn
+	 */
 	public String getCurrentPlayer() {
 		return currentPlayer;
 	}
@@ -168,6 +180,9 @@ public class MatchController {
 		return myTurn;
 	}
 
+	/**
+	 * @return the turn number
+	 */
 	public int getTurnNumber() {
 		return turnNumber;
 	}
@@ -184,6 +199,9 @@ public class MatchController {
 	}
 
 	
+	/**
+	 * @return the name of my player
+	 */
 	public String getMyPlayerName() {
 		return myPlayerName;
 	}
@@ -204,6 +222,9 @@ public class MatchController {
 		this.matchFinished = matchFinished;
 	}
 
+	/**
+	 * manage the connection problem, if the server is disconnected
+	 */
 	public void connectionProblem() {
 		setupController.handleConectionProblem();
 	}

@@ -17,6 +17,9 @@ public enum ConnectionType {
 	         this.setupSession=setupSession;
 	    }
 	     
+	    /**
+	     * @return the setup session that is choosen 
+	     */
 	    public SetupSession getSetupSession(){
 	         return setupSession;
 	    }

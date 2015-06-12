@@ -179,6 +179,10 @@ public abstract class GameSessionClientSide {
 		}
 	}
 	
+	/**
+	 * analyzes the exit from room by a user. It show that to user.
+	 * @param exitedPlayer
+	 */
 	protected void analyzeAndShowExitedPlayer(String[] exitedPlayer){
 		controller.getGraphicInterface().showPlayerExit(exitedPlayer[1], exitedPlayer[2]);
 	}

@@ -23,8 +23,8 @@ public class MapModel {
 											   {S ,D ,D ,D ,D ,D ,D ,D ,S ,D ,S ,S ,S ,D ,S ,D ,D ,D ,D ,B ,D ,D ,D},
 											   {S ,S ,D ,S ,D ,S ,D ,B ,D ,D ,D ,D ,D ,D ,D ,D ,D ,B ,B ,B ,D ,D ,S},
 											   {S ,D ,D ,D ,D ,D ,D ,B ,D ,D ,S ,S ,S ,D ,D ,D ,S ,B ,B ,D ,D ,D ,S},
-											   {S,D ,D,D ,S ,B ,S ,D ,B ,B ,D ,D ,D ,D ,D ,S ,D ,S ,D ,D ,S ,D ,S},
-											   {D ,SH,D ,D ,D ,B ,D ,D ,D ,D ,B ,D ,D ,D ,D ,D ,D ,D ,D ,D ,D ,SH,D},
-											   {B ,D ,S ,S ,B ,B ,S ,S ,S ,S ,D ,S ,D ,S ,S ,D ,S ,B ,B ,S ,D ,D ,D}};
+											   {S ,D ,D ,D ,S ,B ,S ,D ,B ,B ,D ,D ,D ,D ,D ,S ,D ,S ,D ,D ,S ,D ,S},
+											   {S ,SH,D ,D ,D ,B ,D ,D ,D ,D ,B ,D ,D ,D ,D ,D ,D ,D ,D ,D ,D ,SH,D},
+											   {D ,D ,S ,S ,B ,B ,S ,S ,S ,S ,D ,S ,D ,S ,S ,D ,S ,B ,B ,S ,D ,D ,D}};
 											   
 }

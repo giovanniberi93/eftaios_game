@@ -188,6 +188,7 @@ public class GameCLI implements GameInterface {
 		System.out.println("E' il turno di " + playerTurn);
 	}
 
+	@Override
 	public void printMap(Map map,Coordinates myCoordinates) {
 		int j;
 		
@@ -299,7 +300,7 @@ public class GameCLI implements GameInterface {
 		System.out.println("Il giocatore corrente ha dovuto scartare un oggetto");
 	}
 	
-	
+	@Override
 	public void changedTurn() {
 		if (controller.isMyTurn())
 			this.managesMyTurn();
