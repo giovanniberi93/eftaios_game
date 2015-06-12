@@ -275,13 +275,13 @@ public class Match {
 		
 	/**
 	 * Determines if the current match is either finished or not
-	 * @return true if the match is finished, false if it is not
+	 * @return true if the match is finished
 	 */
 	public boolean isFinished(){
 		int remainingHumans = 0;
 		boolean isFinished = false;
 		
-		if(turnNumber > App.NUMBEROFTURNS)
+		if(turnNumber == App.NUMBEROFTURNS)
 			isFinished = true;
 		else{
 			for(Player player: players)
@@ -409,14 +409,16 @@ public class Match {
 	
 	public void attack(){
 		Player analyzedPlayer;
-		int remainingHumans;
 		Player currentPlayer = getMatchDataUpdate().getCurrentPlayer();
 		for(int i = 0; i < players.size(); i++){
 			if(i != this.currentPlayerIndex){
 				analyzedPlayer = players.get(i);
 				if(analyzedPlayer.getCharacter().getCurrentPosition() != null && analyzedPlayer.getCharacter().getCurrentPosition().equals(currentPlayer.getCharacter().getCurrentPosition())){
-					if(analyzedPlayer.getCharacter().getSide() == SideName.HUMAN && (analyzedPlayer.getCharacter().removeCardFromBag(new Defense())))
+					if(analyzedPlayer.getCharacter().getSide() == SideName.HUMAN && (analyzedPlayer.getCharacter().removeCardFromBag(new Defense()))){
 						this.survived.add(analyzedPlayer);
+						objectsDeck.addToDiscardPile(new Defense());
+					}
+						
 					else{
 						this.killed.add(analyzedPlayer);
 						analyzedPlayer.getCharacter().setAlive(false);

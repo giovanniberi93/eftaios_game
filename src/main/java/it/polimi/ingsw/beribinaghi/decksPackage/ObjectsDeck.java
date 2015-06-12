@@ -18,12 +18,12 @@ import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.Teleport;
  */
 public class ObjectsDeck extends Deck {
 	
-	private final static int ADRENALINNUMBER = 2;
-	private final static int ATTACKNUMBER = 2;
-	private final static int SEDATIVESNUMBER = 3;
+	private final static int ADRENALINNUMBER = 2;			//2,2,3,1,2,2
+	private final static int ATTACKNUMBER = 0;
+	private final static int SEDATIVESNUMBER = 0;
 	private final static int DEFENSENUMBER = 1;
-	private final static int SPOTLIGHTNUMBER = 2;
-	private final static int TELEPORTNUMBER = 2;
+	private final static int SPOTLIGHTNUMBER = 0;
+	private final static int TELEPORTNUMBER = 0;
 	
 	public ObjectsDeck(){
 		for(int i = 0;i < ADRENALINNUMBER; i++)
@@ -46,7 +46,8 @@ public class ObjectsDeck extends Deck {
 	}
 	
 	public boolean isEmpty(){
-		if (super.validCards.size() == 0)
+		//if (super.validCards.size() == 0)
+		if (super.validCards.size() == 0 && super.getDiscardPileSize() == 0)
 			return true;
 		return false;
 	}

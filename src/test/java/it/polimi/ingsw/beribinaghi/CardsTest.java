@@ -53,6 +53,11 @@ public class CardsTest {
 	}
 	
 	
+	@Test
+	public void restoreDeck(){
+		
+	}
+
 	@Test 
 	public void dangerousSectorCardPicked(){
 		ArrayList<Card> pickedCard =  new ArrayList<Card>();
