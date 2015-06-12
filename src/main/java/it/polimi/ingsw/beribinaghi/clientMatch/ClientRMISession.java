@@ -93,7 +93,8 @@ public class ClientRMISession extends GameSessionClientSide {
 	@Override
 	public void noise(Coordinates noiseCoordinates) {
 		try {
-			session.noise(noiseCoordinates);
+			if (noiseCoordinates!=null)
+				session.noise(noiseCoordinates);
 		} catch (RemoteException e) {
 		}
 	}
