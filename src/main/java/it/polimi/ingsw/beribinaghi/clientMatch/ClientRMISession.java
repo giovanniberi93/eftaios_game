@@ -75,6 +75,8 @@ public class ClientRMISession extends GameSessionClientSide {
 			ArrayList<Card> cardsPicked = session.move(destinationCoord);
 			if (cardsPicked.isEmpty())
 				cardsPicked.add(new NothingToPick());
+			else if (cardsPicked.size() == 2 && cardsPicked.get(1) == null)
+				cardsPicked.remove(1);
 			return cardsPicked;
 		} catch (RemoteException e) {
 			System.out.println(e.getMessage());

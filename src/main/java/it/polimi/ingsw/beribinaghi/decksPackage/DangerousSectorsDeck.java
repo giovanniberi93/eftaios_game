@@ -21,7 +21,7 @@ public class DangerousSectorsDeck extends Deck {
 	 * Construct the DangerousSectorsDeck with the right number and type of cards
 	 */
 	public DangerousSectorsDeck(){
-		boolean containsObject;		//TODO add constants
+		boolean containsObject;	
 
 
 		for(int i = 0; i<DangerousSectorsDeck.NUMBERYOURSECTORCARDS; i++){			
