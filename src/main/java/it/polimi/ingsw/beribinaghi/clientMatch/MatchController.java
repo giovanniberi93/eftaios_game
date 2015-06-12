@@ -205,7 +205,7 @@ public class MatchController {
 	}
 
 	public void connectionProblem() {
-		setupController.handleConectionProblem();
+		setupController.handleConnectionProblem();
 	}
 
 

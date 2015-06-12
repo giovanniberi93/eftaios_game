@@ -176,5 +176,10 @@ public class SetupRMISession implements SetupSession,RemoteSetupSession {
 		this.active = false;
 	}
 
+	@Override
+	public void stop() throws RemoteException {
+		this.active = false;
+	}
+
 
 }

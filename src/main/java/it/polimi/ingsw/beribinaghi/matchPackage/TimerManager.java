@@ -38,7 +38,6 @@ public class TimerManager extends TimerTask {
 		match.finishTurn();												// così non funziona
 		currentSession.disconnect();
 		//
-		System.out.println("fiorellini");
 	}
 
 }
