@@ -20,7 +20,9 @@ public abstract class ObjectCard implements Card,Serializable{
 		case "attack":
 			return new Attack();
 		case "adrenalin":
-			return new Adrenalin();			
+			return new Adrenalin();		
+		case "defense":
+			return new Defense();	
 		default:
 			return null;
 		}

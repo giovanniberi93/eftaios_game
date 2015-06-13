@@ -18,7 +18,7 @@ import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.Teleport;
  */
 public class ObjectsDeck extends Deck {
 	
-	private final static int ADRENALINNUMBER = 2;
+	private final static int ADRENALINNUMBER = 2;		//2,2,3,1,2,2
 	private final static int ATTACKNUMBER = 2;
 	private final static int SEDATIVESNUMBER = 3;
 	private final static int DEFENSENUMBER = 1;

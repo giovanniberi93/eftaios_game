@@ -155,7 +155,7 @@ public class ClientSocketSession extends GameSessionClientSide {
 		ArrayList<Card> pickedCards = new ArrayList<Card>();
 		out.println("move="+destinationCoord.toString());
 		out.flush();
-		pickedCardString = in.nextLine();		//TODO
+		pickedCardString = in.nextLine();
 		String[] command = pickedCardString.split("=");
 			if(!command[0].equals("card"))
 				throw new WrongSyntaxException();

@@ -163,6 +163,7 @@ public class Match {
 	public void discard(String discardedCardName) {
 		ObjectCard discarded = ObjectCard.stringToCard(discardedCardName);
 		getObjectsDeck().addToDiscardPile(discarded);
+		getMatchDataUpdate().getCurrentPlayer().getCharacter().removeCardFromBag(discarded);
 		getMatchDataUpdate().setDiscardedObject();
 	}
 	
@@ -244,14 +245,10 @@ public class Match {
 			usedShallopCoordinates = destinationCoordinates;
 			allCards.add(new NothingToPick());
 			if(!(shallopCard.isDamaged())){
-				if(players.get(firstPlayerIndex).getUser().equals(currentPlayer.getUser())){
-					firstPlayerIndex = getNextValidPlayerIndex();
-					turnNumber--;
-				}
 				successfulEscape = true;
 				HumanCharacter currentCharacter = (HumanCharacter) currentPlayer.getCharacter();
-				currentCharacter.setCurrentPosition(null);
 				currentCharacter.setEscaped(true);
+				manageExitedFromGamePlayer(currentPlayer);
 			}
 			else
 				successfulEscape = false;
@@ -264,24 +261,48 @@ public class Match {
 				allCards.add(pickedCard);
 				if(pickedCard.containsObject() && !objectsDeck.isEmpty()){
 					ObjectCard objectCard = this.objectsDeck.pickCard();
-					if(objectCard instanceof Defense)
+					//if(objectCard instanceof Defense)		se non funziona il rimettere le carte oggetto di uno dopo che è morto, decommenta qui e poi non da più problemi (anche se non funziona)	
+					if(objectCard != null){
+						allCards.add(objectCard);
 						currentPlayer.getCharacter().addCardToBag(objectCard);
-					allCards.add(objectCard);
+					}
 				}
 			}
 		}
 		return allCards;
 	}
 		
+	public void manageExitedFromGamePlayer(Player exitedPlayer){
+		getMatchDataUpdate().setOldCurrentPlayer(exitedPlayer);
+		exitedPlayer.getCharacter().setCurrentPosition(null);
+		ArrayList<ObjectCard> hisBag = exitedPlayer.getCharacter().getBag();
+		for(ObjectCard obj : hisBag)
+			objectsDeck.addToDiscardPile(obj);
+		int remainingHumans = 0;
+		if(exitedPlayer.getCharacter().getSide().equals(SideName.HUMAN)){
+			for(Player player : players)
+				if(player.getCharacter().getSide() == SideName.HUMAN && player.getCharacter().getCurrentPosition() != null)
+					remainingHumans++;
+			if(remainingHumans == 0)
+				lastHumanKilled = true;
+		}
+		if(exitedPlayer.equals(players.get(firstPlayerIndex))){
+			firstPlayerIndex = getNextValidPlayerIndex();
+			if(exitedPlayer.equals(matchDataUpdate.getCurrentPlayer()))
+				turnNumber--;
+		}
+	}
+
+
 	/**
 	 * Determines if the current match is either finished or not
-	 * @return true if the match is finished, false if it is not
+	 * @return true if the match is finished
 	 */
 	public boolean isFinished(){
 		int remainingHumans = 0;
 		boolean isFinished = false;
 		
-		if(turnNumber > App.NUMBEROFTURNS)
+		if(turnNumber == App.NUMBEROFTURNS)
 			isFinished = true;
 		else{
 			for(Player player: players)
@@ -409,14 +430,16 @@ public class Match {
 	
 	public void attack(){
 		Player analyzedPlayer;
-		int remainingHumans;
 		Player currentPlayer = getMatchDataUpdate().getCurrentPlayer();
 		for(int i = 0; i < players.size(); i++){
 			if(i != this.currentPlayerIndex){
 				analyzedPlayer = players.get(i);
 				if(analyzedPlayer.getCharacter().getCurrentPosition() != null && analyzedPlayer.getCharacter().getCurrentPosition().equals(currentPlayer.getCharacter().getCurrentPosition())){
-					if(analyzedPlayer.getCharacter().getSide() == SideName.HUMAN && (analyzedPlayer.getCharacter().removeCardFromBag(new Defense())))
+					if(analyzedPlayer.getCharacter().getSide() == SideName.HUMAN && (analyzedPlayer.getCharacter().removeCardFromBag(new Defense()))){
 						this.survived.add(analyzedPlayer);
+						objectsDeck.addToDiscardPile(new Defense());
+					}
+						
 					else{
 						this.killed.add(analyzedPlayer);
 						analyzedPlayer.getCharacter().setAlive(false);
@@ -434,22 +457,6 @@ public class Match {
 		survived.clear();
 	}
 	
-	public void manageExitedFromGamePlayer(Player exitedPlayer){
-		getMatchDataUpdate().setOldCurrentPlayer(exitedPlayer);
-		exitedPlayer.getCharacter().setCurrentPosition(null);
-		int remainingHumans = 0;
-		if(exitedPlayer.getCharacter().getSide().equals(SideName.HUMAN)){
-			for(Player player : players)
-				if(player.getCharacter().getSide() == SideName.HUMAN && player.getCharacter().getCurrentPosition() != null)
-					remainingHumans++;
-			if(remainingHumans == 0)
-				lastHumanKilled = true;
-		}
-		if(exitedPlayer.equals(players.get(firstPlayerIndex)))
-			firstPlayerIndex = getNextValidPlayerIndex();
-	}
-
-
 	public void teleport(){
 		Coordinates baseCoordinates;
 
@@ -468,6 +475,7 @@ public class Match {
 	}
 
 	public void useAndSignalObjectCard(ObjectCard card){
+		getMatchDataUpdate().getCurrentPlayer().getCharacter().removeCardFromBag(card);
 		usedCards.add(card);
 		objectsDeck.addToDiscardPile(card);
 		getMatchDataUpdate().setUsedObjectCard();

@@ -170,6 +170,7 @@ public abstract class Character implements Serializable{
 		ObjectCard temporaryCard;
 		for(int i = 0; i< bag.size() ; i++){		
 			temporaryCard = getCardFromBag(i);
+			
 			if(temporaryCard.getClass().equals(searchedCard.getClass())){
 				searchedCard = temporaryCard;
 				bag.remove(i);

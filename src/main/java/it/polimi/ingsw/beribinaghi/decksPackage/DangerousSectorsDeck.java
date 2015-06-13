@@ -14,14 +14,14 @@ public class DangerousSectorsDeck extends Deck {
 	private final static int NUMBERANYSECTORCARDS = 10;
 	private final static int NUMBERYOURSECTORCARDS = 10;
 	private final static int NUMBERSILENCECARDS = 5;
-	private final static int NUMBEROBJECTSFORTYPE = 10;//4;
+	private final static int NUMBEROBJECTSFORTYPE = 4;
 
 
 	/**
 	 * Construct the DangerousSectorsDeck with the right number and type of cards
 	 */
 	public DangerousSectorsDeck(){
-		boolean containsObject;		//TODO add constants
+		boolean containsObject;	
 
 
 		for(int i = 0; i<DangerousSectorsDeck.NUMBERYOURSECTORCARDS; i++){			

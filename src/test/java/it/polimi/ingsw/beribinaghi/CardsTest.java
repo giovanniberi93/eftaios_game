@@ -5,10 +5,10 @@ import it.polimi.ingsw.beribinaghi.decksPackage.CharactersDeck;
 import it.polimi.ingsw.beribinaghi.decksPackage.DangerousSectorsDeck;
 import it.polimi.ingsw.beribinaghi.decksPackage.ObjectsDeck;
 import it.polimi.ingsw.beribinaghi.decksPackage.ShallopsDeck;
-import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.Adrenalin;
 import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.Card;
 import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.DangerousSectorCard;
 import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.NothingToPick;
+import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.ObjectCard;
 import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.Sedatives;
 import it.polimi.ingsw.beribinaghi.mapPackage.Coordinates;
 import it.polimi.ingsw.beribinaghi.mapPackage.MapModel;
@@ -53,6 +53,11 @@ public class CardsTest {
 	}
 	
 	
+	@Test
+	public void restoreDeck(){
+		
+	}
+
 	@Test 
 	public void dangerousSectorCardPicked(){
 		ArrayList<Card> pickedCard =  new ArrayList<Card>();

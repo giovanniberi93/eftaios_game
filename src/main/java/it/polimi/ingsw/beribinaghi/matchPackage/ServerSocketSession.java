@@ -1,7 +1,6 @@
 package it.polimi.ingsw.beribinaghi.matchPackage;
 
 import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.Card;
-import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.ObjectCard;
 import it.polimi.ingsw.beribinaghi.gameNames.SectorName;
 import it.polimi.ingsw.beribinaghi.mapPackage.Coordinates;
 import it.polimi.ingsw.beribinaghi.mapPackage.Map;
