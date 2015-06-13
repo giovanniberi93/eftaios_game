@@ -10,12 +10,13 @@ import it.polimi.ingsw.beribinaghi.gameNames.CharacterName;
  */
 public class HumanCharacter extends Character {
 
+	private static final int HUMANPERCORRABLEDISTANCE = 1;
 	private static final long serialVersionUID = 1L;
 	private boolean isEscaped = false;
 	
 	public HumanCharacter(CharacterName character) {
 		super(character);
-		super.percorrableDistance = 1;		//TODO add constant; where?
+		super.percorrableDistance = HUMANPERCORRABLEDISTANCE;
 		
 	}
 

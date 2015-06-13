@@ -33,7 +33,7 @@ public enum SectorName {
 	    }
 
 		/**
-		 * @return the abbrevation
+		 * @return the abbrevation of the sector type
 		 */
 		public String getAbbrevation() {
 			return abbrevation;

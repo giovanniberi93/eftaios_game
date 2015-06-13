@@ -13,7 +13,7 @@ public class EscapeFromTheAliensInOuterSpace {
 
 	public static ConnectionType connectionType;
 	public static InterfaceType interfaceType;
-	public final static String ADDRESS = "127.0.0.1";
+	public static String ADDRESS = "127.0.0.1";
 	public final static int SOCKETPORT = 2767;
 	public final static int RMIPORT = 2768;
 	
@@ -39,6 +39,8 @@ public class EscapeFromTheAliensInOuterSpace {
 			interfaceType = InterfaceType.CLI;
 		else
 			interfaceType = InterfaceType.GUI;
+		System.out.println("Inserisci l'indirizzo IP del server");
+			ADDRESS = in.nextLine();
 		GraphicInterface gi = interfaceType.getGraphicInterface();
 		SetupSession ss = connectionType.getSetupSession();
 		new SetupController(gi,ss);

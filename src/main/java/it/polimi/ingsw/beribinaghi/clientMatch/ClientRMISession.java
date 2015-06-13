@@ -229,19 +229,4 @@ public class ClientRMISession extends GameSessionClientSide {
 	}
 
 
-	
-	
-		
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 }

@@ -25,6 +25,9 @@ public class ObjectsDeck extends Deck {
 	private final static int SPOTLIGHTNUMBER = 2;
 	private final static int TELEPORTNUMBER = 2;
 	
+	/**
+	 * Construct an objects deck with the right number and type of cards
+	 */
 	public ObjectsDeck(){
 		for(int i = 0;i < ADRENALINNUMBER; i++)
 			super.validCards.add(new Adrenalin());

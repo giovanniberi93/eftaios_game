@@ -157,8 +157,6 @@ public class MatchTest {
 		assertFalse(match.isFinished());
 	}
 	
-
-	
 	
 	@Test
 	public void nextInitialCharacterTest(){

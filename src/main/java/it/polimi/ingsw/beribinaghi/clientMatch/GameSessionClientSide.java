@@ -108,7 +108,7 @@ public abstract class GameSessionClientSide {
 		}
 	}
 	
-		/**
+	/**
 	 * analyzes the s result and invokes the graphic interface methods to show username of the survived players 
 	 * @param command is an array of strings containing the coordinates of the attack, the killed players' username and character, the survived players' username
 	 */
