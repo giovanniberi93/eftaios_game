@@ -156,7 +156,7 @@ public class ServerRMISession extends GameSessionServerSide implements RemoteGam
 		}
 	}
 
-	@SuppressWarnings({ "unused", "unchecked" })
+	@SuppressWarnings({ "unchecked" })
 	@Override
 	protected void notifyEndMatch() {
 		update.add("endMatch");

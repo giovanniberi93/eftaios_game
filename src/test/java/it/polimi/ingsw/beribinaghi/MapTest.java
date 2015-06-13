@@ -7,7 +7,6 @@ import static org.junit.Assert.assertTrue;
 import it.polimi.ingsw.beribinaghi.mapPackage.Coordinates;
 import it.polimi.ingsw.beribinaghi.mapPackage.Map;
 import it.polimi.ingsw.beribinaghi.mapPackage.MapModel;
-import it.polimi.ingsw.beribinaghi.playerPackage.AlienCharacter;
 
 import java.util.ArrayList;
 

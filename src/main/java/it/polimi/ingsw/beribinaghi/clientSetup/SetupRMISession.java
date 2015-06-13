@@ -121,7 +121,6 @@ public class SetupRMISession implements SetupSession {
 	@Override
 	public GameSessionClientSide startGameComunication() {
 		try {
-			String asda = session.getStringBind();
 			RemoteGameSession remoteGameSession = (RemoteGameSession) registry.lookup(session.getStringBind());
 			return new ClientRMISession(remoteGameSession);
 		} catch (RemoteException e) {

@@ -770,11 +770,6 @@ public class GameGUI implements GameInterface,MouseListener,Runnable {
 	         }
 	     }
 
-		public void stop() {
-			playerMusic.stop();
-			playerMusic.close();
-			playerMusic.deallocate();
-		}
 
 		
 	}

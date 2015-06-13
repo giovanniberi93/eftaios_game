@@ -16,9 +16,10 @@ public class EscapeFromTheAliensInOuterSpace {
 	public static String ADDRESS = "127.0.0.1";
 	public final static int SOCKETPORT = 2767;
 	public final static int RMIPORT = 2768;
+	private static Scanner in;
 	
 	public static void main(String[] args) {
-		Scanner in = new Scanner(System.in);
+		in = new Scanner(System.in);
 		System.out.println("Scegli la modalità di connessione (Socket/RMI)");
 		String inLine = in.nextLine().toUpperCase();
 		while (!inLine.equals("RMI") && !inLine.equals("SOCKET")){

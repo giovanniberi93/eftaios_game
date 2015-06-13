@@ -2,7 +2,6 @@ package it.polimi.ingsw.beribinaghi;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.Adrenalin;
 import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.Card;
 import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.Defense;
 import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.NothingToPick;
