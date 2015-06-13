@@ -158,9 +158,9 @@ public class MatchController {
 	public void callEndTurn() {
 		attemptedEscape = false;
 		myCharacter.setHasAdrenalin(false);
-		session.endTurn();
-		boolean finished = session.isMatchFinished();
-		if(!finished)
+		boolean finished1 = session.endTurn();	//penultimo
+		boolean finished2 = session.isMatchFinished();
+		if(!finished2 || (finished1 == false && finished2 == true))
 			turn(true);			
 		else
 			session.listenMatchResult();

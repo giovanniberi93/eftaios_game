@@ -85,11 +85,13 @@ public class ClientRMISession extends GameSessionClientSide {
 	}
 
 	@Override
-	public void endTurn() {
+	public boolean endTurn() {
+		boolean finished = true;
 		try {
+			finished = session.isMatchFinisched();
 			session.finishTurn();
-		} catch (RemoteException e) {
-		}
+		} catch (RemoteException e) {}
+		return finished;
 	}
 
 	@Override

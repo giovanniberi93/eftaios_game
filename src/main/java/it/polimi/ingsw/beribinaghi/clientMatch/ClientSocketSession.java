@@ -184,9 +184,10 @@ public class ClientSocketSession extends GameSessionClientSide {
 	}
 
 	@Override
-	public void endTurn() {
+	public boolean endTurn() {
 		out.println("end");
 		out.flush();		
+		return true;
 	}
 	
 

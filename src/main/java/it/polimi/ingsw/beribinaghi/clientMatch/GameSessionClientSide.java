@@ -63,7 +63,7 @@ public abstract class GameSessionClientSide {
 	/**
 	 * Communicates to ServerSession the signal of the end of the turn. It's invoked only by currentPlayer.
 	 */
-	public abstract void endTurn();
+	public abstract boolean endTurn();
 
 	/**
 	 * Listens from ServerSession the updates of the match during other's turn, like: used cards, noise coordinates, attack or escape results
