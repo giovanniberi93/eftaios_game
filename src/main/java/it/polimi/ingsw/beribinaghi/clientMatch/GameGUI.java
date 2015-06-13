@@ -271,6 +271,7 @@ public class GameGUI implements GameInterface,MouseListener,Runnable {
 	private void iniTurn(){
 		g.setColor(Color.BLACK);
 		g.fillRect( this.mapMarginWidth+this.mapWidth+imgx-20, this.mapMarginHeight +(separate+60), imgx, imgy);
+		g.fillRect( this.mapMarginWidth+this.mapWidth+imgx-20, this.mapMarginHeight + 2*(separate+60), imgx, imgy);
 		if (this.rumorsCoordinates!=null)
 			if (!this.rumorsCoordinates.equals(controller.getMyPosition()))
 				this.printSector( this.rumorsCoordinates.getNumber()-1, Coordinates.getNumberFromLetter(this.rumorsCoordinates.getLetter()), SectorName.DANGEROUS, 0);
@@ -451,7 +452,8 @@ public class GameGUI implements GameInterface,MouseListener,Runnable {
 				}
 				g.drawImage(img, mapMarginWidth+j*3*lw, mapMarginHeight+lh*(i*2+j%2), 4*lw, 2*lh, null);
 				g.drawString(""+(posShallop.indexOf(coordinates)+1),mapMarginWidth+j*3*lw+2*lw-3 , mapMarginHeight+lh*(i*2+j%2)+lh+5);
-				this.printSingleCard(cardImg, 2, 1, imgx, imgy,0);
+				if (controller.isMyTurn() && controller.getMyCharacter().getCurrentPosition().equals(coordinates))
+					this.printSingleCard(cardImg, 2, 1, imgx, imgy,0);
 			}	
 		}
 	}
