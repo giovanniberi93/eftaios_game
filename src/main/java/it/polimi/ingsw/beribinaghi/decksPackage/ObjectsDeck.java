@@ -46,7 +46,7 @@ public class ObjectsDeck extends Deck {
 	}
 	
 	public boolean isEmpty(){
-		if (super.validCards.size() == 0)
+		if (super.validCards.size() == 0 && super.getDiscardPileSize() == 0)
 			return true;
 		return false;
 	}
