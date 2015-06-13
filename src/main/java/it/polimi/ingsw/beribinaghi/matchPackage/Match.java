@@ -301,8 +301,10 @@ public class Match {
 	public boolean isFinished(){
 		int remainingHumans = 0;
 		boolean isFinished = false;
+		Player nextPlayer = players.get(getNextValidPlayerIndex());
+		Player firstPlayer = players.get(firstPlayerIndex);
 		
-		if(turnNumber == App.NUMBEROFTURNS)
+		if(nextPlayer.equals(firstPlayer) && turnNumber+1 > App.NUMBEROFTURNS)
 			isFinished = true;
 		else{
 			for(Player player: players)
@@ -320,15 +322,17 @@ public class Match {
 	
 	
 	private void calculateWinners() {
-		if(turnNumber > App.NUMBEROFTURNS || lastHumanKilled){
+		if(turnNumber >= App.NUMBEROFTURNS || lastHumanKilled){
 			for(Player player : players)
-				if(player.getCharacter().getSide().equals(SideName.ALIEN) && player.getCharacter().getCurrentPosition() != null)
+				if(player.getCharacter().getSide().equals(SideName.ALIEN) &&
+						player.getCharacter().getCurrentPosition() != null &&
+						!winners.contains(player))
 					winners.add(player);
 		}
 		for(Player player : players)
 			if(player.getCharacter().getSide().equals(SideName.HUMAN)){
 				HumanCharacter human = (HumanCharacter) player.getCharacter();
-				if(human.isEscaped())
+				if(human.isEscaped() && !winners.contains(human))
 					winners.add(player);
 			}
 	}

@@ -1,6 +1,7 @@
 package it.polimi.ingsw.beribinaghi;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.Adrenalin;
 import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.Card;
 import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.Defense;
@@ -11,6 +12,7 @@ import it.polimi.ingsw.beribinaghi.mapPackage.Coordinates;
 import it.polimi.ingsw.beribinaghi.mapPackage.MapModel;
 import it.polimi.ingsw.beribinaghi.matchPackage.GameSessionServerSide;
 import it.polimi.ingsw.beribinaghi.matchPackage.Match;
+import it.polimi.ingsw.beribinaghi.playerPackage.HumanCharacter;
 import it.polimi.ingsw.beribinaghi.playerPackage.Player;
 
 import java.util.ArrayList;
@@ -70,16 +72,25 @@ public class CardsEffectTest {
 	}
 	
 	@Test
-	public void sedatives(){
+	public void lastUsedCard(){
 		match.sedatives();
 		assertTrue(match.getLastUsedCard() instanceof Sedatives);
 	}
-
+	
 	@Test
 	public void adrenalin(){
-		match.adrenalin();
-		assertTrue(match.getLastUsedCard() instanceof Adrenalin);
+		int i = 0;
+		Player aPlayer = players.get(i);
+		while(!aPlayer.getCharacter().getSide().equals(SideName.HUMAN)){
+			i++;
+			aPlayer = players.get(i);
+		}
+		HumanCharacter h = (HumanCharacter) aPlayer.getCharacter();
+		h.setHasAdrenalin(true);
+		assertTrue(h.getPercorrableDistance() == 2);
 	}
+	
+
 	
 	@Test
 	public void killEveryoneAttackTest(){

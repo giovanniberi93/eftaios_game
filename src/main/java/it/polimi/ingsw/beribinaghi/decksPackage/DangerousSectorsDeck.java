@@ -14,7 +14,7 @@ public class DangerousSectorsDeck extends Deck {
 	private final static int NUMBERANYSECTORCARDS = 10;
 	private final static int NUMBERYOURSECTORCARDS = 10;
 	private final static int NUMBERSILENCECARDS = 5;
-	private final static int NUMBEROBJECTSFORTYPE = 4;
+	private final static int NUMBEROBJECTSFORCARDTYPE = 4;
 
 
 	/**
@@ -25,14 +25,14 @@ public class DangerousSectorsDeck extends Deck {
 
 
 		for(int i = 0; i<DangerousSectorsDeck.NUMBERYOURSECTORCARDS; i++){			
-			if(i < DangerousSectorsDeck.NUMBEROBJECTSFORTYPE)
+			if(i < DangerousSectorsDeck.NUMBEROBJECTSFORCARDTYPE)
 				containsObject = true;		//aggiungo carte rumore nel mio settore
 			else
 				containsObject = false;
 			super.validCards.add(new NoiseInYourSector(containsObject));
 		}
 		for(int i = 0; i<DangerousSectorsDeck.NUMBERANYSECTORCARDS; i++){			
-			if(i < DangerousSectorsDeck.NUMBEROBJECTSFORTYPE)
+			if(i < DangerousSectorsDeck.NUMBEROBJECTSFORCARDTYPE)
 				containsObject = true;		//aggiungo carte rumore in ogni settore
 			else
 				containsObject = false;

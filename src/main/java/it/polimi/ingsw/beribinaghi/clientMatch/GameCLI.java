@@ -37,6 +37,9 @@ public class GameCLI implements GameInterface {
 		System.out.println("Ti chiami " + name + ", sei " + role + " e sei un " + sideName);
 	}
 
+	/**
+	 * Shows the choice that can be done during the turn, and invokes the associated methods
+	 */
 	private void managesMyTurn() {
 		String choose;
 		boolean hasMoved = false;
@@ -104,6 +107,10 @@ public class GameCLI implements GameInterface {
 	}
 
 
+	/**
+	 * executes the actions associated to the choice of an object card
+	 * @param chosenCard is the card that is wanted to be used
+	 */
 	private void executeObjectCard(String chosenCard) {
 		ArrayList<String> command = new ArrayList<String>();
 		command.add(chosenCard);
@@ -122,6 +129,11 @@ public class GameCLI implements GameInterface {
 		controller.callObjectCard(command);	
 	}
 
+	/**
+	 * @param currentPosition is the position of the player who is doing the movement
+	 * @param percorrableDistance is the maximum distance reachable from the player
+	 * @return the arrayList of the reachable coordinates
+	 */
 	private Coordinates chooseAdiacentCoordinates(Coordinates currentPosition, int percorrableDistance) {
 		boolean isAlien = (controller.getMyCharacter().getSide().equals(SideName.ALIEN));
 		ArrayList<Coordinates> selectableCoordinates = controller.getMap().getReachableCoordinates(currentPosition, percorrableDistance, isAlien);
@@ -140,6 +152,13 @@ public class GameCLI implements GameInterface {
 		return selectedCoord;	
 	}
 
+	/**
+	 * prints the list of the possible actions available to the player
+	 * @param hasMoved is true if the player has already moved
+	 * @param isHuman is true if the player's character is an human
+	 * @param hasAttacked is true if the player has aready attacked
+	 * @return the string containing the chosen command
+	 */
 	private String chooseAction(boolean hasMoved, boolean isHuman, boolean hasAttacked) {
 		String command;
 		ArrayList<String> availableCommands = new ArrayList<String>();

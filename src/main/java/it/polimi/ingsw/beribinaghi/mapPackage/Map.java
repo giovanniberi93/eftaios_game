@@ -152,6 +152,11 @@ public class Map implements Serializable {
 		return reachableCoordinates;
 	}
 
+	/**
+	 * determinates if a coordinate is valid in that map
+	 * @param coord are the cooordianates to evaluate
+	 * @return true if the coordinates are valid
+	 */
 	public boolean areCoordinatesValid(Coordinates coord){
 		if(coord.isValid() && !usedShallops.contains(coord))
 			return true;
@@ -162,11 +167,19 @@ public class Map implements Serializable {
 	}
 	
 	
+	/**
+	 * adds an used shallop coordinates to the list of used shallops coordinates
+	 * @param usedShallop
+	 */
 	public void addUsedShallop(Coordinates usedShallop){
 		usedShallops.add(usedShallop);
 	}
 	
 	
+	/**
+	 * @param coordinates are the coordinates we want to analyze
+	 * @return the sector found at the passed coordinates
+	 */
 	public Sector getSector (Coordinates coordinates){
 		Sector selectedSector = map.get(coordinates.toString());
 		return selectedSector;
@@ -185,7 +198,7 @@ public class Map implements Serializable {
 		return AlienBaseCoordinates;
 	}
 
-	public void setAlienBaseCoordinates(Coordinates alienBaseCoordinates) {
+	private void setAlienBaseCoordinates(Coordinates alienBaseCoordinates) {
 		AlienBaseCoordinates = alienBaseCoordinates;
 	}
 
@@ -193,7 +206,7 @@ public class Map implements Serializable {
 		return HumanBaseCoordinates;
 	}
 
-	public void setHumanBaseCoordinates(Coordinates humanBaseCoordinates) {
+	private void setHumanBaseCoordinates(Coordinates humanBaseCoordinates) {
 		HumanBaseCoordinates = humanBaseCoordinates;
 	}
 

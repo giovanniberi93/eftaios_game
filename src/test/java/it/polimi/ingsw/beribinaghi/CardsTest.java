@@ -1,6 +1,6 @@
 package it.polimi.ingsw.beribinaghi;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import it.polimi.ingsw.beribinaghi.decksPackage.CharactersDeck;
 import it.polimi.ingsw.beribinaghi.decksPackage.DangerousSectorsDeck;
 import it.polimi.ingsw.beribinaghi.decksPackage.ObjectsDeck;
@@ -10,6 +10,7 @@ import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.DangerousSectorCard
 import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.NothingToPick;
 import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.ObjectCard;
 import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.Sedatives;
+import it.polimi.ingsw.beribinaghi.decksPackage.cardsPackage.Spotlight;
 import it.polimi.ingsw.beribinaghi.mapPackage.Coordinates;
 import it.polimi.ingsw.beribinaghi.mapPackage.MapModel;
 import it.polimi.ingsw.beribinaghi.matchPackage.GameSessionServerSide;
@@ -125,6 +126,28 @@ public class CardsTest {
 		ch.addCardToBag(new Sedatives());
 		assertTrue(ch.removeCardFromBag(new Sedatives()));
 	}
+	
+	@Test
+	public void constructRightCard(){
+		ObjectCard oc = ObjectCard.stringToCard("spotlight");
+		assertTrue(oc instanceof Spotlight);
+	}
+	
+	@Test
+	public void constructWrongCard(){
+		ObjectCard oc = ObjectCard.stringToCard("sblosblosblo");
+		assertNull(oc);
+	}
+	
+	@Test
+	public void reUseDeadPlayerCards(){
+		int oldDiscardPileSize = match.getObjectsDeck().getDiscardPileSize();
+		players.get(0).getCharacter().addCardToBag(new Sedatives());
+		match.manageExitedFromGamePlayer(players.get(0));
+		int newDiscardPileSize = match.getObjectsDeck().getDiscardPileSize();
+		assertTrue(newDiscardPileSize == oldDiscardPileSize + 1);
+	}
+	
 
 	
 }
