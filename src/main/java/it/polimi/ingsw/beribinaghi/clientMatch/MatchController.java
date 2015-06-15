@@ -158,8 +158,8 @@ public class MatchController {
 	public void callEndTurn() {
 		attemptedEscape = false;
 		myCharacter.setHasAdrenalin(false);
-		boolean finished1 = session.endTurn();	//penultimo
-		boolean finished2 = session.isMatchFinished();
+		boolean finished1 = session.endTurn();	
+		boolean finished2 = session.isMatchFinished();			//finished 1 e 2 sono sempre uguali fra loro a parte nel penultimo turno con sessione rmi (perché l'endTurn calcola anche se il gioco è finito); col confronto fra i due finished fixo il crash del penultimo turno rmi
 		if(!finished2 || (finished1 == false && finished2 == true))
 			turn(true);			
 		else

@@ -62,6 +62,7 @@ public abstract class GameSessionClientSide {
 
 	/**
 	 * Communicates to ServerSession the signal of the end of the turn. It's invoked only by currentPlayer.
+	 * @return true if the match is finished
 	 */
 	public abstract boolean endTurn();
 
